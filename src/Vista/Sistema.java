@@ -41,6 +41,7 @@ public class Sistema extends javax.swing.JFrame {
     public Sistema() {
         initComponents();
         this.setLocationRelativeTo(null);
+        txtIdCliente.setVisible(false);
     }
     
 public void ListarCliente(){
@@ -1109,6 +1110,7 @@ public void LimpiarTable(){
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         LimpiarTable();
+        LimpiarCliente();
         ListarCliente();
         jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -1150,7 +1152,21 @@ public void LimpiarTable(){
 
     private void btnActualizarClientyeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClientyeActionPerformed
         // TODO add your handling code here:
-        
+        if ("".equals(txtIdCliente.getText())){
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        }else{
+            cl.setNit(Integer.parseInt(txtNitCliente.getText()));
+            cl.setNombre(txtNombreCliente.getText());
+            cl.setTelefono(txtTelefonoCliente.getText());
+            cl.setDireccion(txtDireccionCliente.getText());
+            cl.setRazon(txtRazonCliente.getText());
+            cl.setId(Integer.parseInt(txtIdCliente.getText()));
+            if (!"".equals(txtIdCliente.getText()) || !"".equals(txtNombreCliente.getText()) || !"".equals(txtTelefonoCliente.getText()) || !"".equals(txtDireccionCliente.getText()) || !"".equals(txtRazonCliente.getText()));
+                client.ModificarCliente(cl);
+                LimpiarTable();
+                LimpiarCliente();
+                ListarCliente();                
+        }
     }//GEN-LAST:event_btnActualizarClientyeActionPerformed
 
     private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
@@ -1179,6 +1195,9 @@ public void LimpiarTable(){
                 JOptionPane.showMessageDialog(null, "Error al bloquear cliente");
             }
         }
+    LimpiarTable();
+    LimpiarCliente();
+    ListarCliente(); 
         
     }//GEN-LAST:event_btnEliminarClienteActionPerformed
 
@@ -1349,4 +1368,14 @@ public void LimpiarTable(){
         //}
         //LabelTotal.setText(String.format("%.2f", Totalpagar) 
    //}
+    
+    private void LimpiarCliente(){
+        txtIdCliente.setText("");
+        txtNitCliente.setText("");
+        txtNombreCliente.setText("");
+        txtTelefonoCliente.setText("");
+        txtDireccionCliente.setText("");
+        txtRazonCliente.setText("");
+    }
+    
 }
