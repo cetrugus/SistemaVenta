@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
@@ -42,6 +43,9 @@ public class Sistema extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         txtIdCliente.setVisible(false);
+        txtIdProveedor.setVisible(false);
+        AutoCompleteDecorator.decorate(cbxProveedorPro);
+        proDAO.ConsultarProveedor(cbxProveedorPro);
     }
 
     public void ListarCliente() {
@@ -136,10 +140,14 @@ public class Sistema extends javax.swing.JFrame {
     }
     
     public void LimpiarTablePr() {
-        DefaultTableModel modelo = (DefaultTableModel) TableProveedor.getModel();
+        DefaultTableModel modelo = (DefaultTableModel) TableProducto.getModel();
         modelo.setRowCount(0);
     }
 
+    public void LimpiarTablePro() {
+        DefaultTableModel modelo = (DefaultTableModel) TableProveedor.getModel();
+        modelo.setRowCount(0);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -327,12 +335,15 @@ public class Sistema extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -890,33 +901,60 @@ public class Sistema extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Código", "descripción", "Stock", "Precio", "Proveedor"
+                "ID", "Código", "descripción", "Proveedor", "Stock", "Precio", "Estado"
             }
         ));
+        TableProducto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableProductoMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(TableProducto);
         if (TableProducto.getColumnModel().getColumnCount() > 0) {
-            TableProducto.getColumnModel().getColumn(0).setPreferredWidth(40);
-            TableProducto.getColumnModel().getColumn(1).setPreferredWidth(100);
-            TableProducto.getColumnModel().getColumn(2).setPreferredWidth(40);
-            TableProducto.getColumnModel().getColumn(3).setPreferredWidth(50);
-            TableProducto.getColumnModel().getColumn(4).setPreferredWidth(60);
+            TableProducto.getColumnModel().getColumn(0).setPreferredWidth(20);
+            TableProducto.getColumnModel().getColumn(1).setPreferredWidth(40);
+            TableProducto.getColumnModel().getColumn(2).setPreferredWidth(100);
+            TableProducto.getColumnModel().getColumn(3).setPreferredWidth(60);
+            TableProducto.getColumnModel().getColumn(4).setPreferredWidth(40);
+            TableProducto.getColumnModel().getColumn(5).setPreferredWidth(50);
+            TableProducto.getColumnModel().getColumn(6).setPreferredWidth(1);
         }
 
         btnGuardarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/GuardarTodo.png"))); // NOI18N
         btnGuardarPro.setText("Guardar");
         btnGuardarPro.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnGuardarPro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarProActionPerformed(evt);
+            }
+        });
 
         btnActualizarpro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Actualizar (2).png"))); // NOI18N
         btnActualizarpro.setText("Actualizar");
         btnActualizarpro.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnActualizarpro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarproActionPerformed(evt);
+            }
+        });
 
         btnNuevoPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/nuevo.png"))); // NOI18N
         btnNuevoPro.setText("Nuevo");
         btnNuevoPro.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnNuevoPro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoProActionPerformed(evt);
+            }
+        });
 
-        btnEliminarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/eliminar.png"))); // NOI18N
-        btnEliminarPro.setText("Eliminar");
+        btnEliminarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/encendido-apagado.png"))); // NOI18N
+        btnEliminarPro.setText("Estado");
         btnEliminarPro.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnEliminarPro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarProActionPerformed(evt);
+            }
+        });
 
         btnExcelPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/excel.png"))); // NOI18N
         btnExcelPro.setText("EXC");
@@ -1199,6 +1237,9 @@ public class Sistema extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        LimpiarTablePr();
+        LimpiarProductos();
+        ListarProductos();
         jTabbedPane1.setSelectedIndex(3);
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -1229,6 +1270,7 @@ public class Sistema extends javax.swing.JFrame {
             LimpiarCliente();
             ListarCliente();
         }
+        JOptionPane.showMessageDialog(null, "Actualizado correctamente");
     }//GEN-LAST:event_btnActualizarClientyeActionPerformed
 
     private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
@@ -1277,6 +1319,7 @@ public class Sistema extends javax.swing.JFrame {
 
     private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
         // TODO add your handling code here:
+        LimpiarCliente();
     }//GEN-LAST:event_btnNuevoClienteActionPerformed
 
     private void btnGuardarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProveedorActionPerformed
@@ -1288,6 +1331,7 @@ public class Sistema extends javax.swing.JFrame {
             pr.setDireccion(txtDireccionProveedor.getText());
             pr.setRazon(txtRazonProveedor.getText());
             PrDAO.RegistrarProveedor(pr);
+            JOptionPane.showMessageDialog(null, "Proveedor registrado");
         }else{
             JOptionPane.showMessageDialog(null, "Los campos estan vacios");
         }
@@ -1321,6 +1365,7 @@ public class Sistema extends javax.swing.JFrame {
             LimpiarProveedor();
             ListarProveedor();
         }
+        JOptionPane.showMessageDialog(null, "Actualizado correctamente");
     }//GEN-LAST:event_btnActaluzarProveedorActionPerformed
 
     private void btnEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProveedorActionPerformed
@@ -1356,11 +1401,94 @@ public class Sistema extends javax.swing.JFrame {
 
     private void btnNuevoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProveedorActionPerformed
         // TODO add your handling code here:
+        LimpiarProveedor();
     }//GEN-LAST:event_btnNuevoProveedorActionPerformed
 
     private void txtIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdClienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIdClienteActionPerformed
+
+    private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
+        // TODO add your handling code here:
+            if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(cbxProveedorPro.getSelectedItem()) || !"".equals(txtcantPro.getText()) || !"".equals(txtPrecioPro.getText())){
+                pro.setCodigo(txtCodigoPro.getText());
+                pro.setNombre(txtDesPro.getText());
+                pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
+                pro.setStock(Integer.parseInt(txtcantPro.getText()));
+                pro.setPrecio(Double.parseDouble(txtPrecioPro.getText()));
+                proDAO.RegistrarProducto(pro);
+                JOptionPane.showMessageDialog(null, "Producto registrado");
+            }else{
+                JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+            }
+    }//GEN-LAST:event_btnGuardarProActionPerformed
+
+    private void btnActualizarproActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarproActionPerformed
+        // TODO add your handling code here:
+        if ("".equals(txtIdPro.getText())) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        } else {
+            if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(txtcantPro.getText()) || !"".equals(txtPrecioPro.getText()));
+            pro.setCodigo(txtCodigoPro.getText());
+            pro.setNombre(txtDesPro.getText());
+            pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
+            pro.setStock(Integer.parseInt(txtcantPro.getText()));
+            pro.setPrecio(Integer.parseInt(txtPrecioPro.getText()));
+            pro.setId(Integer.parseInt(txtIdPro.getText()));
+            proDAO.ModificarProductos(pro);
+            JOptionPane.showMessageDialog(null, "Actualizado correctamente");
+            LimpiarTablePr();
+            LimpiarProductos();
+            ListarProductos();
+        }
+    }//GEN-LAST:event_btnActualizarproActionPerformed
+
+    private void TableProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableProductoMouseClicked
+        // TODO add your handling code here:
+        int fila = TableProducto.rowAtPoint(evt.getPoint());
+        txtIdPro.setText(TableProducto.getValueAt(fila, 0).toString());
+        txtCodigoPro.setText(TableProducto.getValueAt(fila, 1).toString());
+        txtDesPro.setText(TableProducto.getValueAt(fila, 2).toString());
+        cbxProveedorPro.setSelectedItem(TableProducto.getValueAt(fila, 3).toString());
+        txtcantPro.setText(TableProducto.getValueAt(fila, 4).toString());
+        txtPrecioPro.setText(TableProducto.getValueAt(fila, 5).toString());
+    }//GEN-LAST:event_TableProductoMouseClicked
+
+    private void btnEliminarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProActionPerformed
+        // TODO add your handling code here:
+        int fila = TableProducto.getSelectedRow();
+
+        // 🔴 Validar si seleccionó algo
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto");
+            return;
+        }
+
+        int id = Integer.parseInt(TableProducto.getModel().getValueAt(fila, 0).toString());
+        int estadoActual = Integer.parseInt(TableProducto.getModel().getValueAt(fila, 6).toString());
+
+        // Mensaje dinámico según estado actual
+        String mensaje = estadoActual == 1 ? "¿Desea desactivar este producto?" : "¿Desea activar este producto?";
+
+        int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (proDAO.EliminarProducto(id)) {
+                modelo.setRowCount(0);
+                ListarProductos();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al bloquear Producto");
+            }
+        }
+        LimpiarTablePr();
+        LimpiarProductos();
+        ListarProductos();
+    }//GEN-LAST:event_btnEliminarProActionPerformed
+
+    private void btnNuevoProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProActionPerformed
+        // TODO add your handling code here:
+        LimpiarProductos();
+    }//GEN-LAST:event_btnNuevoProActionPerformed
 
     
     public void ListarProveedor() {
@@ -1448,6 +1576,53 @@ public class Sistema extends javax.swing.JFrame {
         TableProveedor.getColumnModel().getColumn(6).setMaxWidth(0);
         TableProveedor.getColumnModel().getColumn(6).setPreferredWidth(0);
     }
+    
+    public void ListarProductos() {
+
+        List<Productos> ListaPro = proDAO.ListarProductos();
+        modelo = (DefaultTableModel) TableProducto.getModel();
+
+        Object[] ob = new Object[7]; // 👈 ahora son 7
+
+        for (int i = 0; i < ListaPro.size(); i++) {
+            ob[0] = ListaPro.get(i).getId();
+            ob[1] = ListaPro.get(i).getCodigo();
+            ob[2] = ListaPro.get(i).getNombre();
+            ob[3] = ListaPro.get(i).getProveedor();
+            ob[4] = ListaPro.get(i).getStock();
+            ob[5] = ListaPro.get(i).getPrecio();
+            ob[6] = ListaPro.get(i).getEstado(); // 👈 IMPORTANTE
+
+            modelo.addRow(ob);
+        }
+
+        TableProducto.setModel(modelo);
+
+        aplicarColorEstadoPro(); // lo llamas desde aquí
+
+        // Activa o desactiva los botones según sea el estado del cliente
+        TableProducto.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && TableProducto.getSelectedRow() != -1) {
+
+                int fila = TableProducto.getSelectedRow();
+                Object estado = TableProducto.getValueAt(fila, 6);
+
+                int estadoVal = Integer.parseInt(estado.toString().trim());
+
+                if (estadoVal == 1) {
+                    btnEliminarPro.setEnabled(true);    // Boton Activo
+                    btnGuardarPro.setEnabled(true);     // Boton Activo
+                    btnNuevoPro.setEnabled(true);       // Boton Activo
+                    btnActualizarpro.setEnabled(true); // Boton Activo
+                } else {
+                    btnEliminarPro.setEnabled(true);    // Boton Activo
+                    btnGuardarPro.setEnabled(false);    // Boton inactivo
+                    btnNuevoPro.setEnabled(false);      // Boton inactivo
+                    btnActualizarpro.setEnabled(false);// Boton inactivo
+                }
+            }
+        });
+    }
     /**
      * @param args the command line arguments
      */
@@ -1481,6 +1656,43 @@ public class Sistema extends javax.swing.JFrame {
                 new Sistema().setVisible(true);
             }
         });
+    }
+    
+    private void aplicarColorEstadoPro() {
+        TableProducto.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                Component c = super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+
+                Object estado = table.getModel().getValueAt(row, 6);
+
+                if (!isSelected) {
+                    int estadoVal = Integer.parseInt(estado.toString().trim());
+
+                    if (estadoVal == 1) {
+                        c.setBackground(new Color(232, 255, 234)); // Verde suave - Activo
+                        c.setForeground(new Color(0, 120, 0));     // Texto verde oscuro
+                    } else {
+                        c.setBackground(new Color(189, 189, 189)); // Gris - Inactivo
+                        c.setForeground(new Color(245, 73, 39)); // Texto gris oscuro
+                    }
+                }
+                return c;
+            }
+        });
+
+        // Ocultar el texlabel ID
+        TableProducto.getColumnModel().getColumn(0).setMinWidth(0);
+        TableProducto.getColumnModel().getColumn(0).setMaxWidth(0);
+        TableProducto.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+        // ocultar la columna de estado (columna 6)
+        TableProducto.getColumnModel().getColumn(6).setMinWidth(0);
+        TableProducto.getColumnModel().getColumn(6).setMaxWidth(0);
+        TableProducto.getColumnModel().getColumn(6).setPreferredWidth(0);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1621,4 +1833,13 @@ public class Sistema extends javax.swing.JFrame {
         txtRazonProveedor.setText("");
     }
 
+    private void LimpiarProductos() {
+        txtIdpro.setText("");
+        txtCodigoPro.setText("");
+        txtDesPro.setText("");
+        cbxProveedorPro.setSelectedItem("");
+        txtcantPro.setText("");
+        txtPrecioPro.setText("");
+        
+    }
 }
