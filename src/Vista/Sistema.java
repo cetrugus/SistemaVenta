@@ -26,121 +26,120 @@ import javax.swing.table.DefaultTableModel;
  * @author Tavo
  */
 public class Sistema extends javax.swing.JFrame {
-    
+
     Cliente cl = new Cliente();
     ClienteDAO client = new ClienteDAO();
     Proveedor pr = new Proveedor();
-    ProveedorDAO prDAO = new ProveedorDAO();
+    ProveedorDAO PrDAO = new ProveedorDAO();
     Productos pro = new Productos();
     ProductosDAO proDAO = new ProductosDAO();
     Venta v = new Venta();
     VentaDAO vDAO = new VentaDAO();
-    
+
     DefaultTableModel modelo = new DefaultTableModel();
-    
+
     public Sistema() {
         initComponents();
         this.setLocationRelativeTo(null);
         txtIdCliente.setVisible(false);
     }
-    
-public void ListarCliente(){
-    
-    List<Cliente> ListarCl = client.ListarCliente();
-    modelo = (DefaultTableModel) TableCliente.getModel();
 
-    Object[] ob = new Object[7]; // 👈 ahora son 7
+    public void ListarCliente() {
 
-    for (int i = 0; i < ListarCl.size(); i++){
-        ob[0] = ListarCl.get(i).getId();
-        ob[1] = ListarCl.get(i).getNit();
-        ob[2] = ListarCl.get(i).getNombre();
-        ob[3] = ListarCl.get(i).getTelefono();
-        ob[4] = ListarCl.get(i).getDireccion();
-        ob[5] = ListarCl.get(i).getRazon();
-        ob[6] = ListarCl.get(i).getEstado(); // 👈 IMPORTANTE
+        List<Cliente> ListarCl = client.ListarCliente();
+        modelo = (DefaultTableModel) TableCliente.getModel();
 
-        modelo.addRow(ob);
-    }
+        Object[] ob = new Object[7]; // 👈 ahora son 7
 
-    
-    TableCliente.setModel(modelo);
-    
-    aplicarColorEstado(); // lo llamas desde aquí
-    
-    // Activa o desactiva los botones según sea el estado del cliente
-    TableCliente.getSelectionModel().addListSelectionListener(e -> {
-        if (!e.getValueIsAdjusting() && TableCliente.getSelectedRow() != -1) {
+        for (int i = 0; i < ListarCl.size(); i++) {
+            ob[0] = ListarCl.get(i).getId();
+            ob[1] = ListarCl.get(i).getNit();
+            ob[2] = ListarCl.get(i).getNombre();
+            ob[3] = ListarCl.get(i).getTelefono();
+            ob[4] = ListarCl.get(i).getDireccion();
+            ob[5] = ListarCl.get(i).getRazon();
+            ob[6] = ListarCl.get(i).getEstado(); // 👈 IMPORTANTE
 
-            int fila = TableCliente.getSelectedRow();
-            Object estado = TableCliente.getValueAt(fila, 6);
-
-            int estadoVal = Integer.parseInt(estado.toString().trim());
-
-            if (estadoVal == 1) {
-                btnEliminarCliente.setEnabled(true);    // Boton Activo
-                btnGuardarCliente.setEnabled(true);     // Boton Activo
-                btnNuevoCliente.setEnabled(true);       // Boton Activo
-                btnActualizarClientye.setEnabled(true); // Boton Activo
-            } else {
-                btnEliminarCliente.setEnabled(true);    // Boton Activo
-                btnGuardarCliente.setEnabled(false);    // Boton inactivo
-                btnNuevoCliente.setEnabled(false);      // Boton inactivo
-                btnActualizarClientye.setEnabled(false);// Boton inactivo
-            }
+            modelo.addRow(ob);
         }
-    });
-    
+
+        TableCliente.setModel(modelo);
+
+        aplicarColorEstado(); // lo llamas desde aquí
+
+        // Activa o desactiva los botones según sea el estado del cliente
+        TableCliente.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && TableCliente.getSelectedRow() != -1) {
+
+                int fila = TableCliente.getSelectedRow();
+                Object estado = TableCliente.getValueAt(fila, 6);
+
+                int estadoVal = Integer.parseInt(estado.toString().trim());
+
+                if (estadoVal == 1) {
+                    btnEliminarCliente.setEnabled(true);    // Boton Activo
+                    btnGuardarCliente.setEnabled(true);     // Boton Activo
+                    btnNuevoCliente.setEnabled(true);       // Boton Activo
+                    btnActualizarClientye.setEnabled(true); // Boton Activo
+                } else {
+                    btnEliminarCliente.setEnabled(true);    // Boton Activo
+                    btnGuardarCliente.setEnabled(false);    // Boton inactivo
+                    btnNuevoCliente.setEnabled(false);      // Boton inactivo
+                    btnActualizarClientye.setEnabled(false);// Boton inactivo
+                }
+            }
+        });
+
     }
 
     // Color del listado de los clientes si estan en estado activo o no
     private void aplicarColorEstado() {
-    TableCliente.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
+        TableCliente.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
 
-            Component c = super.getTableCellRendererComponent(
-                    table, value, isSelected, hasFocus, row, column);
+                Component c = super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
 
-            Object estado = table.getModel().getValueAt(row, 6);
+                Object estado = table.getModel().getValueAt(row, 6);
 
                 if (!isSelected) {
-                int estadoVal = Integer.parseInt(estado.toString().trim());
+                    int estadoVal = Integer.parseInt(estado.toString().trim());
 
-                if (estadoVal == 1) {
-                    c.setBackground(new Color(232, 255, 234)); // Verde suave - Activo
-                    c.setForeground(new Color(0, 120, 0));     // Texto verde oscuro
-                } else {
-                    c.setBackground(new Color(189, 189, 189)); // Gris - Inactivo
-                    c.setForeground(new Color(245, 73, 39)); // Texto gris oscuro
+                    if (estadoVal == 1) {
+                        c.setBackground(new Color(232, 255, 234)); // Verde suave - Activo
+                        c.setForeground(new Color(0, 120, 0));     // Texto verde oscuro
+                    } else {
+                        c.setBackground(new Color(189, 189, 189)); // Gris - Inactivo
+                        c.setForeground(new Color(245, 73, 39)); // Texto gris oscuro
+                    }
                 }
+                return c;
             }
+        });
 
-            return c;
-        }
-    });
+        // Ocultar el texlabel ID
+        TableCliente.getColumnModel().getColumn(0).setMinWidth(0);
+        TableCliente.getColumnModel().getColumn(0).setMaxWidth(0);
+        TableCliente.getColumnModel().getColumn(0).setPreferredWidth(0);
 
+        // ocultar la columna de estado (columna 6)
+        TableCliente.getColumnModel().getColumn(6).setMinWidth(0);
+        TableCliente.getColumnModel().getColumn(6).setMaxWidth(0);
+        TableCliente.getColumnModel().getColumn(6).setPreferredWidth(0);
+    }
+
+    public void LimpiarTable() {
+        DefaultTableModel modelo = (DefaultTableModel) TableCliente.getModel();
+        modelo.setRowCount(0);
+    }
     
+    public void LimpiarTablePr() {
+        DefaultTableModel modelo = (DefaultTableModel) TableProveedor.getModel();
+        modelo.setRowCount(0);
+    }
 
-    // Ocultar ID
-    TableCliente.getColumnModel().getColumn(0).setMinWidth(0);
-    TableCliente.getColumnModel().getColumn(0).setMaxWidth(0);
-    TableCliente.getColumnModel().getColumn(0).setPreferredWidth(0);
-
-    // 👇 ocultar también estado (columna 6)
-    TableCliente.getColumnModel().getColumn(6).setMinWidth(0);
-    TableCliente.getColumnModel().getColumn(6).setMaxWidth(0);
-    TableCliente.getColumnModel().getColumn(6).setPreferredWidth(0);
-}
-
-
-
-
-public void LimpiarTable(){
-    DefaultTableModel modelo = (DefaultTableModel) TableCliente.getModel();
-    modelo.setRowCount(0);
-}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -157,7 +156,6 @@ public void LimpiarTable(){
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
@@ -318,9 +316,6 @@ public void LimpiarTable(){
             }
         });
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/logo.png"))); // NOI18N
-        jLabel2.setText("jLabel2");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -329,23 +324,17 @@ public void LimpiarTable(){
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(160, 160, 160)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -640,6 +629,11 @@ public void LimpiarTable(){
         });
 
         txtIdCliente.setText("ID");
+        txtIdCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdClienteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -708,7 +702,7 @@ public void LimpiarTable(){
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnNuevoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 74, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                         .addContainerGap())))
@@ -736,33 +730,60 @@ public void LimpiarTable(){
 
             },
             new String [] {
-                "CC/NIT", "Nombre", "Teléfono", "Dirección", "Razón Social"
+                "ID", "CC/NIT", "Nombre", "Teléfono", "Dirección", "Razón Social", "Estado"
             }
         ));
+        TableProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableProveedorMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(TableProveedor);
         if (TableProveedor.getColumnModel().getColumnCount() > 0) {
-            TableProveedor.getColumnModel().getColumn(0).setPreferredWidth(50);
-            TableProveedor.getColumnModel().getColumn(1).setPreferredWidth(100);
-            TableProveedor.getColumnModel().getColumn(2).setPreferredWidth(50);
-            TableProveedor.getColumnModel().getColumn(3).setPreferredWidth(80);
-            TableProveedor.getColumnModel().getColumn(4).setPreferredWidth(70);
+            TableProveedor.getColumnModel().getColumn(0).setPreferredWidth(10);
+            TableProveedor.getColumnModel().getColumn(1).setPreferredWidth(50);
+            TableProveedor.getColumnModel().getColumn(2).setPreferredWidth(100);
+            TableProveedor.getColumnModel().getColumn(3).setPreferredWidth(50);
+            TableProveedor.getColumnModel().getColumn(4).setPreferredWidth(80);
+            TableProveedor.getColumnModel().getColumn(5).setPreferredWidth(70);
+            TableProveedor.getColumnModel().getColumn(6).setPreferredWidth(1);
         }
 
         btnGuardarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/GuardarTodo.png"))); // NOI18N
         btnGuardarProveedor.setText("Guardar");
         btnGuardarProveedor.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnGuardarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarProveedorActionPerformed(evt);
+            }
+        });
 
         btnActaluzarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Actualizar (2).png"))); // NOI18N
         btnActaluzarProveedor.setText("Actualizar");
         btnActaluzarProveedor.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnActaluzarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActaluzarProveedorActionPerformed(evt);
+            }
+        });
 
         btnNuevoProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/nuevo.png"))); // NOI18N
         btnNuevoProveedor.setText("Nuevo");
         btnNuevoProveedor.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnNuevoProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoProveedorActionPerformed(evt);
+            }
+        });
 
-        btnEliminarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/eliminar.png"))); // NOI18N
-        btnEliminarProveedor.setText("Eliminar");
+        btnEliminarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/encendido-apagado.png"))); // NOI18N
+        btnEliminarProveedor.setText("Estado");
         btnEliminarProveedor.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnEliminarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarProveedorActionPerformed(evt);
+            }
+        });
 
         txtIdProveedor.setText("ID");
 
@@ -1130,10 +1151,13 @@ public void LimpiarTable(){
             cl.setRazon(txtRazonCliente.getText());
             client.RegistrarCliente(cl);
             JOptionPane.showMessageDialog(null, "¡Cliente Registrado correctamente!");
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "¡¡Los campos se encuentran vacios!!");
         }
-        
+        LimpiarTable();
+        LimpiarCliente();
+        ListarCliente();
+        jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_btnGuardarClienteActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1148,10 +1172,10 @@ public void LimpiarTable(){
         // TODO add your handling code here:
         modelo = (DefaultTableModel) TableVenta.getModel();
         modelo.removeRow(TableVenta.getSelectedRow());
-        
+
         txtCodigoVenta.requestFocus();
-        
-        
+
+
     }//GEN-LAST:event_btnEliminarventaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1161,6 +1185,9 @@ public void LimpiarTable(){
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        LimpiarTablePr();
+        LimpiarProveedor();
+        ListarProveedor();
         jTabbedPane1.setSelectedIndex(2);
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -1181,9 +1208,9 @@ public void LimpiarTable(){
 
     private void btnActualizarClientyeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClientyeActionPerformed
         // TODO add your handling code here:
-        if ("".equals(txtIdCliente.getText())){
+        if ("".equals(txtIdCliente.getText())) {
             JOptionPane.showMessageDialog(null, "Seleccione una fila");
-        }else{
+        } else {
             cl.setNit(Integer.parseInt(txtNitCliente.getText()));
             cl.setNombre(txtNombreCliente.getText());
             cl.setTelefono(txtTelefonoCliente.getText());
@@ -1191,10 +1218,10 @@ public void LimpiarTable(){
             cl.setRazon(txtRazonCliente.getText());
             cl.setId(Integer.parseInt(txtIdCliente.getText()));
             if (!"".equals(txtIdCliente.getText()) || !"".equals(txtNombreCliente.getText()) || !"".equals(txtTelefonoCliente.getText()) || !"".equals(txtDireccionCliente.getText()) || !"".equals(txtRazonCliente.getText()));
-                client.ModificarCliente(cl);
-                LimpiarTable();
-                LimpiarCliente();
-                ListarCliente();                
+            client.ModificarCliente(cl);
+            LimpiarTable();
+            LimpiarCliente();
+            ListarCliente();
         }
     }//GEN-LAST:event_btnActualizarClientyeActionPerformed
 
@@ -1204,30 +1231,30 @@ public void LimpiarTable(){
 
         // 🔴 Validar si seleccionó algo
         if (fila == -1) {
-        JOptionPane.showMessageDialog(this, "Seleccione un cliente");
-        return;
-    }
+            JOptionPane.showMessageDialog(this, "Seleccione un cliente");
+            return;
+        }
 
-    int id = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 0).toString());
-    int estadoActual = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 6).toString());
+        int id = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 0).toString());
+        int estadoActual = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 6).toString());
 
-    // Mensaje dinámico según estado actual
-    String mensaje = estadoActual == 1 ? "¿Desea desactivar este cliente?" : "¿Desea activar este cliente?";
+        // Mensaje dinámico según estado actual
+        String mensaje = estadoActual == 1 ? "¿Desea desactivar este cliente?" : "¿Desea activar este cliente?";
 
-    int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
 
-    if (confirm == JOptionPane.YES_OPTION) {
-        if (client.EliminarCliente(id)) {
-            modelo.setRowCount(0);
-            ListarCliente();
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (client.EliminarCliente(id)) {
+                modelo.setRowCount(0);
+                ListarCliente();
             } else {
                 JOptionPane.showMessageDialog(null, "Error al bloquear cliente");
             }
         }
-    LimpiarTable();
-    LimpiarCliente();
-    ListarCliente(); 
-        
+        LimpiarTable();
+        LimpiarCliente();
+        ListarCliente();
+
     }//GEN-LAST:event_btnEliminarClienteActionPerformed
 
     private void TableClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableClienteMouseClicked
@@ -1239,13 +1266,182 @@ public void LimpiarTable(){
         txtTelefonoCliente.setText(TableCliente.getValueAt(fila, 3).toString());
         txtDireccionCliente.setText(TableCliente.getValueAt(fila, 4).toString());
         txtRazonCliente.setText(TableCliente.getValueAt(fila, 5).toString());
-        
+
     }//GEN-LAST:event_TableClienteMouseClicked
 
     private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnNuevoClienteActionPerformed
 
+    private void btnGuardarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProveedorActionPerformed
+        // TODO add your handling code here:
+        if (!"".equals(txtNitProveedor.getText()) || !"".equals(txtNombreProveedor.getText()) || !"".equals(txtTelefonoProveedor.getText()) || !"".equals(txtDireccionProveedor.getText()) || !"".equals(txtRazonProveedor.getText())){
+            pr.setNit(Integer.parseInt(txtNitProveedor.getText()));
+            pr.setNombre(txtNombreProveedor.getText());
+            pr.setTelefono(txtTelefonoProveedor.getText());
+            pr.setDireccion(txtDireccionProveedor.getText());
+            pr.setRazon(txtRazonProveedor.getText());
+            PrDAO.RegistrarProveedor(pr);
+        }else{
+            JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+        }
+    }//GEN-LAST:event_btnGuardarProveedorActionPerformed
+
+    private void TableProveedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableProveedorMouseClicked
+        // TODO add your handling code here:
+        int fila = TableProveedor.rowAtPoint(evt.getPoint());
+        txtIdProveedor.setText(TableProveedor.getValueAt(fila, 0).toString());
+        txtNitProveedor.setText(TableProveedor.getValueAt(fila, 1).toString());
+        txtNombreProveedor.setText(TableProveedor.getValueAt(fila, 2).toString());
+        txtTelefonoProveedor.setText(TableProveedor.getValueAt(fila, 3).toString());
+        txtDireccionProveedor.setText(TableProveedor.getValueAt(fila, 4).toString());
+        txtRazonProveedor.setText(TableProveedor.getValueAt(fila, 5).toString());
+    }//GEN-LAST:event_TableProveedorMouseClicked
+
+    private void btnActaluzarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActaluzarProveedorActionPerformed
+        // TODO add your handling code here:
+        if ("".equals(txtIdProveedor.getText())) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        } else {
+            pr.setNit(Integer.parseInt(txtNitProveedor.getText()));
+            pr.setNombre(txtNombreProveedor.getText());
+            pr.setTelefono(txtTelefonoProveedor.getText());
+            pr.setDireccion(txtDireccionProveedor.getText());
+            pr.setRazon(txtRazonProveedor.getText());
+            pr.setId(Integer.parseInt(txtIdProveedor.getText()));
+            if (!"".equals(txtIdProveedor.getText()) || !"".equals(txtNombreProveedor.getText()) || !"".equals(txtTelefonoProveedor.getText()) || !"".equals(txtDireccionProveedor.getText()) || !"".equals(txtRazonProveedor.getText()));
+            PrDAO.ModificarProveedor(pr);
+            LimpiarTablePr();
+            LimpiarProveedor();
+            ListarProveedor();
+        }
+    }//GEN-LAST:event_btnActaluzarProveedorActionPerformed
+
+    private void btnEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProveedorActionPerformed
+        // TODO add your handling code here:
+        int fila = TableProveedor.getSelectedRow();
+
+        // 🔴 Validar si seleccionó algo
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un proveedor");
+            return;
+        }
+
+        int id = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 0).toString());
+        int estadoActual = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 6).toString());
+
+        // Mensaje dinámico según estado actual
+        String mensaje = estadoActual == 1 ? "¿Desea desactivar este proveedor?" : "¿Desea activar este Proveedor?";
+
+        int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (PrDAO.EliminarProveedor(id)) {
+                modelo.setRowCount(0);
+                ListarProveedor();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al bloquear Proveedor");
+            }
+        }
+        LimpiarTablePr();
+        LimpiarProveedor();
+        ListarProveedor();
+    }//GEN-LAST:event_btnEliminarProveedorActionPerformed
+
+    private void btnNuevoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProveedorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnNuevoProveedorActionPerformed
+
+    private void txtIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdClienteActionPerformed
+
+    
+    public void ListarProveedor() {
+
+        List<Proveedor> ListaPr = PrDAO.ListarProveedor();
+        modelo = (DefaultTableModel) TableProveedor.getModel();
+
+        Object[] ob = new Object[7]; // 👈 ahora son 7
+
+        for (int i = 0; i < ListaPr.size(); i++) {
+            ob[0] = ListaPr.get(i).getId();
+            ob[1] = ListaPr.get(i).getNit();
+            ob[2] = ListaPr.get(i).getNombre();
+            ob[3] = ListaPr.get(i).getTelefono();
+            ob[4] = ListaPr.get(i).getDireccion();
+            ob[5] = ListaPr.get(i).getRazon();
+            ob[6] = ListaPr.get(i).getEstado(); // 👈 IMPORTANTE
+
+            modelo.addRow(ob);
+        }
+
+        TableProveedor.setModel(modelo);
+
+        aplicarColorEstadoPr(); // lo llamas desde aquí
+
+        // Activa o desactiva los botones según sea el estado del cliente
+        TableProveedor.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && TableProveedor.getSelectedRow() != -1) {
+
+                int fila = TableProveedor.getSelectedRow();
+                Object estado = TableProveedor.getValueAt(fila, 6);
+
+                int estadoVal = Integer.parseInt(estado.toString().trim());
+
+                if (estadoVal == 1) {
+                    btnEliminarProveedor.setEnabled(true);    // Boton Activo
+                    btnGuardarProveedor.setEnabled(true);     // Boton Activo
+                    btnNuevoProveedor.setEnabled(true);       // Boton Activo
+                    btnActaluzarProveedor.setEnabled(true); // Boton Activo
+                } else {
+                    btnEliminarProveedor.setEnabled(true);    // Boton Activo
+                    btnGuardarProveedor.setEnabled(false);    // Boton inactivo
+                    btnNuevoProveedor.setEnabled(false);      // Boton inactivo
+                    btnActaluzarProveedor.setEnabled(false);// Boton inactivo
+                }
+            }
+        });
+
+    }
+
+    // Color del listado de los clientes si estan en estado activo o no
+    private void aplicarColorEstadoPr() {
+        TableProveedor.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                Component c = super.getTableCellRendererComponent(
+                        table, value, isSelected, hasFocus, row, column);
+
+                Object estado = table.getModel().getValueAt(row, 6);
+
+                if (!isSelected) {
+                    int estadoVal = Integer.parseInt(estado.toString().trim());
+
+                    if (estadoVal == 1) {
+                        c.setBackground(new Color(232, 255, 234)); // Verde suave - Activo
+                        c.setForeground(new Color(0, 120, 0));     // Texto verde oscuro
+                    } else {
+                        c.setBackground(new Color(189, 189, 189)); // Gris - Inactivo
+                        c.setForeground(new Color(245, 73, 39)); // Texto gris oscuro
+                    }
+                }
+                return c;
+            }
+        });
+
+        // Ocultar el texlabel ID
+        TableProveedor.getColumnModel().getColumn(0).setMinWidth(0);
+        TableProveedor.getColumnModel().getColumn(0).setMaxWidth(0);
+        TableProveedor.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+        // ocultar la columna de estado (columna 6)
+        TableProveedor.getColumnModel().getColumn(6).setMinWidth(0);
+        TableProveedor.getColumnModel().getColumn(6).setMaxWidth(0);
+        TableProveedor.getColumnModel().getColumn(6).setPreferredWidth(0);
+    }
     /**
      * @param args the command line arguments
      */
@@ -1322,7 +1518,6 @@ public void LimpiarTable(){
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -1393,16 +1588,15 @@ public void LimpiarTable(){
     // End of variables declaration//GEN-END:variables
 
     //private void TotalPagar(){
-        //Totalpagar = 0,00;
-        //int numFila = TotalVenta.getRowCount();
-        //for (int i = 0; i < numFila; i++){
-            //double cal = Double.parseDouble(String.valueOf(TableVenta.getModel().getValueAt(i, 4)));
-            //Totalpagar = Totalpagar + cal;
-        //}
-        //LabelTotal.setText(String.format("%.2f", Totalpagar) 
-   //}
-    
-    private void LimpiarCliente(){
+    //Totalpagar = 0,00;
+    //int numFila = TotalVenta.getRowCount();
+    //for (int i = 0; i < numFila; i++){
+    //double cal = Double.parseDouble(String.valueOf(TableVenta.getModel().getValueAt(i, 4)));
+    //Totalpagar = Totalpagar + cal;
+    //}
+    //LabelTotal.setText(String.format("%.2f", Totalpagar) 
+    //}
+    private void LimpiarCliente() {
         txtIdCliente.setText("");
         txtNitCliente.setText("");
         txtNombreCliente.setText("");
@@ -1411,4 +1605,13 @@ public void LimpiarTable(){
         txtRazonCliente.setText("");
     }
     
+    private void LimpiarProveedor() {
+        txtIdProveedor.setText("");
+        txtNitProveedor.setText("");
+        txtNombreProveedor.setText("");
+        txtTelefonoProveedor.setText("");
+        txtDireccionProveedor.setText("");
+        txtRazonProveedor.setText("");
+    }
+
 }

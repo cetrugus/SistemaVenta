@@ -25,7 +25,7 @@ public class ClienteDAO {
     ResultSet rs;
     
     public boolean RegistrarCliente(Cliente cl){
-        String sql = "INSERT INTO clientes (nit, nombre, telefono, direccion, razon) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO clientes (nit, nombre, telefono, direccion, razon, estado) VALUES (?,?,?,?,?,1)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
