@@ -67,9 +67,33 @@ public void ListarCliente(){
     TableCliente.setModel(modelo);
     
     aplicarColorEstado(); // lo llamas desde aquí
+    
+    // Activa o desactiva los botones según sea el estado del cliente
+    TableCliente.getSelectionModel().addListSelectionListener(e -> {
+        if (!e.getValueIsAdjusting() && TableCliente.getSelectedRow() != -1) {
+
+            int fila = TableCliente.getSelectedRow();
+            Object estado = TableCliente.getValueAt(fila, 6);
+
+            int estadoVal = Integer.parseInt(estado.toString().trim());
+
+            if (estadoVal == 1) {
+                btnEliminarCliente.setEnabled(true);    // Boton Activo
+                btnGuardarCliente.setEnabled(true);     // Boton Activo
+                btnNuevoCliente.setEnabled(true);       // Boton Activo
+                btnActualizarClientye.setEnabled(true); // Boton Activo
+            } else {
+                btnEliminarCliente.setEnabled(true);    // Boton Activo
+                btnGuardarCliente.setEnabled(false);    // Boton inactivo
+                btnNuevoCliente.setEnabled(false);      // Boton inactivo
+                btnActualizarClientye.setEnabled(false);// Boton inactivo
+            }
+        }
+    });
+    
     }
 
-    // 👇 Lo creas aquí abajo, al mismo nivel que ListarCliente()
+    // Color del listado de los clientes si estan en estado activo o no
     private void aplicarColorEstado() {
     TableCliente.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
         @Override
@@ -89,7 +113,7 @@ public void ListarCliente(){
                     c.setForeground(new Color(0, 120, 0));     // Texto verde oscuro
                 } else {
                     c.setBackground(new Color(189, 189, 189)); // Gris - Inactivo
-                    c.setForeground(new Color(100, 100, 100)); // Texto gris oscuro
+                    c.setForeground(new Color(245, 73, 39)); // Texto gris oscuro
                 }
             }
 
@@ -609,6 +633,11 @@ public void LimpiarTable(){
         btnNuevoCliente.setText("Nuevo");
         btnNuevoCliente.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnNuevoCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevoCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoClienteActionPerformed(evt);
+            }
+        });
 
         txtIdCliente.setText("ID");
 
@@ -1212,6 +1241,10 @@ public void LimpiarTable(){
         txtRazonCliente.setText(TableCliente.getValueAt(fila, 5).toString());
         
     }//GEN-LAST:event_TableClienteMouseClicked
+
+    private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnNuevoClienteActionPerformed
 
     /**
      * @param args the command line arguments
