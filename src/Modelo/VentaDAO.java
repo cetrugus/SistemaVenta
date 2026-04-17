@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VentaDAO {
 
@@ -14,14 +16,14 @@ public class VentaDAO {
     ResultSet rs;
     int r;
 
-    public int IdVenta(){
+    public int IdVenta() {
         int id = 0;
         String sql = "SELECT MAX(id) FROM ventas";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
                 id = rs.getInt(1);
             }
         } catch (SQLException e) {
@@ -29,7 +31,7 @@ public class VentaDAO {
         }
         return id;
     }
-    
+
     public int RegistrarVenta(Venta v) {
         String sql = "INSERT INTO ventas (cliente, vendedor, total) VALUES (?,?,?)";
         try {
@@ -73,7 +75,7 @@ public class VentaDAO {
         return r;
     }
 
-    public boolean ActualizarStock(int cant, String cod){
+    public boolean ActualizarStock(int cant, String cod) {
         String sql = "UPDATE productos SET stock =? WHERE codigo = ?";
         try {
             con = cn.getConnection();
@@ -87,4 +89,58 @@ public class VentaDAO {
             return false;
         }
     }
+
+    public List ListarVentas() {
+        List<Venta> ListaVenta = new ArrayList();
+        String sql = "SELECT * FROM ventas";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Venta vent = new Venta();
+                vent.setId(rs.getInt("id"));
+                vent.setCliente(rs.getString("cliente"));
+                vent.setVendedor(rs.getString("vendedor"));
+                vent.setTotal(rs.getDouble("total"));
+                ListaVenta.add(vent);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        return ListaVenta;
+    }
+
+ public Venta buscarVenta(int idVenta) {
+
+    Venta v = new Venta();
+    String sql = "SELECT * FROM ventas WHERE id = ?";
+
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setInt(1, idVenta);
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+
+            v.setId(rs.getInt("id"));
+            v.setCliente(rs.getString("cliente"));
+            v.setVendedor(rs.getString("vendedor"));
+            v.setTotal(rs.getDouble("total"));
+
+            // 🔥 ESTOS SOLO FUNCIONAN SI EXISTEN EN BD
+            v.setFecha(rs.getString("fecha"));
+            v.setNit(rs.getString("nit"));
+            v.setTelefono(rs.getString("telefono"));
+            v.setDireccion(rs.getString("direccion"));
+            v.setRazon(rs.getString("razon"));
+        }
+
+    } catch (Exception e) {
+        System.out.println(e.toString());
+    }
+
+    return v;
+}
 }
