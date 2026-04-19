@@ -17,8 +17,10 @@ import javax.swing.table.DefaultTableModel;
  * @author Tavo
  */
 public class DetalleVenta extends javax.swing.JFrame {
-    
+
     private int idVenta; // ← AGREGAR esta variable
+    private List<Integer> listaIds;  // ← AGREGAR
+    private int indiceActual;
 
     // Constructor original (déjalo como está)
     public DetalleVenta() {
@@ -32,11 +34,18 @@ public class DetalleVenta extends javax.swing.JFrame {
         cargarDatos(); // llama al método que llena los campos
     }
 
+    public void inicializarNavegacion(List<Integer> ids, int indice) {
+        this.listaIds = ids;
+        this.indiceActual = indice;
+        btnAnterior.setEnabled(indiceActual > 0);
+        btnSiguiente.setEnabled(indiceActual < listaIds.size() - 1);
+    }
+
     // ← AGREGAR este método completo
     private void cargarDatos() {
         DetalleDAO dao = new DetalleDAO();
         List<Detalle> lista = dao.listarPorVenta(idVenta);
-        
+
         if (!lista.isEmpty()) {
             Detalle primero = lista.get(0); // los datos de venta/cliente son iguales en todas las filas
 
@@ -49,6 +58,7 @@ public class DetalleVenta extends javax.swing.JFrame {
             txtRazonVentas.setText(primero.getRazon());
             txtVendedor.setText(primero.getVendedor());
             txtTotal.setText(String.valueOf(primero.getTotal()));
+            txtIdVenta.setText(String.valueOf(primero.getId_venta()));
         }
 
         // Tabla de detalles
@@ -66,6 +76,7 @@ public class DetalleVenta extends javax.swing.JFrame {
         jTable1.getColumnModel().getColumn(0).setMinWidth(0);
         jTable1.getColumnModel().getColumn(0).setMaxWidth(0);
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(0);
+
     }
 
     /**
@@ -95,6 +106,10 @@ public class DetalleVenta extends javax.swing.JFrame {
         txtTotal = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtVendedor = new javax.swing.JTextField();
+        btnAnterior = new javax.swing.JButton();
+        btnSiguiente = new javax.swing.JButton();
+        txtIdVenta = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -130,6 +145,26 @@ public class DetalleVenta extends javax.swing.JFrame {
         jLabel6.setText("Total:");
 
         jLabel7.setText("Vendedor:");
+
+        btnAnterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/flecha-izquierda.png"))); // NOI18N
+        btnAnterior.setText("Ant.");
+        btnAnterior.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        btnAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnteriorActionPerformed(evt);
+            }
+        });
+
+        btnSiguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/flecha-delante.png"))); // NOI18N
+        btnSiguiente.setText("Sig.");
+        btnSiguiente.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSiguienteActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Id Venta:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -174,6 +209,14 @@ public class DetalleVenta extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtDireccionVentas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtRazonVentas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAnterior)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnSiguiente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtIdVenta))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -184,20 +227,24 @@ public class DetalleVenta extends javax.swing.JFrame {
                     .addComponent(lblFechaVenta)
                     .addComponent(txtFechaVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(txtTelefonoVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTelefonoVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIdVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtNitVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(txtDireccionVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtClienteVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(txtRazonVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                    .addComponent(txtRazonVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAnterior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSiguiente))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -210,6 +257,28 @@ public class DetalleVenta extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+        // TODO add your handling code here:
+        if (listaIds != null && indiceActual < listaIds.size() - 1) {
+            indiceActual++;
+            this.idVenta = listaIds.get(indiceActual);
+            cargarDatos();
+            btnAnterior.setEnabled(indiceActual > 0);
+            btnSiguiente.setEnabled(indiceActual < listaIds.size() - 1);
+        }
+    }//GEN-LAST:event_btnSiguienteActionPerformed
+
+    private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
+        // TODO add your handling code here:
+        if (listaIds != null && indiceActual > 0) {
+            indiceActual--;
+            this.idVenta = listaIds.get(indiceActual);
+            cargarDatos();
+            btnAnterior.setEnabled(indiceActual > 0);
+            btnSiguiente.setEnabled(indiceActual < listaIds.size() - 1);
+        }
+    }//GEN-LAST:event_btnAnteriorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -248,6 +317,8 @@ public class DetalleVenta extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAnterior;
+    private javax.swing.JButton btnSiguiente;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -255,12 +326,14 @@ public class DetalleVenta extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblFechaVenta;
     private javax.swing.JTextField txtClienteVentas;
     private javax.swing.JTextField txtDireccionVentas;
     private javax.swing.JTextField txtFechaVenta;
+    private javax.swing.JTextField txtIdVenta;
     private javax.swing.JTextField txtNitVentas;
     private javax.swing.JTextField txtRazonVentas;
     private javax.swing.JTextField txtTelefonoVentas;

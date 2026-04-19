@@ -8,6 +8,7 @@ package Vista;
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
 import Modelo.Detalle;
+import Modelo.InventarioDAO;
 import Modelo.Productos;
 import Modelo.ProductosDAO;
 import Modelo.Proveedor;
@@ -24,6 +25,11 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import javax.swing.*;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -44,14 +50,30 @@ public class Sistema extends javax.swing.JFrame {
     DefaultTableModel modelo = new DefaultTableModel();
     int item;
     double Totalpagar = 0.00;
+    InventarioDAO invDAO = new InventarioDAO();
 
     public Sistema() {
         initComponents();
+
         this.setLocationRelativeTo(null);
         txtIdCliente.setVisible(false);
         txtIdProveedor.setVisible(false);
         AutoCompleteDecorator.decorate(cbxProveedorPro);
         proDAO.ConsultarProveedor(cbxProveedorPro);
+
+        // Agrega solo estas líneas:
+        DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
+            lblHora.setText(LocalTime.now().format(formatoHora));
+            lblFecha.setText(LocalDate.now().format(formatoFecha));
+        });
+        timer.setInitialDelay(0);
+        timer.start();
+        //Agregar icono al sistema
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
+        setIconImage(icono.getImage());
     }
 
     public void ListarCliente() {
@@ -140,11 +162,35 @@ public class Sistema extends javax.swing.JFrame {
         TableCliente.getColumnModel().getColumn(6).setPreferredWidth(0);
     }
 
+    //Mostrar la hora y fecha
+    public class RelojLabel extends JFrame {
+
+        public RelojLabel() {
+            JLabel lblHora = new JLabel();
+            lblHora.setFont(lblHora.getFont().deriveFont(32f));
+            lblHora.setHorizontalAlignment(SwingConstants.CENTER);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+            Timer timer = new Timer(1000, e -> {
+                lblHora.setText(LocalTime.now().format(formatter));
+            });
+
+            timer.setInitialDelay(0);
+            timer.start();
+
+            add(lblHora);
+            setSize(300, 100);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setVisible(true);
+        }
+    }
+
     public void LimpiarTable() {
         DefaultTableModel modelo = (DefaultTableModel) TableCliente.getModel();
         modelo.setRowCount(0);
     }
-    
+
     public void LimpiarTablePr() {
         DefaultTableModel modelo = (DefaultTableModel) TableProducto.getModel();
         modelo.setRowCount(0);
@@ -154,6 +200,7 @@ public class Sistema extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) TableProveedor.getModel();
         modelo.setRowCount(0);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -171,7 +218,11 @@ public class Sistema extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
         LabelVendedor = new javax.swing.JLabel();
+        lblHora = new javax.swing.JLabel();
+        lblFecha = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
@@ -275,6 +326,8 @@ public class Sistema extends javax.swing.JFrame {
         jLabel32 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("SOFTWARE DE VENTAS");
+        setIconImages(null);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(180, 190, 199));
@@ -335,7 +388,29 @@ public class Sistema extends javax.swing.JFrame {
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/logo!.jpg"))); // NOI18N
 
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/inventario1.24.png"))); // NOI18N
+        jButton7.setText("Inventario");
+        jButton7.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        LabelVendedor.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabelVendedor.setText("Vendedor");
+
+        lblHora.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblHora.setForeground(new java.awt.Color(51, 51, 255));
+        lblHora.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        lblFecha.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblFecha.setForeground(new java.awt.Color(51, 51, 255));
+        lblFecha.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        jLabel39.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel39.setText("Versión 1.1 Gustavo Celis 2026 ©");
+        jLabel39.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -347,22 +422,32 @@ public class Sistema extends javax.swing.JFrame {
                     .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(LabelVendedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(LabelVendedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(lblHora, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(40, 40, 40)
+                                .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(1, 1, 1)
+                .addComponent(LabelVendedor)
+                .addGap(3, 3, 3)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -374,12 +459,18 @@ public class Sistema extends javax.swing.JFrame {
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
-                .addComponent(LabelVendedor)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblHora, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                    .addComponent(lblFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel39)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 670));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 700));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/label6.jpg"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 0, 910, 140));
@@ -511,7 +602,7 @@ public class Sistema extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(txtPrecioVenta)
+                                .addComponent(txtPrecioVenta, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtIdPro, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(9, 9, 9))
@@ -529,24 +620,22 @@ public class Sistema extends javax.swing.JFrame {
                             .addComponent(jLabel8)
                             .addComponent(txtNitventa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(txtNombreClienteventa, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTelefonoCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtDireccionCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtRazonCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 98, Short.MAX_VALUE)
-                                .addComponent(btnGenerarVenta)
-                                .addGap(64, 64, 64)
-                                .addComponent(jLabel10)
-                                .addGap(18, 18, 18)
-                                .addComponent(LabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addComponent(jLabel9)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(txtNombreClienteventa, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTelefonoCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDireccionCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtRazonCV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
+                        .addComponent(btnGenerarVenta)
+                        .addGap(64, 64, 64)
+                        .addComponent(jLabel10)
+                        .addGap(18, 18, 18)
+                        .addComponent(LabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -1018,19 +1107,19 @@ public class Sistema extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtDesPro)
                         .addComponent(txtcantPro)
                         .addComponent(txtPrecioPro)
-                        .addComponent(cbxProveedorPro, 0, 200, Short.MAX_VALUE)
                         .addComponent(jLabel22)
                         .addComponent(jLabel23)
                         .addComponent(jLabel24)
                         .addComponent(jLabel25)
                         .addComponent(jLabel26)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                            .addComponent(txtCodigoPro)
+                            .addComponent(txtCodigoPro, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtIdpro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtIdpro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtDesPro)
+                        .addComponent(cbxProveedorPro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(btnExcelPro, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1245,25 +1334,6 @@ public class Sistema extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnGuardarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarClienteActionPerformed
-        // TODO add your handling code here:
-        if (!"".equals(txtNitCliente.getText()) || !"".equals(txtNombreCliente.getText()) || !"".equals(txtTelefonoCliente.getText()) || !"".equals(txtDireccionCliente.getText())) {
-            cl.setNit(Integer.parseInt(txtNitCliente.getText()));
-            cl.setNombre(txtNombreCliente.getText());
-            cl.setTelefono(txtTelefonoCliente.getText());
-            cl.setDireccion(txtDireccionCliente.getText());
-            cl.setRazon(txtRazonCliente.getText());
-            client.RegistrarCliente(cl);
-            JOptionPane.showMessageDialog(null, "¡Cliente Registrado correctamente!");
-        } else {
-            JOptionPane.showMessageDialog(null, "¡¡Los campos se encuentran vacios!!");
-        }
-        LimpiarTable();
-        LimpiarCliente();
-        ListarCliente();
-        jTabbedPane1.setSelectedIndex(1);
-    }//GEN-LAST:event_btnGuardarClienteActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         LimpiarTable();
@@ -1271,16 +1341,6 @@ public class Sistema extends javax.swing.JFrame {
         ListarCliente();
         jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void btnEliminarventaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarventaActionPerformed
-        // TODO add your handling code here:
-        modelo = (DefaultTableModel) TableVenta.getModel();
-        modelo.removeRow(TableVenta.getSelectedRow());
-        TotalPagar();
-        txtCodigoVenta.requestFocus();
-
-
-    }//GEN-LAST:event_btnEliminarventaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
@@ -1315,206 +1375,36 @@ public class Sistema extends javax.swing.JFrame {
         jTabbedPane1.setSelectedIndex(5);
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void btnActualizarClientyeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClientyeActionPerformed
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        if ("".equals(txtIdCliente.getText())) {
-            JOptionPane.showMessageDialog(null, "Seleccione una fila");
-        } else {
-            cl.setNit(Integer.parseInt(txtNitCliente.getText()));
-            cl.setNombre(txtNombreCliente.getText());
-            cl.setTelefono(txtTelefonoCliente.getText());
-            cl.setDireccion(txtDireccionCliente.getText());
-            cl.setRazon(txtRazonCliente.getText());
-            cl.setId(Integer.parseInt(txtIdCliente.getText()));
-            if (!"".equals(txtIdCliente.getText()) || !"".equals(txtNombreCliente.getText()) || !"".equals(txtTelefonoCliente.getText()) || !"".equals(txtDireccionCliente.getText()) || !"".equals(txtRazonCliente.getText()));
-            client.ModificarCliente(cl);
-            LimpiarTable();
-            LimpiarCliente();
-            ListarCliente();
-        }
-        JOptionPane.showMessageDialog(null, "Actualizado correctamente");
-    }//GEN-LAST:event_btnActualizarClientyeActionPerformed
+        Inventario inventario = new Inventario();
+        inventario.setVisible(true);
+    }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
+    private void btnVerVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerVentaActionPerformed
         // TODO add your handling code here:
-        int fila = TableCliente.getSelectedRow();
+        // En el ActionListener del botón "Ver"
 
-        // 🔴 Validar si seleccionó algo
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un cliente");
+        int filaSeleccionada = TableVentas.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una venta primero");
             return;
         }
 
-        int id = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 0).toString());
-        int estadoActual = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 6).toString());
+        int idVenta = Integer.parseInt(TableVentas.getValueAt(filaSeleccionada, 0).toString());
 
-        // Mensaje dinámico según estado actual
-        String mensaje = estadoActual == 1 ? "¿Desea desactivar este cliente?" : "¿Desea activar este cliente?";
-
-        int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (client.EliminarCliente(id)) {
-                modelo.setRowCount(0);
-                ListarCliente();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al bloquear cliente");
-            }
-        }
-        LimpiarTable();
-        LimpiarCliente();
-        ListarCliente();
-
-    }//GEN-LAST:event_btnEliminarClienteActionPerformed
-
-    private void TableClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableClienteMouseClicked
-        // TODO add your handling code here:
-        int fila = TableCliente.rowAtPoint(evt.getPoint());
-        txtIdCliente.setText(TableCliente.getValueAt(fila, 0).toString());
-        txtNitCliente.setText(TableCliente.getValueAt(fila, 1).toString());
-        txtNombreCliente.setText(TableCliente.getValueAt(fila, 2).toString());
-        txtTelefonoCliente.setText(TableCliente.getValueAt(fila, 3).toString());
-        txtDireccionCliente.setText(TableCliente.getValueAt(fila, 4).toString());
-        txtRazonCliente.setText(TableCliente.getValueAt(fila, 5).toString());
-
-    }//GEN-LAST:event_TableClienteMouseClicked
-
-    private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
-        // TODO add your handling code here:
-        LimpiarCliente();
-    }//GEN-LAST:event_btnNuevoClienteActionPerformed
-
-    private void btnGuardarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProveedorActionPerformed
-        // TODO add your handling code here:
-        if (!"".equals(txtNitProveedor.getText()) || !"".equals(txtNombreProveedor.getText()) || !"".equals(txtTelefonoProveedor.getText()) || !"".equals(txtDireccionProveedor.getText()) || !"".equals(txtRazonProveedor.getText())){
-            pr.setNit(Integer.parseInt(txtNitProveedor.getText()));
-            pr.setNombre(txtNombreProveedor.getText());
-            pr.setTelefono(txtTelefonoProveedor.getText());
-            pr.setDireccion(txtDireccionProveedor.getText());
-            pr.setRazon(txtRazonProveedor.getText());
-            PrDAO.RegistrarProveedor(pr);
-            JOptionPane.showMessageDialog(null, "Proveedor registrado");
-        }else{
-            JOptionPane.showMessageDialog(null, "Los campos estan vacios");
-        }
-    }//GEN-LAST:event_btnGuardarProveedorActionPerformed
-
-    private void TableProveedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableProveedorMouseClicked
-        // TODO add your handling code here:
-        int fila = TableProveedor.rowAtPoint(evt.getPoint());
-        txtIdProveedor.setText(TableProveedor.getValueAt(fila, 0).toString());
-        txtNitProveedor.setText(TableProveedor.getValueAt(fila, 1).toString());
-        txtNombreProveedor.setText(TableProveedor.getValueAt(fila, 2).toString());
-        txtTelefonoProveedor.setText(TableProveedor.getValueAt(fila, 3).toString());
-        txtDireccionProveedor.setText(TableProveedor.getValueAt(fila, 4).toString());
-        txtRazonProveedor.setText(TableProveedor.getValueAt(fila, 5).toString());
-    }//GEN-LAST:event_TableProveedorMouseClicked
-
-    private void btnActaluzarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActaluzarProveedorActionPerformed
-        // TODO add your handling code here:
-        if ("".equals(txtIdProveedor.getText())) {
-            JOptionPane.showMessageDialog(null, "Seleccione una fila");
-        } else {
-            pr.setNit(Integer.parseInt(txtNitProveedor.getText()));
-            pr.setNombre(txtNombreProveedor.getText());
-            pr.setTelefono(txtTelefonoProveedor.getText());
-            pr.setDireccion(txtDireccionProveedor.getText());
-            pr.setRazon(txtRazonProveedor.getText());
-            pr.setId(Integer.parseInt(txtIdProveedor.getText()));
-            if (!"".equals(txtIdProveedor.getText()) || !"".equals(txtNombreProveedor.getText()) || !"".equals(txtTelefonoProveedor.getText()) || !"".equals(txtDireccionProveedor.getText()) || !"".equals(txtRazonProveedor.getText()));
-            PrDAO.ModificarProveedor(pr);
-            LimpiarTablePr();
-            LimpiarProveedor();
-            ListarProveedor();
-        }
-        JOptionPane.showMessageDialog(null, "Actualizado correctamente");
-    }//GEN-LAST:event_btnActaluzarProveedorActionPerformed
-
-    private void btnEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProveedorActionPerformed
-        // TODO add your handling code here:
-        int fila = TableProveedor.getSelectedRow();
-
-        // 🔴 Validar si seleccionó algo
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un proveedor");
-            return;
+        // Recoger todos los IDs de la tabla
+        List<Integer> listaIds = new ArrayList<>();
+        for (int i = 0; i < TableVentas.getRowCount(); i++) {
+            listaIds.add(Integer.parseInt(TableVentas.getValueAt(i, 0).toString()));
         }
 
-        int id = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 0).toString());
-        int estadoActual = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 6).toString());
+        DetalleVenta dialogo = new DetalleVenta(idVenta); // ← constructor original intacto
+        dialogo.inicializarNavegacion(listaIds, filaSeleccionada); // ← línea nueva
+        dialogo.setLocationRelativeTo(this);
+        dialogo.setVisible(true);
 
-        // Mensaje dinámico según estado actual
-        String mensaje = estadoActual == 1 ? "¿Desea desactivar este proveedor?" : "¿Desea activar este Proveedor?";
-
-        int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            if (PrDAO.EliminarProveedor(id)) {
-                modelo.setRowCount(0);
-                ListarProveedor();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al bloquear Proveedor");
-            }
-        }
-        LimpiarTablePr();
-        LimpiarProveedor();
-        ListarProveedor();
-    }//GEN-LAST:event_btnEliminarProveedorActionPerformed
-
-    private void btnNuevoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProveedorActionPerformed
-        // TODO add your handling code here:
-        LimpiarProveedor();
-    }//GEN-LAST:event_btnNuevoProveedorActionPerformed
-
-    private void txtIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdClienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdClienteActionPerformed
-
-    private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
-        // TODO add your handling code here:
-            if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(cbxProveedorPro.getSelectedItem()) || !"".equals(txtcantPro.getText()) || !"".equals(txtPrecioPro.getText())){
-                pro.setCodigo(txtCodigoPro.getText());
-                pro.setNombre(txtDesPro.getText());
-                pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
-                pro.setStock(Integer.parseInt(txtcantPro.getText()));
-                pro.setPrecio(Double.parseDouble(txtPrecioPro.getText()));
-                proDAO.RegistrarProducto(pro);
-                JOptionPane.showMessageDialog(null, "Producto registrado");
-            }else{
-                JOptionPane.showMessageDialog(null, "Los campos estan vacios");
-            }
-    }//GEN-LAST:event_btnGuardarProActionPerformed
-
-    private void btnActualizarproActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarproActionPerformed
-        // TODO add your handling code here:
-        if ("".equals(txtIdPro.getText())) {
-            JOptionPane.showMessageDialog(null, "Seleccione una fila");
-        } else {
-            if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(txtcantPro.getText()) || !"".equals(txtPrecioPro.getText()));
-            pro.setCodigo(txtCodigoPro.getText());
-            pro.setNombre(txtDesPro.getText());
-            pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
-            pro.setStock(Integer.parseInt(txtcantPro.getText()));
-            pro.setPrecio(Integer.parseInt(txtPrecioPro.getText()));
-            pro.setId(Integer.parseInt(txtIdPro.getText()));
-            proDAO.ModificarProductos(pro);
-            JOptionPane.showMessageDialog(null, "Actualizado correctamente");
-            LimpiarTablePr();
-            LimpiarProductos();
-            ListarProductos();
-        }
-    }//GEN-LAST:event_btnActualizarproActionPerformed
-
-    private void TableProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableProductoMouseClicked
-        // TODO add your handling code here:
-        int fila = TableProducto.rowAtPoint(evt.getPoint());
-        txtIdPro.setText(TableProducto.getValueAt(fila, 0).toString());
-        txtCodigoPro.setText(TableProducto.getValueAt(fila, 1).toString());
-        txtDesPro.setText(TableProducto.getValueAt(fila, 2).toString());
-        cbxProveedorPro.setSelectedItem(TableProducto.getValueAt(fila, 3).toString());
-        txtcantPro.setText(TableProducto.getValueAt(fila, 4).toString());
-        txtPrecioPro.setText(TableProducto.getValueAt(fila, 5).toString());
-    }//GEN-LAST:event_TableProductoMouseClicked
+    }//GEN-LAST:event_btnVerVentaActionPerformed
 
     private void btnEliminarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProActionPerformed
         // TODO add your handling code here:
@@ -1552,45 +1442,275 @@ public class Sistema extends javax.swing.JFrame {
         LimpiarProductos();
     }//GEN-LAST:event_btnNuevoProActionPerformed
 
-    private void txtCodigoVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoVentaKeyPressed
+    private void btnActualizarproActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarproActionPerformed
         // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
-            if(!"".equals(txtCodigoVenta.getText())){
-                String cod = txtCodigoVenta.getText();
-                pro = proDAO.BuscarPro(cod);
-                if (pro.getNombre() != null){
-                    txtDescripcionVenta.setText(""+pro.getNombre());
-                    txtPrecioVenta.setText(""+pro.getPrecio());
-                    txtStockDisponible.setText(""+pro.getStock());
-                    txtCantidadVenta.requestFocus();
-                }else{
-                    txtDescripcionVenta.setText("");
-                    txtPrecioVenta.setText("");
-                    txtStockDisponible.setText("");
-                    txtCodigoVenta.requestFocus();
-                }
-            }else{
-                JOptionPane.showMessageDialog(null, "Ingrese el codigo del producto");
-                txtCodigoVenta.requestFocus();
+        if ("".equals(txtIdPro.getText())) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        } else {
+            if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(txtcantPro.getText()) || !"".equals(txtPrecioPro.getText()));
+            pro.setCodigo(txtCodigoPro.getText());
+            pro.setNombre(txtDesPro.getText());
+            pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
+            pro.setStock(Integer.parseInt(txtcantPro.getText()));
+            pro.setPrecio(Integer.parseInt(txtPrecioPro.getText()));
+            pro.setId(Integer.parseInt(txtIdPro.getText()));
+            proDAO.ModificarProductos(pro);
+            JOptionPane.showMessageDialog(null, "Actualizado correctamente");
+            LimpiarTablePr();
+            LimpiarProductos();
+            ListarProductos();
+        }
+    }//GEN-LAST:event_btnActualizarproActionPerformed
+
+    private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
+        // TODO add your handling code here:
+        if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText()) || !"".equals(cbxProveedorPro.getSelectedItem()) || !"".equals(txtcantPro.getText()) || !"".equals(txtPrecioPro.getText())) {
+            pro.setCodigo(txtCodigoPro.getText());
+            pro.setNombre(txtDesPro.getText());
+            pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
+            pro.setStock(Integer.parseInt(txtcantPro.getText()));
+            pro.setPrecio(Double.parseDouble(txtPrecioPro.getText()));
+            proDAO.RegistrarProducto(pro);
+            JOptionPane.showMessageDialog(null, "Producto registrado");
+        } else {
+            JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+        }
+    }//GEN-LAST:event_btnGuardarProActionPerformed
+
+    private void TableProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableProductoMouseClicked
+        // TODO add your handling code here:
+        int fila = TableProducto.rowAtPoint(evt.getPoint());
+        txtIdPro.setText(TableProducto.getValueAt(fila, 0).toString());
+        txtCodigoPro.setText(TableProducto.getValueAt(fila, 1).toString());
+        txtDesPro.setText(TableProducto.getValueAt(fila, 2).toString());
+        cbxProveedorPro.setSelectedItem(TableProducto.getValueAt(fila, 3).toString());
+        txtcantPro.setText(TableProducto.getValueAt(fila, 4).toString());
+        txtPrecioPro.setText(TableProducto.getValueAt(fila, 5).toString());
+    }//GEN-LAST:event_TableProductoMouseClicked
+
+    private void btnEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProveedorActionPerformed
+        // TODO add your handling code here:
+        int fila = TableProveedor.getSelectedRow();
+
+        // 🔴 Validar si seleccionó algo
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un proveedor");
+            return;
+        }
+
+        int id = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 0).toString());
+        int estadoActual = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 6).toString());
+
+        // Mensaje dinámico según estado actual
+        String mensaje = estadoActual == 1 ? "¿Desea desactivar este proveedor?" : "¿Desea activar este Proveedor?";
+
+        int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (PrDAO.EliminarProveedor(id)) {
+                modelo.setRowCount(0);
+                ListarProveedor();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al bloquear Proveedor");
             }
         }
-    }//GEN-LAST:event_txtCodigoVentaKeyPressed
+        LimpiarTablePr();
+        LimpiarProveedor();
+        ListarProveedor();
+    }//GEN-LAST:event_btnEliminarProveedorActionPerformed
+
+    private void btnNuevoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoProveedorActionPerformed
+        // TODO add your handling code here:
+        LimpiarProveedor();
+    }//GEN-LAST:event_btnNuevoProveedorActionPerformed
+
+    private void btnActaluzarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActaluzarProveedorActionPerformed
+        // TODO add your handling code here:
+        if ("".equals(txtIdProveedor.getText())) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        } else {
+            pr.setNit(Integer.parseInt(txtNitProveedor.getText()));
+            pr.setNombre(txtNombreProveedor.getText());
+            pr.setTelefono(txtTelefonoProveedor.getText());
+            pr.setDireccion(txtDireccionProveedor.getText());
+            pr.setRazon(txtRazonProveedor.getText());
+            pr.setId(Integer.parseInt(txtIdProveedor.getText()));
+            if (!"".equals(txtIdProveedor.getText()) || !"".equals(txtNombreProveedor.getText()) || !"".equals(txtTelefonoProveedor.getText()) || !"".equals(txtDireccionProveedor.getText()) || !"".equals(txtRazonProveedor.getText()));
+            PrDAO.ModificarProveedor(pr);
+            LimpiarTablePr();
+            LimpiarProveedor();
+            ListarProveedor();
+        }
+        JOptionPane.showMessageDialog(null, "Actualizado correctamente");
+    }//GEN-LAST:event_btnActaluzarProveedorActionPerformed
+
+    private void btnGuardarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProveedorActionPerformed
+        // TODO add your handling code here:
+        if (!"".equals(txtNitProveedor.getText()) || !"".equals(txtNombreProveedor.getText()) || !"".equals(txtTelefonoProveedor.getText()) || !"".equals(txtDireccionProveedor.getText()) || !"".equals(txtRazonProveedor.getText())) {
+            pr.setNit(Integer.parseInt(txtNitProveedor.getText()));
+            pr.setNombre(txtNombreProveedor.getText());
+            pr.setTelefono(txtTelefonoProveedor.getText());
+            pr.setDireccion(txtDireccionProveedor.getText());
+            pr.setRazon(txtRazonProveedor.getText());
+            PrDAO.RegistrarProveedor(pr);
+            JOptionPane.showMessageDialog(null, "Proveedor registrado");
+        } else {
+            JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+        }
+    }//GEN-LAST:event_btnGuardarProveedorActionPerformed
+
+    private void TableProveedorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableProveedorMouseClicked
+        // TODO add your handling code here:
+        int fila = TableProveedor.rowAtPoint(evt.getPoint());
+        txtIdProveedor.setText(TableProveedor.getValueAt(fila, 0).toString());
+        txtNitProveedor.setText(TableProveedor.getValueAt(fila, 1).toString());
+        txtNombreProveedor.setText(TableProveedor.getValueAt(fila, 2).toString());
+        txtTelefonoProveedor.setText(TableProveedor.getValueAt(fila, 3).toString());
+        txtDireccionProveedor.setText(TableProveedor.getValueAt(fila, 4).toString());
+        txtRazonProveedor.setText(TableProveedor.getValueAt(fila, 5).toString());
+    }//GEN-LAST:event_TableProveedorMouseClicked
+
+    private void txtIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdClienteActionPerformed
+
+    private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
+        // TODO add your handling code here:
+        LimpiarCliente();
+    }//GEN-LAST:event_btnNuevoClienteActionPerformed
+
+    private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
+        // TODO add your handling code here:
+        int fila = TableCliente.getSelectedRow();
+
+        // 🔴 Validar si seleccionó algo
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un cliente");
+            return;
+        }
+
+        int id = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 0).toString());
+        int estadoActual = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 6).toString());
+
+        // Mensaje dinámico según estado actual
+        String mensaje = estadoActual == 1 ? "¿Desea desactivar este cliente?" : "¿Desea activar este cliente?";
+
+        int confirm = JOptionPane.showConfirmDialog(this, mensaje, "Confirmar", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (client.EliminarCliente(id)) {
+                modelo.setRowCount(0);
+                ListarCliente();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al bloquear cliente");
+            }
+        }
+        LimpiarTable();
+        LimpiarCliente();
+        ListarCliente();
+    }//GEN-LAST:event_btnEliminarClienteActionPerformed
+
+    private void btnActualizarClientyeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClientyeActionPerformed
+        // TODO add your handling code here:
+        if ("".equals(txtIdCliente.getText())) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        } else {
+            cl.setNit(Integer.parseInt(txtNitCliente.getText()));
+            cl.setNombre(txtNombreCliente.getText());
+            cl.setTelefono(txtTelefonoCliente.getText());
+            cl.setDireccion(txtDireccionCliente.getText());
+            cl.setRazon(txtRazonCliente.getText());
+            cl.setId(Integer.parseInt(txtIdCliente.getText()));
+            if (!"".equals(txtIdCliente.getText()) || !"".equals(txtNombreCliente.getText()) || !"".equals(txtTelefonoCliente.getText()) || !"".equals(txtDireccionCliente.getText()) || !"".equals(txtRazonCliente.getText()));
+            client.ModificarCliente(cl);
+            LimpiarTable();
+            LimpiarCliente();
+            ListarCliente();
+        }
+        JOptionPane.showMessageDialog(null, "Actualizado correctamente");
+    }//GEN-LAST:event_btnActualizarClientyeActionPerformed
+
+    private void btnGuardarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarClienteActionPerformed
+        // TODO add your handling code here:
+        if (!"".equals(txtNitCliente.getText()) || !"".equals(txtNombreCliente.getText()) || !"".equals(txtTelefonoCliente.getText()) || !"".equals(txtDireccionCliente.getText())) {
+            cl.setNit(Integer.parseInt(txtNitCliente.getText()));
+            cl.setNombre(txtNombreCliente.getText());
+            cl.setTelefono(txtTelefonoCliente.getText());
+            cl.setDireccion(txtDireccionCliente.getText());
+            cl.setRazon(txtRazonCliente.getText());
+            client.RegistrarCliente(cl);
+            JOptionPane.showMessageDialog(null, "¡Cliente Registrado correctamente!");
+        } else {
+            JOptionPane.showMessageDialog(null, "¡¡Los campos se encuentran vacios!!");
+        }
+        LimpiarTable();
+        LimpiarCliente();
+        ListarCliente();
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_btnGuardarClienteActionPerformed
+
+    private void TableClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableClienteMouseClicked
+        // TODO add your handling code here:
+        int fila = TableCliente.rowAtPoint(evt.getPoint());
+        txtIdCliente.setText(TableCliente.getValueAt(fila, 0).toString());
+        txtNitCliente.setText(TableCliente.getValueAt(fila, 1).toString());
+        txtNombreCliente.setText(TableCliente.getValueAt(fila, 2).toString());
+        txtTelefonoCliente.setText(TableCliente.getValueAt(fila, 3).toString());
+        txtDireccionCliente.setText(TableCliente.getValueAt(fila, 4).toString());
+        txtRazonCliente.setText(TableCliente.getValueAt(fila, 5).toString());
+    }//GEN-LAST:event_TableClienteMouseClicked
+
+    private void txtIdProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdProActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdProActionPerformed
+
+    private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
+        // TODO add your handling code here:
+        RegistrarVenta();
+        RegistrarDetalle();
+        ActualizarStock();
+        LimpiarTableVenta();
+        LimpiarClienteVenta();
+    }//GEN-LAST:event_btnGenerarVentaActionPerformed
+
+    private void txtNitventaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNitventaKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (!"".equals(txtNitventa.getText())) {
+                int nit = Integer.parseInt(txtNitventa.getText());
+                cl = client.Buscarcliente(nit);
+                if (cl.getNombre() != null) {
+                    txtNombreClienteventa.setText("" + cl.getNombre());
+                    txtTelefonoCV.setText("" + cl.getTelefono());
+                    txtDireccionCV.setText("" + cl.getDireccion());
+                    txtRazonCV.setText("" + cl.getRazon());
+                } else {
+                    txtNitventa.setText("");
+                    JOptionPane.showMessageDialog(null, "El cliente no esta registrado");
+                }
+            }
+        }
+    }//GEN-LAST:event_txtNitventaKeyPressed
+
+    private void txtNitventaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNitventaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNitventaActionPerformed
 
     private void txtCantidadVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCantidadVentaKeyPressed
         // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
-            if(!"".equals(txtCantidadVenta.getText())){
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (!"".equals(txtCantidadVenta.getText())) {
                 String cod = txtCodigoVenta.getText();
                 String descripcion = txtDescripcionVenta.getText();
                 int cant = Integer.parseInt(txtCantidadVenta.getText());
                 double precio = Double.parseDouble(txtPrecioVenta.getText());
                 double total = cant * precio;
                 int stock = Integer.parseInt(txtStockDisponible.getText());
-                if ( stock >= cant){
+                if (stock >= cant) {
                     item = item + 1;
                     modelo = (DefaultTableModel) TableVenta.getModel();
-                    for (int i = 0; i < TableVenta.getRowCount(); i++){
-                        if ( TableVenta.getValueAt(i, 1).equals(txtDescripcionVenta.getText())){
+                    for (int i = 0; i < TableVenta.getRowCount(); i++) {
+                        if (TableVenta.getValueAt(i, 1).equals(txtDescripcionVenta.getText())) {
                             JOptionPane.showMessageDialog(null, "El producto ya se encuentra registrado");
                             return;
                         }
@@ -1611,77 +1731,52 @@ public class Sistema extends javax.swing.JFrame {
                     modelo.addRow(O);
                     TableVenta.setModel(modelo);
                     TotalPagar();
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(null, "stock no disponible");
                 }
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Ingrese cantidad");
             }
         }
     }//GEN-LAST:event_txtCantidadVentaKeyPressed
 
-    private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
-        // TODO add your handling code here:
-        RegistrarVenta();
-        RegistrarDetalle();
-        ActualizarStock();
-        LimpiarTableVenta();
-        LimpiarClienteVenta();        
-    }//GEN-LAST:event_btnGenerarVentaActionPerformed
-
-    private void txtNitventaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNitventaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNitventaActionPerformed
-
-    private void txtNitventaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNitventaKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
-            if(!"".equals(txtNitventa.getText())){
-                int nit = Integer.parseInt(txtNitventa.getText());
-                cl = client.Buscarcliente(nit);
-                if (cl.getNombre() != null){
-                    txtNombreClienteventa.setText(""+cl.getNombre());
-                    txtTelefonoCV.setText(""+cl.getTelefono());
-                    txtDireccionCV.setText(""+cl.getDireccion());
-                    txtRazonCV.setText(""+cl.getRazon());
-                }else{
-                    txtNitventa.setText("");
-                    JOptionPane.showMessageDialog(null, "El cliente no esta registrado");
-                }
-            }
-        }
-    }//GEN-LAST:event_txtNitventaKeyPressed
-
     private void txtCantidadVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadVentaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadVentaActionPerformed
 
-    private void btnVerVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerVentaActionPerformed
+    private void txtCodigoVentaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCodigoVentaKeyPressed
         // TODO add your handling code here:
-    // En el ActionListener del botón "Ver"
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (!"".equals(txtCodigoVenta.getText())) {
+                String cod = txtCodigoVenta.getText();
+                pro = proDAO.BuscarPro(cod);
+                if (pro.getNombre() != null) {
+                    txtDescripcionVenta.setText("" + pro.getNombre());
+                    txtPrecioVenta.setText("" + pro.getPrecio());
+                    txtStockDisponible.setText("" + pro.getStock());
+                    txtCantidadVenta.requestFocus();
+                } else {
+                    txtDescripcionVenta.setText("");
+                    txtPrecioVenta.setText("");
+                    txtStockDisponible.setText("");
+                    txtCodigoVenta.requestFocus();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Ingrese el codigo del producto");
+                txtCodigoVenta.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_txtCodigoVentaKeyPressed
 
-            int filaSeleccionada = TableVentas.getSelectedRow();
-
-    if (filaSeleccionada == -1) {
-        JOptionPane.showMessageDialog(this, "Seleccione una venta primero");
-        return;
-    }
-
-    int idVenta = Integer.parseInt(TableVentas.getValueAt(filaSeleccionada, 0).toString());
-
-    // ✅ CORRECTO — usa una variable local llamada "dialogo"
-    DetalleVenta dialogo = new DetalleVenta(idVenta); // ← era: DetalleVenta = new DetalleVenta(idVenta)
-    dialogo.setLocationRelativeTo(this);
-    dialogo.setVisible(true);
-
-    
-    }//GEN-LAST:event_btnVerVentaActionPerformed
-
-    private void txtIdProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdProActionPerformed
+    private void btnEliminarventaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarventaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdProActionPerformed
+        modelo = (DefaultTableModel) TableVenta.getModel();
+        modelo.removeRow(TableVenta.getSelectedRow());
+        TotalPagar();
+        txtCodigoVenta.requestFocus();
 
-    
+    }//GEN-LAST:event_btnEliminarventaActionPerformed
+
     public void ListarProveedor() {
 
         List<Proveedor> ListaPr = PrDAO.ListarProveedor();
@@ -1768,7 +1863,7 @@ public class Sistema extends javax.swing.JFrame {
         TableProveedor.getColumnModel().getColumn(6).setMaxWidth(0);
         TableProveedor.getColumnModel().getColumn(6).setPreferredWidth(0);
     }
-    
+
     public void ListarProductos() {
 
         List<Productos> ListaPro = proDAO.ListarProductos();
@@ -1815,28 +1910,27 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
     }
-    
+
     public void ListarVentas() {
 
-    List<Venta> ListaVenta = vDAO.ListarVentas();
-    modelo = (DefaultTableModel) TableVentas.getModel();
+        List<Venta> ListaVenta = vDAO.ListarVentas();
+        modelo = (DefaultTableModel) TableVentas.getModel();
 
-    modelo.setRowCount(0); // 👈 LIMPIAR TABLA
+        modelo.setRowCount(0); // 👈 LIMPIAR TABLA
 
-    Object[] ob = new Object[4];
+        Object[] ob = new Object[4];
 
-    for (int i = 0; i < ListaVenta.size(); i++) {
-        ob[0] = ListaVenta.get(i).getId();
-        ob[1] = ListaVenta.get(i).getCliente();
-        ob[2] = ListaVenta.get(i).getVendedor();
-        ob[3] = ListaVenta.get(i).getTotal();
-        modelo.addRow(ob);
+        for (int i = 0; i < ListaVenta.size(); i++) {
+            ob[0] = ListaVenta.get(i).getId();
+            ob[1] = ListaVenta.get(i).getCliente();
+            ob[2] = ListaVenta.get(i).getVendedor();
+            ob[3] = ListaVenta.get(i).getTotal();
+            modelo.addRow(ob);
+        }
+
+        TableVentas.setModel(modelo);
     }
 
-    TableVentas.setModel(modelo);
-}
-    
-    
     /**
      * @param args the command line arguments
      */
@@ -1871,7 +1965,7 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private void aplicarColorEstadoPro() {
         TableProducto.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -1942,6 +2036,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1967,6 +2062,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1991,6 +2087,8 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField24;
     private javax.swing.JTextField jTextField25;
     private javax.swing.JTextField jTextField26;
+    private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblHora;
     private javax.swing.JTextField txtCantidadVenta;
     private javax.swing.JTextField txtCodigoPro;
     private javax.swing.JTextField txtCodigoVenta;
@@ -2039,7 +2137,7 @@ public class Sistema extends javax.swing.JFrame {
         txtDireccionCliente.setText("");
         txtRazonCliente.setText("");
     }
-    
+
     private void LimpiarProveedor() {
         txtIdProveedor.setText("");
         txtNitProveedor.setText("");
@@ -2056,21 +2154,21 @@ public class Sistema extends javax.swing.JFrame {
         cbxProveedorPro.setSelectedItem("");
         txtcantPro.setText("");
         txtPrecioPro.setText("");
-        
+
     }
-    
-    private void TotalPagar(){
+
+    private void TotalPagar() {
         Totalpagar = 0.00;
         int numFila = TableVenta.getRowCount();
-        for (int i = 0; i < numFila; i++){
+        for (int i = 0; i < numFila; i++) {
             double cal = Double.parseDouble(String.valueOf(TableVenta.getModel().getValueAt(i, 4)));
-            Totalpagar = Totalpagar + cal;            
+            Totalpagar = Totalpagar + cal;
         }
         LabelTotal.setText(String.format("%.2f", Totalpagar));
-        
+
     }
-    
-    private void RegistrarVenta(){
+
+    private void RegistrarVenta() {
         String cliente = txtNombreClienteventa.getText();
         String vendedor = LabelVendedor.getText();
         double monto = Totalpagar;
@@ -2079,10 +2177,10 @@ public class Sistema extends javax.swing.JFrame {
         v.setTotal(monto);
         vDAO.RegistrarVenta(v);
     }
-    
-    private void RegistrarDetalle(){
+
+    private void RegistrarDetalle() {
         int id = vDAO.IdVenta();
-        for (int i = 0; i < TableVenta.getRowCount();i++){
+        for (int i = 0; i < TableVenta.getRowCount(); i++) {
             String cod = TableVenta.getValueAt(i, 0).toString();
             int cant = Integer.parseInt(TableVenta.getValueAt(i, 2).toString());
             double precio = Double.parseDouble(TableVenta.getValueAt(i, 3).toString());
@@ -2093,8 +2191,8 @@ public class Sistema extends javax.swing.JFrame {
             vDAO.RegistrarDetalle(Dv);
         }
     }
-    
-    private void ActualizarStock(){
+
+    private void ActualizarStock() {
         for (int i = 0; i < TableVenta.getRowCount(); i++) {
             String cod = TableVenta.getValueAt(i, 0).toString();
             int cant = Integer.parseInt(TableVenta.getValueAt(i, 2).toString());
@@ -2103,7 +2201,7 @@ public class Sistema extends javax.swing.JFrame {
             vDAO.ActualizarStock(StockActual, cod);
         }
     }
-    
+
     private void LimpiarTableVenta() {
         modelo = (DefaultTableModel) TableVenta.getModel();
         int fila = TableVenta.getRowCount();
@@ -2111,7 +2209,7 @@ public class Sistema extends javax.swing.JFrame {
             modelo.removeRow(i);
         }
     }
-    
+
     private void LimpiarClienteVenta() {
         txtNitventa.setText("");
         txtNombreClienteventa.setText("");
@@ -2119,4 +2217,5 @@ public class Sistema extends javax.swing.JFrame {
         txtDireccionCV.setText("");
         txtRazonCV.setText("");
     }
+
 }

@@ -1,35 +1,39 @@
-
 package Vista;
 
 import Modelo.LoginDAO;
 import Modelo.login;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-
 public class Login extends javax.swing.JFrame {
+
     login lg = new login();
     LoginDAO login = new LoginDAO();
+     
 
     public Login() {
         initComponents();
         this.setLocationRelativeTo(null);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
+        setIconImage(icono.getImage());
     }
 
-    public void Validar(){
+    public void Validar() {
         String correo = txtCorreo.getText();
         String pass = String.valueOf(txtPass.getPassword());
-        if (!"".equals(correo) || !"". equals(pass)) {
-            
+        if (!"".equals(correo) || !"".equals(pass)) {
+
             lg = login.log(correo, pass);
-            if (lg.getCorreo()!= null && lg.getPass()!= null) {
+            if (lg.getCorreo() != null && lg.getPass() != null) {
                 Sistema sis = new Sistema();
                 sis.setVisible(true);
                 dispose();
-            }else{
-                    JOptionPane.showMessageDialog(null, "Correo o Contraseña incorrectos, validar y continuar");
+            } else {
+                JOptionPane.showMessageDialog(null, "Correo o Contraseña incorrectos, validar y continuar");
             }
+        }
     }
-    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,6 +61,7 @@ public class Login extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("SOFTWARE DE VENTAS");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -225,7 +230,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCorreoActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       Validar();
+        Validar();
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
