@@ -5,6 +5,11 @@
  */
 package Vista;
 
+import Modelo.Conexion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,7 +25,15 @@ public class ReporteUsFech extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        cargarUsuario(); // ✅ Agrega esta línea
+        //imagen de logo carrito
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
+        setIconImage(icono.getImage());
+
+        rbInventario.setSelected(true);
+        cargarUsuario("productos");
+
+        rbInventario.addActionListener(e -> cargarUsuario("productos"));
+        rbHistorial.addActionListener(e -> cargarUsuario("movimientos"));
     }
 
     /**
@@ -32,20 +45,26 @@ public class ReporteUsFech extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDateChooser = new com.toedter.calendar.JDateChooser();
+        bgReporte = new javax.swing.ButtonGroup();
+        jDateDesde = new com.toedter.calendar.JDateChooser();
         cbxUsuario = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jDateHasta = new com.toedter.calendar.JDateChooser();
+        jLabel3 = new javax.swing.JLabel();
+        rbInventario = new javax.swing.JRadioButton();
+        rbHistorial = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SOFTWARE DE VENTAS");
+        setAlwaysOnTop(true);
 
         cbxUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "prueba" }));
 
         jLabel1.setText("Usuario:");
 
-        jLabel2.setText("Fecha:");
+        jLabel2.setText("Fecha desde:");
 
         jButton1.setText("Aceptar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -54,39 +73,64 @@ public class ReporteUsFech extends javax.swing.JDialog {
             }
         });
 
+        jLabel3.setText("Fecha hasta:");
+
+        rbInventario.setText("Inventario");
+
+        rbHistorial.setText("Historial");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cbxUsuario, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jDateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
                 .addGap(86, 86, 86)
                 .addComponent(jButton1)
-                .addContainerGap(91, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbxUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jDateDesde, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jDateHasta, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(rbInventario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(rbHistorial)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbInventario)
+                    .addComponent(rbHistorial))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbxUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jDateDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDateHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -98,8 +142,16 @@ public class ReporteUsFech extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Seleccione un usuario.");
             return;
         }
-        if (jDateChooser.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Seleccione una fecha.");
+        if (jDateDesde.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione la fecha de inicio.");
+            return;
+        }
+        if (jDateHasta.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione la fecha de fin.");
+            return;
+        }
+        if (jDateHasta.getDate().before(jDateDesde.getDate())) {
+            JOptionPane.showMessageDialog(this, "La fecha 'Hasta' debe ser mayor o igual a 'Desde'.");
             return;
         }
         confirmado = true;
@@ -151,12 +203,24 @@ public class ReporteUsFech extends javax.swing.JDialog {
     private boolean confirmado = false;
 
     // Carga los usuarios en el ComboBox
-    private void cargarUsuario() {
-        cbxUsuario.addItem("Seleccione...");
-        cbxUsuario.addItem("Usuario 1");
-        cbxUsuario.addItem("Usuario 2");
-        // O cargarlos desde base de datos:
-        // for (String u : UsuarioDAO.listar()) cmbUsuario.addItem(u);
+    private void cargarUsuario(String tabla) {
+        cbxUsuario.removeAllItems();
+        cbxUsuario.addItem("-Seleccionar Usuario-");
+        try {
+            Conexion con = new Conexion();
+            Connection conn = con.getConnection();
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT DISTINCT usuario FROM " + tabla + " ORDER BY usuario"
+            );
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                cbxUsuario.addItem(rs.getString(1));
+            }
+            rs.close();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Error cargando usuarios: " + e.getMessage());
+        }
     }
 
     // Botón Aceptar
@@ -165,7 +229,7 @@ public class ReporteUsFech extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Seleccione un usuario.");
             return;
         }
-        if (jDateChooser.getDate() == null) {
+        if (jDateDesde.getDate() == null) {
             JOptionPane.showMessageDialog(this, "Seleccione una fecha.");
             return;
         }
@@ -189,14 +253,27 @@ public class ReporteUsFech extends javax.swing.JDialog {
     }
 
     public java.util.Date getFecha() {
-        return jDateChooser.getDate();
+        return jDateDesde.getDate();
+    }
+
+    public java.util.Date getFechaHasta() {  // ← NUEVO
+        return jDateHasta.getDate();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgReporte;
     private javax.swing.JComboBox<String> cbxUsuario;
     private javax.swing.JButton jButton1;
-    private com.toedter.calendar.JDateChooser jDateChooser;
+    private com.toedter.calendar.JDateChooser jDateDesde;
+    private com.toedter.calendar.JDateChooser jDateHasta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JRadioButton rbHistorial;
+    private javax.swing.JRadioButton rbInventario;
     // End of variables declaration//GEN-END:variables
+
+    public String getTipoReporte() {
+        return rbHistorial.isSelected() ? "Historial" : "Inventario";
+    }
 }

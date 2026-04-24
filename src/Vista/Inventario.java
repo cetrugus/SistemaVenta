@@ -477,24 +477,32 @@ public class Inventario extends javax.swing.JFrame {
     private void TableMovimientoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableMovimientoMouseClicked
         // TODO add your handling code here:
         int fila = TableMovimiento.rowAtPoint(evt.getPoint());
+        if (fila < 0) {
+            return;
+        }
 
-        txtIdInv.setText(TableMovimiento.getValueAt(fila, 0).toString());
-        txtCodInv.setText(TableMovimiento.getValueAt(fila, 1).toString());
-        txtDesInv.setText(TableMovimiento.getValueAt(fila, 2).toString());
-        cbxProveedorInv.setSelectedItem(TableMovimiento.getValueAt(fila, 3).toString());
-        txtStockInv.setText(TableMovimiento.getValueAt(fila, 4).toString());
-        txtPrecioInv.setText(TableMovimiento.getValueAt(fila, 7).toString());
-        tvtMotivoInv.setText(TableMovimiento.getValueAt(fila, 11).toString());// ← índice 6 es Precio
-        cbxMovimientoInv.setSelectedItem(TableMovimiento.getValueAt(fila, 5).toString());
+        java.util.function.Function<Object, String> safe = val -> val != null ? val.toString() : "";
 
-        // Fecha — índice 5
-        String fechaStr = TableMovimiento.getValueAt(fila, 6).toString();
-        try {
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            java.util.Date fecha = sdf.parse(fechaStr);
-            jDateChooser1.setDate(fecha);
-        } catch (Exception e) {
-            System.out.println("Error al parsear fecha: " + e.getMessage());
+        txtIdInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 0)));
+        txtCodInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 1)));
+        txtDesInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 2)));
+        cbxProveedorInv.setSelectedItem(safe.apply(TableMovimiento.getValueAt(fila, 3)));
+        txtStockInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 4)));
+        txtPrecioInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 7)));
+        tvtMotivoInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 11)));
+        cbxMovimientoInv.setSelectedItem(safe.apply(TableMovimiento.getValueAt(fila, 5)));
+
+        Object fechaVal = TableMovimiento.getValueAt(fila, 6);
+        if (fechaVal != null && !fechaVal.toString().isEmpty()) {
+            try {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                java.util.Date fecha = sdf.parse(fechaVal.toString());
+                jDateChooser1.setDate(fecha);
+            } catch (Exception e) {
+                System.out.println("Error al parsear fecha: " + e.getMessage());
+            }
+        } else {
+            jDateChooser1.setDate(null);
         }
     }//GEN-LAST:event_TableMovimientoMouseClicked
 
@@ -552,10 +560,18 @@ public class Inventario extends javax.swing.JFrame {
         // TODO add your handling code here:
         ReporteUsFech dialogo = new ReporteUsFech(null, true);
         dialogo.setVisible(true);
+
         if (dialogo.isConfirmado()) {
             String usuario = dialogo.getUsuario();
-            java.util.Date fecha = dialogo.getFecha();
-            Excel.reporteInventario(usuario, fecha);
+            java.util.Date desde = dialogo.getFecha();
+            java.util.Date hasta = dialogo.getFechaHasta();
+            String tipo = dialogo.getTipoReporte();
+
+            if (tipo.equals("Inventario")) {
+                Excel.reporteInventario(usuario, desde, hasta);
+            } else {
+                Excel.reporteHistorial(usuario, desde, hasta);
+            }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 

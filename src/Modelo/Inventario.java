@@ -8,10 +8,10 @@ public class Inventario {
     private String nombre;
     private String proveedor;
     private int stock;
-    private String fecha;
+    private String Fecha;
     private double precio;
     private int estado;
-
+    
     public Inventario() {
     }
 
@@ -56,11 +56,11 @@ public class Inventario {
     }
 
     public String getFecha() {
-        return fecha;
+        return Fecha;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setFecha(String Fecha) {
+        this.Fecha = Fecha;
     }
 
     public double getPrecio() {
@@ -78,7 +78,5 @@ public class Inventario {
     public void setEstado(int estado) {
         this.estado = estado;
     }
-    
-    
-    
+       
 }
