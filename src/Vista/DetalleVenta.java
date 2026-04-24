@@ -25,6 +25,7 @@ public class DetalleVenta extends javax.swing.JFrame {
     // Constructor original (déjalo como está)
     public DetalleVenta() {
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     // ← AGREGAR este nuevo constructor

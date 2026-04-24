@@ -9,6 +9,7 @@ import Modelo.InventarioDAO;
 import Modelo.Productos;
 import Modelo.ProductosDAO;
 import Modelo.ProveedorDAO;
+import Reportes.Excel;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -220,6 +221,11 @@ public class Inventario extends javax.swing.JFrame {
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/excel.png"))); // NOI18N
         jButton5.setText("Excel");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/pdf.png"))); // NOI18N
         jButton6.setText("PDF");
@@ -541,6 +547,17 @@ public class Inventario extends javax.swing.JFrame {
         }
         LimpiarDatosInv();
     }//GEN-LAST:event_btnGuardarProInvActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        ReporteUsFech dialogo = new ReporteUsFech(null, true);
+        dialogo.setVisible(true);
+        if (dialogo.isConfirmado()) {
+            String usuario = dialogo.getUsuario();
+            java.util.Date fecha = dialogo.getFecha();
+            Excel.reporteInventario(usuario, fecha);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -54,7 +54,7 @@ public class VentaDAO {
     }
 
     public int RegistrarDetalle(Detalle Dv) {
-        String sql = "INSERT INTO detalle (cod_pro, cantidad, precio, id_venta) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO detalle (cod_pro, cantidad, precio, id_venta, valor_iva, precio_final) VALUES (?,?,?,?)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);

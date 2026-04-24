@@ -12,11 +12,14 @@ public class Venta {
     private String telefono;
     private String direccion;
     private String razon;
-
+    private double valorIva;
+    private double precio_final;
+    
+    
     public Venta() {
     }
-    
-    public Venta(int id, String cliente, String vendedor, double total, String fecha, String nit, String telefono, String direccion, String razon) {
+
+    public Venta(int id, String cliente, String vendedor, double total, String fecha, String nit, String telefono, String direccion, String razon, double valorIva, double precio_final) {
         this.id = id;
         this.cliente = cliente;
         this.vendedor = vendedor;
@@ -26,8 +29,10 @@ public class Venta {
         this.telefono = telefono;
         this.direccion = direccion;
         this.razon = razon;
+        this.valorIva = valorIva;
+        this.precio_final = precio_final;
     }
-
+       
     public int getId() {
         return id;
     }
@@ -100,4 +105,22 @@ public class Venta {
         this.razon = razon;
     }
 
+    public double getValorIva() {
+        return valorIva;
+    }
+
+    public void setValorIva(double valorIva) {
+        this.valorIva = valorIva;
+    }
+
+    public double getPrecio_final() {
+        return precio_final;
+    }
+
+    public void setPrecio_final(double precio_final) {
+        this.precio_final = precio_final;
+    }
+
+    
+    
 }

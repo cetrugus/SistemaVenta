@@ -18,11 +18,14 @@ public class Productos {
     private String usuario;
     private String ultimoMovimiento;
     private String ultimaObservacion;
+    private String iva;
+    private double valorIva;
+    private double precioFinal;
 
     public Productos() {
     }
 
-    public Productos(int id, String codigo, String nombre, String proveedor, int stock, double precio, int estado, String fecha, String usuario, String ultimoMovimiento, String ultimaObservacion) {
+    public Productos(int id, String codigo, String nombre, String proveedor, int stock, double precio, int estado, String fecha, String usuario, String ultimoMovimiento, String ultimaObservacion, String iva, double valorIva, double precioFinal) {
         this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
@@ -34,6 +37,9 @@ public class Productos {
         this.usuario = usuario;
         this.ultimoMovimiento = ultimoMovimiento;
         this.ultimaObservacion = ultimaObservacion;
+        this.iva = iva;
+        this.valorIva = valorIva;
+        this.precioFinal = precioFinal;
     }
 
     public int getId() {
@@ -124,5 +130,30 @@ public class Productos {
         this.ultimaObservacion = ultimaObservacion;
     }
 
+    public String getIva() {
+        return iva;
+    }
+
+    public void setIva(String iva) {
+        this.iva = iva;
+    }
+
+    public double getValorIva() {
+        return valorIva;
+    }
+
+    public void setValorIva(double valorIva) {
+        this.valorIva = valorIva;
+    }
+
+    public double getPrecioFinal() {
+        return precioFinal;
+    }
+
+    public void setPrecioFinal(double precioFinal) {
+        this.precioFinal = precioFinal;
+    }
+
     
+
 }
