@@ -25,15 +25,16 @@ public class ClienteDAO {
     ResultSet rs;
     
     public boolean RegistrarCliente(Cliente cl){
-        String sql = "INSERT INTO clientes (nit, nombre, telefono, direccion, razon, estado) VALUES (?,?,?,?,?,1)";
+        String sql = "INSERT INTO clientes (nit, nombre, telefono, correo, direccion, razon, estado) VALUES (?,?,?,?,?,1)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, cl.getNit());
             ps.setString(2, cl.getNombre());
             ps.setString(3, cl.getTelefono());
-            ps.setString(4, cl.getDireccion());
-            ps.setString(5, cl.getRazon());
+            ps.setString(4, cl.getCorreo());
+            ps.setString(5, cl.getDireccion());
+            ps.setString(6, cl.getRazon());
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -61,6 +62,7 @@ public class ClienteDAO {
                 cl.setNit(rs.getInt("nit"));
                 cl.setNombre(rs.getString("nombre"));
                 cl.setTelefono(rs.getString("telefono"));
+                cl.setCorreo(rs.getString("correo"));
                 cl.setDireccion(rs.getString("direccion"));
                 cl.setRazon(rs.getString("razon"));
                 cl.setEstado(rs.getInt("estado"));
@@ -75,6 +77,7 @@ public class ClienteDAO {
     public boolean EliminarCliente(int id) {
     String sql = "UPDATE clientes SET estado = CASE WHEN estado = 1 THEN 0 ELSE 1 END WHERE id = ?";
         try {
+            con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -92,15 +95,17 @@ public class ClienteDAO {
     }
     
     public boolean ModificarCliente(Cliente cl){
-       String sgl = "UPDATE clientes SET nit=?, nombre=?, telefono=?, direccion=?, razon=? WHERE id=?";
+       String sgl = "UPDATE clientes SET nit=?, nombre=?, telefono=?, correo=?, direccion=?, razon=? WHERE id=?";
         try {
+            con = cn.getConnection();
             ps = con.prepareStatement(sgl);
             ps.setInt(1, cl.getNit());
             ps.setString(2, cl.getNombre());
             ps.setString(3, cl.getTelefono());
-            ps.setString(4, cl.getDireccion());
-            ps.setString(5, cl.getRazon());
-            ps.setInt(6, cl.getId());
+            ps.setString(4, cl.getCorreo());
+            ps.setString(5, cl.getDireccion());
+            ps.setString(6, cl.getRazon());
+            ps.setInt(7, cl.getId());
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -126,6 +131,7 @@ public class ClienteDAO {
             if (rs. next()) {
                 cl.setNombre(rs.getString("nombre"));
                 cl.setTelefono(rs.getString("telefono"));
+                cl.setCorreo(rs.getString("correo"));
                 cl.setDireccion(rs.getString("direccion"));
                 cl.setRazon(rs.getString("razon"));
             }

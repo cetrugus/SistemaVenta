@@ -73,7 +73,7 @@ public class Excel {
 
             sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 3));
 
-            String[] cabecera = new String[]{"Código", "Nombre", "Precio", "Existencia", "Precio Total"};
+            String[] cabecera = new String[]{"Código", "Nombre", "Precio", "IVA", "Existencia", "Precio Total"};
 
             CellStyle headerStyle = book.createCellStyle();
             headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
@@ -111,7 +111,7 @@ public class Excel {
             datosEstilo.setBorderRight(BorderStyle.THIN);
             datosEstilo.setBorderBottom(BorderStyle.THIN);
 
-            ps = conn.prepareStatement("SELECT codigo, nombre, precio, stock, precio_final FROM productos");
+            ps = conn.prepareStatement("SELECT codigo, nombre, precio, valor_iva, stock, precio_final FROM productos");
             rs = ps.executeQuery();
 
             int numCol = rs.getMetaData().getColumnCount();
@@ -632,4 +632,5 @@ public class Excel {
             Logger.getLogger(Excel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 }

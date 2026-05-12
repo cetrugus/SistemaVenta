@@ -141,6 +141,7 @@ public class ProductosDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 producto.setNombre(rs.getString("nombre"));
+                producto.setProveedor(rs.getString("proveedor"));
                 producto.setStock(rs.getInt("stock"));
                 producto.setPrecio(rs.getDouble("precio"));           // ✅ precio base
                 producto.setIva(rs.getString("iva") != null ? rs.getString("iva") : "NO"); // ✅ SI o NO

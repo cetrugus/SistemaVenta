@@ -7,6 +7,7 @@ public class login {
     private String nombre;
     private String correo;
     private String pass;
+    private int tipo;
 
     public login() {
     }
@@ -50,5 +51,12 @@ public class login {
         this.pass = pass;
     }
 
-    
+    public int getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
+
 }

@@ -11,6 +11,7 @@ public class Inventario {
     private String Fecha;
     private double precio;
     private int estado;
+    private int CantMov;
     
     public Inventario() {
     }
@@ -78,5 +79,14 @@ public class Inventario {
     public void setEstado(int estado) {
         this.estado = estado;
     }
+
+    public int getCantMov() {
+        return CantMov;
+    }
+
+    public void setCantMov(int CantMov) {
+        this.CantMov = CantMov;
+    }
        
+    
 }

@@ -7,6 +7,7 @@ public class Proveedor {
     private int nit;
     private String nombre;
     private String telefono;
+    private String correo;
     private String direccion;
     private String razon;
     private int estado;
@@ -68,6 +69,14 @@ public class Proveedor {
 
     public void setEstado(int estado) {
         this.estado = estado;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
     
     

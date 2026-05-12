@@ -17,15 +17,16 @@ public class ProveedorDAO {
     ResultSet rs;
     
     public boolean RegistrarProveedor(Proveedor pr){
-        String sql = "INSERT INTO proveedor (nit, nombre, telefono, direccion, razon, estado) VALUES (?,?,?,?,?,1)";
+        String sql = "INSERT INTO proveedor (nit, nombre, telefono, correo, direccion, razon, estado) VALUES (?,?,?,?,?,?,1)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, pr.getNit());
             ps.setString(2, pr.getNombre());
             ps.setString(3, pr.getTelefono());
-            ps.setString(4, pr.getDireccion());
-            ps.setString(5, pr.getRazon());
+            ps.setString(4, pr.getCorreo());
+            ps.setString(5, pr.getDireccion());
+            ps.setString(6, pr.getRazon());
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -53,6 +54,7 @@ public class ProveedorDAO {
                 pr.setNit(rs.getInt("nit"));
                 pr.setNombre(rs.getString("nombre"));
                 pr.setTelefono(rs.getString("telefono"));
+                pr.setCorreo(rs.getString("correo"));
                 pr.setDireccion(rs.getString("direccion"));
                 pr.setRazon(rs.getString("razon"));
                 pr.setEstado(rs.getInt("estado"));
@@ -67,6 +69,7 @@ public class ProveedorDAO {
     public boolean EliminarProveedor(int id) {
     String sql = "UPDATE proveedor SET estado = CASE WHEN estado = 1 THEN 0 ELSE 1 END WHERE id = ?";
         try {
+            con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -84,15 +87,17 @@ public class ProveedorDAO {
     }
     
     public boolean ModificarProveedor(Proveedor pr){
-       String sgl = "UPDATE proveedor SET nit=?, nombre=?, telefono=?, direccion=?, razon=? WHERE id=?";
+       String sgl = "UPDATE proveedor SET nit=?, nombre=?, telefono=?, correo=?, direccion=?, razon=? WHERE id=?";
         try {
+            con = cn.getConnection();
             ps = con.prepareStatement(sgl);
             ps.setInt(1, pr.getNit());
             ps.setString(2, pr.getNombre());
             ps.setString(3, pr.getTelefono());
-            ps.setString(4, pr.getDireccion());
-            ps.setString(5, pr.getRazon());
-            ps.setInt(6, pr.getId());
+            ps.setString(4, pr.getCorreo());
+            ps.setString(5, pr.getDireccion());
+            ps.setString(6, pr.getRazon());
+            ps.setInt(7, pr.getId());
             ps.execute();
             return true;
         } catch (Exception e) {
