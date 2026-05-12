@@ -11,6 +11,7 @@ public class Productos {
     private String codigo;
     private String nombre;
     private String proveedor;
+    private String ubicacion;
     private int stock;
     private double precio;
     private int estado;
@@ -25,11 +26,12 @@ public class Productos {
     public Productos() {
     }
 
-    public Productos(int id, String codigo, String nombre, String proveedor, int stock, double precio, int estado, String fecha, String usuario, String ultimoMovimiento, String ultimaObservacion, String iva, double valorIva, double precioFinal) {
+    public Productos(int id, String codigo, String nombre, String proveedor, String ubicacion, int stock, double precio, int estado, String fecha, String usuario, String ultimoMovimiento, String ultimaObservacion, String iva, double valorIva, double precioFinal) {
         this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
         this.proveedor = proveedor;
+        this.ubicacion = ubicacion;
         this.stock = stock;
         this.precio = precio;
         this.estado = estado;
@@ -41,7 +43,7 @@ public class Productos {
         this.valorIva = valorIva;
         this.precioFinal = precioFinal;
     }
-
+    
     public int getId() {
         return id;
     }
@@ -152,6 +154,14 @@ public class Productos {
 
     public void setPrecioFinal(double precioFinal) {
         this.precioFinal = precioFinal;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
     }
 
     

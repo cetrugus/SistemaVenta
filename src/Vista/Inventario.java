@@ -37,6 +37,7 @@ public class Inventario extends javax.swing.JFrame {
     public Inventario() {
         initComponents();
         this.setLocationRelativeTo(null);
+        txtUsuario.setText(Login.nombreUsuario);
 
         ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
         setIconImage(icono.getImage());
@@ -74,20 +75,21 @@ public class Inventario extends javax.swing.JFrame {
         modelo = (DefaultTableModel) TableMovimiento.getModel();
         modelo.setRowCount(0); // ← limpiar antes de cargar
 
-        Object[] ob = new Object[12];
+        Object[] ob = new Object[13];
         for (int i = 0; i < ListaProInv.size(); i++) {
             ob[0] = ListaProInv.get(i).getId();
             ob[1] = ListaProInv.get(i).getCodigo();
             ob[2] = ListaProInv.get(i).getNombre();
-            ob[3] = ListaProInv.get(i).getProveedor();
-            ob[4] = ListaProInv.get(i).getStock();
-            ob[5] = ListaProInv.get(i).getUltimoMovimiento();
-            ob[6] = ListaProInv.get(i).getFecha(); // Fecha In
-            ob[7] = ListaProInv.get(i).getPrecio(); // Precio Compra
-            ob[8] = ""; // Fecha Out
-            ob[9] = ""; // Precio Venta
-            ob[10] = ListaProInv.get(i).getEstado();
-            ob[11] = ListaProInv.get(i).getUltimaObservacion();
+            ob[3] = ListaProInv.get(i).getUbicacion();
+            ob[4] = ListaProInv.get(i).getProveedor();
+            ob[5] = ListaProInv.get(i).getStock();
+            ob[6] = ListaProInv.get(i).getUltimoMovimiento();
+            ob[7] = ListaProInv.get(i).getFecha(); // Fecha In
+            ob[8] = ListaProInv.get(i).getPrecio(); // Precio Compra
+            ob[9] = ""; // Fecha Out
+            ob[10] = ""; // Precio Venta
+            ob[11] = ListaProInv.get(i).getEstado();
+            ob[12] = ListaProInv.get(i).getUltimaObservacion();
             modelo.addRow(ob);
         }
 
@@ -99,7 +101,7 @@ public class Inventario extends javax.swing.JFrame {
             if (!e.getValueIsAdjusting() && TableMovimiento.getSelectedRow() != -1) {
 
                 int fila = TableMovimiento.getSelectedRow();
-                Object estado = TableMovimiento.getValueAt(fila, 10);
+                Object estado = TableMovimiento.getValueAt(fila, 11);
 
                 int estadoVal = Integer.parseInt(estado.toString().trim());
 
@@ -386,7 +388,7 @@ public class Inventario extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Código", "Descripción", "Proveedor", "Stock", "Movimiento", "Fecha In", "Precio Compra", "Fecha Out", "Precio Venta", "Estado", "Observación"
+                "ID", "Código", "Descripción", "Ubicación", "Proveedor", "Stock", "Movimiento", "Fecha In", "Precio Compra", "Fecha Out", "Precio Venta", "Estado", "Observación"
             }
         ));
         TableMovimiento.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -399,15 +401,16 @@ public class Inventario extends javax.swing.JFrame {
             TableMovimiento.getColumnModel().getColumn(0).setPreferredWidth(10);
             TableMovimiento.getColumnModel().getColumn(1).setPreferredWidth(80);
             TableMovimiento.getColumnModel().getColumn(2).setPreferredWidth(100);
-            TableMovimiento.getColumnModel().getColumn(3).setPreferredWidth(100);
-            TableMovimiento.getColumnModel().getColumn(4).setPreferredWidth(20);
+            TableMovimiento.getColumnModel().getColumn(3).setPreferredWidth(50);
+            TableMovimiento.getColumnModel().getColumn(4).setPreferredWidth(100);
             TableMovimiento.getColumnModel().getColumn(5).setPreferredWidth(20);
-            TableMovimiento.getColumnModel().getColumn(6).setPreferredWidth(50);
+            TableMovimiento.getColumnModel().getColumn(6).setPreferredWidth(20);
             TableMovimiento.getColumnModel().getColumn(7).setPreferredWidth(50);
             TableMovimiento.getColumnModel().getColumn(8).setPreferredWidth(50);
             TableMovimiento.getColumnModel().getColumn(9).setPreferredWidth(50);
-            TableMovimiento.getColumnModel().getColumn(10).setPreferredWidth(1);
-            TableMovimiento.getColumnModel().getColumn(11).setPreferredWidth(80);
+            TableMovimiento.getColumnModel().getColumn(10).setPreferredWidth(50);
+            TableMovimiento.getColumnModel().getColumn(11).setPreferredWidth(1);
+            TableMovimiento.getColumnModel().getColumn(12).setPreferredWidth(80);
         }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -554,14 +557,15 @@ public class Inventario extends javax.swing.JFrame {
         txtIdInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 0)));
         txtCodInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 1)));
         txtDesInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 2)));
-        cbxProveedorInv.setSelectedItem(safe.apply(TableMovimiento.getValueAt(fila, 3)));
-        txtStockInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 4)));
-        txtPrecioInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 7)));
-        tvtMotivoInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 11)));
+        cbxProveedorInv.setSelectedItem(safe.apply(TableMovimiento.getValueAt(fila, 4)));
+        txtStockInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 5)));
+        txtPrecioInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 8)));
+        tvtMotivoInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 12)));
+        txtUbicacionInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 3)));
         cbxMovimientoInv.setSelectedItem(safe.apply(TableMovimiento.getValueAt(fila, 5)));
         txtCantMov.setText("");
 
-        Object fechaVal = TableMovimiento.getValueAt(fila, 6);
+        Object fechaVal = TableMovimiento.getValueAt(fila, 7);
         if (fechaVal != null && !fechaVal.toString().isEmpty()) {
             try {
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -666,6 +670,7 @@ public class Inventario extends javax.swing.JFrame {
         String cod = txtCodInv.getText().trim();
         String nombre = txtDesInv.getText().trim();
         String prov = cbxProveedorInv.getSelectedItem().toString();
+        String ubi = txtUbicacionInv.getText().toString();
         String tipo = cbxMovimientoInv.getSelectedItem().toString();
         String motivo = tvtMotivoInv.getText().trim();
         String usuario = txtUsuario.getText().trim();
@@ -697,17 +702,42 @@ public class Inventario extends javax.swing.JFrame {
 
         // Obtener precio actual del producto desde la tabla
         Productos pro = invDAO.BuscarPro(cod);
+
+        if (pro == null) {
+            JOptionPane.showMessageDialog(null, "Producto no encontrado con ese código");
+            return;
+        }
+
+// ← AGREGÁ ESTAS LÍNEAS
+        pro.setCodigo(txtCodInv.getText().trim());
+        pro.setNombre(txtDesInv.getText().trim());
+        pro.setProveedor(cbxProveedorInv.getSelectedItem().toString());
+        pro.setUbicacion(txtUbicacionInv.getText().trim());
+        pro.setStock(Integer.parseInt(txtStockInv.getText().trim()));
+        pro.setPrecio(Double.parseDouble(txtPrecioInv.getText().trim()));
+        jDateChooser1.setDate(new java.util.Date());
+        if (pro == null) {
+            JOptionPane.showMessageDialog(null, "Producto no encontrado con ese código");
+            return;
+        }
+        System.out.println("ID del producto encontrado: " + pro.getId());
         double precio = pro.getPrecio();
+
+        boolean actualizado = invDAO.ModificarProductos(pro);
+
+        if (!actualizado) {
+            JOptionPane.showMessageDialog(null, "Error al actualizar el producto");
+            return;
+        }
 
         boolean ok = invDAO.RegistrarMovimiento(cod, nombre, prov, tipo,
                 cantidad, precio, motivo, usuario);
-        if (ok) {
-            JOptionPane.showMessageDialog(null, "Movimiento registrado correctamente");
-            ListarProductos();
-            ListarMovimientos();
-        } else {
-            JOptionPane.showMessageDialog(null, "Error al registrar");
-        }
+
+        JOptionPane.showMessageDialog(null, "Producto actualizado correctamente"); // ← AGREGÁ
+        ListarProductos();   // ← AGREGÁ el nombre exacto de tu método de listar
+        ListarMovimientos();
+        LimpiarDatosInv();
+
         btnGuardarProInv.setEnabled(true);      // Activo para guardar nuevo
         btnNuevoProInv.setEnabled(true);        // Activo
         btnEliminarProInv.setEnabled(false);    // Inactivo (no hay nada seleccionado)
@@ -737,7 +767,7 @@ public class Inventario extends javax.swing.JFrame {
         }
 
         int id = Integer.parseInt(TableMovimiento.getModel().getValueAt(fila, 0).toString());
-        int estadoActual = Integer.parseInt(TableMovimiento.getModel().getValueAt(fila, 10).toString());
+        int estadoActual = Integer.parseInt(TableMovimiento.getModel().getValueAt(fila, 11).toString());
 
         // Mensaje dinámico según estado actual
         String mensaje = estadoActual == 1 ? "¿Desea desactivar este producto?" : "¿Desea activar este producto?";
@@ -819,7 +849,7 @@ public class Inventario extends javax.swing.JFrame {
                 txtCodInv.requestFocus();
             }
         }
-        
+
     }//GEN-LAST:event_txtCodInvKeyPressed
 
     private void txtCodInvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodInvActionPerformed
@@ -879,7 +909,7 @@ public class Inventario extends javax.swing.JFrame {
                 java.awt.Component c = super.getTableCellRendererComponent(
                         table, value, isSelected, hasFocus, row, column);
 
-                Object estado = table.getModel().getValueAt(row, 10); // ← índice 10
+                Object estado = table.getModel().getValueAt(row, 11); // ← índice 10
 
                 if (!isSelected) {
                     String estadoStr = estado.toString().trim();
@@ -902,7 +932,11 @@ public class Inventario extends javax.swing.JFrame {
             if (!e.getValueIsAdjusting() && TableMovimiento.getSelectedRow() != -1) {
 
                 int fila = TableMovimiento.getSelectedRow();
-                Object estado = TableMovimiento.getValueAt(fila, 10);
+                Object estado = TableMovimiento.getValueAt(fila, 11);
+
+                if (estado == null || estado.toString().trim().isEmpty()) {
+                    return;
+                }
 
                 int estadoVal = Integer.parseInt(estado.toString().trim());
 

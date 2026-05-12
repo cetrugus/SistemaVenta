@@ -140,6 +140,8 @@ public class ProductosDAO {
             ps.setString(1, cod);
             rs = ps.executeQuery();
             if (rs.next()) {
+                producto.setId(rs.getInt("id"));          // ← AGREGÁ ESTA
+                producto.setCodigo(rs.getString("codigo"));
                 producto.setNombre(rs.getString("nombre"));
                 producto.setProveedor(rs.getString("proveedor"));
                 producto.setStock(rs.getInt("stock"));
