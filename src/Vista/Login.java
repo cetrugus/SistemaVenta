@@ -18,6 +18,7 @@ public class Login extends javax.swing.JFrame {
     public static String nombreUsuario = "";
     Empresa empresa = new Empresa();           // ← AGREGAR
     EmpresaDAO empresaDAO = new EmpresaDAO();  // ← AGREGAR
+    public static int idUsuario = 0;
 
     public Login() {
         initComponents();
@@ -41,6 +42,7 @@ public class Login extends javax.swing.JFrame {
             if (lg.getCorreo() != null && lg.getPass() != null) {
                 tipoUsuario = lg.getTipo();  // ← AGREGAR
                 nombreUsuario = lg.getNombre(); // ← OPCIONAL, para mostrar el nombre en Sistema
+                idUsuario = lg.getId();
                 Sistema sis = new Sistema();
                 sis.setVisible(true);
                 dispose();

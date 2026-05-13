@@ -5,6 +5,8 @@
  */
 package Vista;
 
+import Modelo.AperturaCaja;
+import Modelo.AperturaCajaDAO;
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
 import Modelo.Detalle;
@@ -72,6 +74,9 @@ public class Sistema extends javax.swing.JFrame {
     VentaDAO vDAO = new VentaDAO();
     Detalle Dv = new Detalle();
     DefaultTableModel modelo = new DefaultTableModel();
+    AperturaCajaDAO aperturaCajaDAO = new AperturaCajaDAO();
+    Modelo.login lg = new Modelo.login();
+
     int item;
     double Totalpagar = 0.00;
     String ivaProducto = "NO";
@@ -628,30 +633,35 @@ public class Sistema extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(LabelVendedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(lblHora, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40)
-                                .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(LabelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(LabelVendedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(lblHora, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(40, 40, 40)
+                                        .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addComponent(LabelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -680,7 +690,7 @@ public class Sistema extends javax.swing.JFrame {
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel39)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -2568,12 +2578,10 @@ public class Sistema extends javax.swing.JFrame {
     private void menuIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIniciarSesionActionPerformed
         // TODO add your handling code here:
         if (Login.tipoUsuario != 2) {
-            JOptionPane.showMessageDialog(this,
-                    "Esta opción es solo para Cajeros");
+            JOptionPane.showMessageDialog(this, "Esta opción es solo para Cajeros");
             return;
         }
 
-        // Panel para pedir monto de apertura
         JPanel panel = new JPanel(new java.awt.GridLayout(3, 1, 5, 5));
         panel.add(new JLabel("Apertura de Caja"));
         panel.add(new JLabel("¿Con cuánto dinero inicia la sesión?"));
@@ -2581,9 +2589,7 @@ public class Sistema extends javax.swing.JFrame {
         panel.add(txtMonto);
 
         int resultado = JOptionPane.showConfirmDialog(
-                this,
-                panel,
-                "Apertura de Caja",
+                this, panel, "Apertura de Caja",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE
         );
@@ -2595,53 +2601,116 @@ public class Sistema extends javax.swing.JFrame {
                 );
 
                 if (montoCaja <= 0) {
-                    JOptionPane.showMessageDialog(this,
-                            "El monto debe ser mayor a cero");
+                    JOptionPane.showMessageDialog(this, "El monto debe ser mayor a cero");
                     return;
                 }
 
-                // Guardar monto de apertura
+                // ← REGISTRAR EN BD
+                AperturaCaja ap = new AperturaCaja();
+                ap.setIdUsuario(lg.getId()); // id del usuario logueado
+                ap.setNombreUsuario(Login.nombreUsuario);
+                ap.setMontoApertura(montoCaja);
+                aperturaCajaDAO.RegistrarApertura(ap);
+
                 montoCajaInicial = montoCaja;
-
-                // Habilitar botón Ventas
                 jButton5.setEnabled(true);
-
-                // Deshabilitar opción Iniciar Sesión y habilitar Cerrar Sesión
+                jButton1.setEnabled(true);
                 menuIniciarSesion.setEnabled(false);
                 menuCerrarSesion.setEnabled(true);
 
                 JOptionPane.showMessageDialog(this,
-                        String.format("Caja abierta con: $ %,.2f%n¡Bienvenido %s!",
+                        String.format("Caja abierta con: $ %,.2f%nBienvenido %s!",
                                 montoCaja, Login.nombreUsuario));
 
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this,
-                        "Ingrese un valor numérico válido");
+                JOptionPane.showMessageDialog(this, "Ingrese un valor numérico válido");
             }
         }
     }//GEN-LAST:event_menuIniciarSesionActionPerformed
 
     private void menuCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCerrarSesionActionPerformed
         // TODO add your handling code here:
-        int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "¿Está seguro que desea cerrar la sesión?",
-                "Cerrar Sesión",
-                JOptionPane.YES_NO_OPTION
+        if (Login.tipoUsuario != 2) {
+            JOptionPane.showMessageDialog(this, "Esta opción es solo para Cajeros");
+            return;
+        }
+
+        // Panel para pedir monto de cierre
+        JPanel panel = new JPanel(new java.awt.GridLayout(4, 1, 5, 5));
+        panel.add(new JLabel("Cierre de Caja"));
+        panel.add(new JLabel(String.format("Monto apertura: $ %,.2f", montoCajaInicial)));
+        panel.add(new JLabel("¿Con cuánto dinero cierra la caja?"));
+        JTextField txtMontoCierre = new JTextField();
+        panel.add(txtMontoCierre);
+
+        int resultado = JOptionPane.showConfirmDialog(
+                this, panel, "Cierre de Caja",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE
         );
 
-        if (confirm == JOptionPane.YES_OPTION) {
-            // Limpiar datos de sesión
-            Login.tipoUsuario = 0;
-            Login.nombreUsuario = "";
-            montoCajaInicial = 0;
+        if (resultado == JOptionPane.OK_OPTION) {
+            try {
+                double montoCierre = Double.parseDouble(
+                        txtMontoCierre.getText().replace(",", ".").trim()
+                );
 
-            // Abrir Login
-            Login loginForm = new Login();
-            loginForm.setVisible(true);
+                if (montoCierre < 0) {
+                    JOptionPane.showMessageDialog(this, "El monto no puede ser negativo");
+                    return;
+                }
 
-            // Cerrar Sistema
-            dispose();
+                // Calcular diferencia
+                double diferencia = montoCierre - montoCajaInicial;
+                String estadoDiferencia = diferencia >= 0
+                        ? String.format("Diferencia: $ %,.2f", diferencia)
+                        : String.format("Faltante: $ %,.2f", Math.abs(diferencia));
+
+                // Confirmar cierre con resumen
+                int confirm = JOptionPane.showConfirmDialog(
+                        this,
+                        String.format(
+                                "Resumen de Caja:\n"
+                                + "─────────────────────\n"
+                                + "Cajero: %s\n"
+                                + "Monto apertura: $ %,.2f\n"
+                                + "Monto cierre:   $ %,.2f\n"
+                                + "─────────────────────\n"
+                                + "%s\n\n"
+                                + "¿Confirma el cierre de caja?",
+                                Login.nombreUsuario,
+                                montoCajaInicial,
+                                montoCierre,
+                                estadoDiferencia
+                        ),
+                        "Confirmar Cierre",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // Registrar cierre en BD
+                    boolean cierreOk = aperturaCajaDAO.RegistrarCierre(
+                            Login.idUsuario, montoCierre
+                    );
+
+                    if (cierreOk) {
+                        JOptionPane.showMessageDialog(this,
+                                "Caja cerrada correctamente\n" + estadoDiferencia);
+
+                        // Resetear estado
+                        montoCajaInicial = 0;
+                        jButton5.setEnabled(false);
+                        menuIniciarSesion.setEnabled(true);
+                        menuCerrarSesion.setEnabled(false);
+
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error al registrar cierre de caja");
+                    }
+                }
+
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Ingrese un valor numérico válido");
+            }
         }
     }//GEN-LAST:event_menuCerrarSesionActionPerformed
 
@@ -2675,13 +2744,16 @@ public class Sistema extends javax.swing.JFrame {
 
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "¿Está seguro que desea salir?",
-                "Salir",
-                JOptionPane.YES_NO_OPTION
+                this, "¿Está seguro que desea salir?",
+                "Salir", JOptionPane.YES_NO_OPTION
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
+            // ← REGISTRAR CIERRE si es cajero con caja abierta
+            if (Login.tipoUsuario == 2 && montoCajaInicial > 0) {
+                aperturaCajaDAO.RegistrarCierre(lg.getId(), montoCajaInicial);
+            }
+
             Login.tipoUsuario = 0;
             Login.nombreUsuario = "";
             montoCajaInicial = 0;
