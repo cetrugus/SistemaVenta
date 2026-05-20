@@ -75,7 +75,7 @@ public class Inventario extends javax.swing.JFrame {
         modelo = (DefaultTableModel) TableMovimiento.getModel();
         modelo.setRowCount(0); // ← limpiar antes de cargar
 
-        Object[] ob = new Object[13];
+        Object[] ob = new Object[15];
         for (int i = 0; i < ListaProInv.size(); i++) {
             ob[0] = ListaProInv.get(i).getId();
             ob[1] = ListaProInv.get(i).getCodigo();
@@ -90,6 +90,8 @@ public class Inventario extends javax.swing.JFrame {
             ob[10] = ""; // Precio Venta
             ob[11] = ListaProInv.get(i).getEstado();
             ob[12] = ListaProInv.get(i).getUltimaObservacion();
+            ob[13] = ListaProInv.get(i).getCantMin();
+            ob[14] = ListaProInv.get(i).getCantMax();
             modelo.addRow(ob);
         }
 
@@ -181,6 +183,10 @@ public class Inventario extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtStockInv = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        txtCantMin = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        txtCantMax = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SOFTWARE DE VENTAS");
@@ -388,7 +394,7 @@ public class Inventario extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Código", "Descripción", "Ubicación", "Proveedor", "Stock", "Movimiento", "Fecha In", "Precio Compra", "Fecha Out", "Precio Venta", "Estado", "Observación"
+                "ID", "Código", "Descripción", "Ubicación", "Proveedor", "Stock", "Movimiento", "Fecha In", "Precio Compra", "Fecha Out", "Precio Venta", "Estado", "Observación", "Cant Min", "Cant Min"
             }
         ));
         TableMovimiento.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -411,6 +417,8 @@ public class Inventario extends javax.swing.JFrame {
             TableMovimiento.getColumnModel().getColumn(10).setPreferredWidth(50);
             TableMovimiento.getColumnModel().getColumn(11).setPreferredWidth(1);
             TableMovimiento.getColumnModel().getColumn(12).setPreferredWidth(80);
+            TableMovimiento.getColumnModel().getColumn(13).setPreferredWidth(10);
+            TableMovimiento.getColumnModel().getColumn(14).setPreferredWidth(10);
         }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -482,6 +490,14 @@ public class Inventario extends javax.swing.JFrame {
 
         txtStockInv.setEditable(false);
 
+        jLabel16.setText("Canti Min");
+
+        txtCantMin.setEditable(false);
+
+        jLabel17.setText("Canti Max");
+
+        txtCantMax.setEditable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -509,7 +525,16 @@ public class Inventario extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel9))
-                        .addGap(366, 366, 366)))
+                        .addGap(366, 366, 366))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCantMin, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCantMax, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -534,7 +559,13 @@ public class Inventario extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(33, 33, 33)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(txtCantMin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17)
+                            .addComponent(txtCantMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(5, 5, 5)
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(61, Short.MAX_VALUE))
@@ -564,6 +595,8 @@ public class Inventario extends javax.swing.JFrame {
         txtUbicacionInv.setText(safe.apply(TableMovimiento.getValueAt(fila, 3)));
         cbxMovimientoInv.setSelectedItem(safe.apply(TableMovimiento.getValueAt(fila, 5)));
         txtCantMov.setText("");
+        txtCantMin.setText(safe.apply(TableMovimiento.getValueAt(fila, 13)));
+        txtCantMax.setText(safe.apply(TableMovimiento.getValueAt(fila, 14)));
 
         Object fechaVal = TableMovimiento.getValueAt(fila, 7);
         if (fechaVal != null && !fechaVal.toString().isEmpty()) {
@@ -716,6 +749,8 @@ public class Inventario extends javax.swing.JFrame {
         pro.setStock(Integer.parseInt(txtStockInv.getText().trim()));
         pro.setPrecio(Double.parseDouble(txtPrecioInv.getText().trim()));
         jDateChooser1.setDate(new java.util.Date());
+        pro.setCantMin(txtCantMin.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtCantMin.getText().trim()));
+        pro.setCantMax(txtCantMax.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtCantMax.getText().trim()));
         if (pro == null) {
             JOptionPane.showMessageDialog(null, "Producto no encontrado con ese código");
             return;
@@ -962,11 +997,26 @@ public class Inventario extends javax.swing.JFrame {
         TableMovimiento.getColumnModel().getColumn(0).setMinWidth(0);
         TableMovimiento.getColumnModel().getColumn(0).setMaxWidth(0);
         TableMovimiento.getColumnModel().getColumn(0).setPreferredWidth(0);
-
-        // Ocultar columna Estado (índice 10)
+        
+        // Ocultar columna precio venta (índice 10)
         TableMovimiento.getColumnModel().getColumn(10).setMinWidth(0);
         TableMovimiento.getColumnModel().getColumn(10).setMaxWidth(0);
         TableMovimiento.getColumnModel().getColumn(10).setPreferredWidth(0);
+        
+        // Ocultar columna Estado (índice 11)
+        TableMovimiento.getColumnModel().getColumn(11).setMinWidth(0);
+        TableMovimiento.getColumnModel().getColumn(11).setMaxWidth(0);
+        TableMovimiento.getColumnModel().getColumn(11).setPreferredWidth(0);
+        
+        // Ocultar columna CanMin (índice 13)
+        TableMovimiento.getColumnModel().getColumn(13).setMinWidth(0);
+        TableMovimiento.getColumnModel().getColumn(13).setMaxWidth(0);
+        TableMovimiento.getColumnModel().getColumn(13).setPreferredWidth(0);
+
+        // Ocultar columna CanMax (índice 14)
+        TableMovimiento.getColumnModel().getColumn(14).setMinWidth(0);
+        TableMovimiento.getColumnModel().getColumn(14).setMaxWidth(0);
+        TableMovimiento.getColumnModel().getColumn(14).setPreferredWidth(0);
     }
 
     private void LimpiarDatosInv() {
@@ -979,6 +1029,8 @@ public class Inventario extends javax.swing.JFrame {
         cbxMovimientoInv.setSelectedIndex(0);
         tvtMotivoInv.setText("");
         jDateChooser1.setDate(null);
+        txtCantMin.setText("");
+        txtCantMax.setText("");
     }
 
     private void buscarProducto() {
@@ -1022,6 +1074,8 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1040,6 +1094,8 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JButton tbnExcel;
     private javax.swing.JButton tbnPDF;
     private javax.swing.JTextField tvtMotivoInv;
+    private javax.swing.JTextField txtCantMax;
+    private javax.swing.JTextField txtCantMin;
     private javax.swing.JTextField txtCantMov;
     private javax.swing.JTextField txtCodInv;
     private javax.swing.JTextField txtDesInv;

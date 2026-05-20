@@ -1,8 +1,7 @@
-
 package Modelo;
 
-
 public class Empresa {
+
     private int id;
     private String nit;
     private String nombre;
@@ -11,11 +10,15 @@ public class Empresa {
     private String razonSocial;
     private String telefono;
     private String logo;
+    private String smtpPass;
+    private String smtpHost;
+    private int smtpPort;
+    private String smtpUsuario;    
 
     public Empresa() {
     }
 
-    public Empresa(int id, String nit, String nombre, String correo, String direccion, String razonSocial, String telefono, String logo) {
+    public Empresa(int id, String nit, String nombre, String correo, String direccion, String razonSocial, String telefono, String logo, String smtpPass, String smtpHost, int smtpPort, String smtpUsuario) {
         this.id = id;
         this.nit = nit;
         this.nombre = nombre;
@@ -24,8 +27,12 @@ public class Empresa {
         this.razonSocial = razonSocial;
         this.telefono = telefono;
         this.logo = logo;
+        this.smtpPass = smtpPass;
+        this.smtpHost = smtpHost;
+        this.smtpPort = smtpPort;
+        this.smtpUsuario = smtpUsuario;
     }
-
+    
     public int getId() {
         return id;
     }
@@ -89,6 +96,38 @@ public class Empresa {
     public void setLogo(String logo) {
         this.logo = logo;
     }
-    
+
+    public String getSmtpPass() {
+        return smtpPass;
+    }
+
+    public void setSmtpPass(String smtpPass) {
+        this.smtpPass = smtpPass;
+    }
+
+    public String getSmtpHost() {
+        return smtpHost;
+    }
+
+    public void setSmtpHost(String smtpHost) {
+        this.smtpHost = smtpHost;
+    }
+
+    public int getSmtpPort() {
+        return smtpPort;
+    }
+
+    public void setSmtpPort(int smtpPort) {
+        this.smtpPort = smtpPort;
+    }
+
+    public String getSmtpUsuario() {
+        return smtpUsuario;
+    }
+
+    public void setSmtpUsuario(String smtpUsuario) {
+        this.smtpUsuario = smtpUsuario;
+    }
+
     
 }

@@ -22,11 +22,13 @@ public class Productos {
     private String iva;
     private double valorIva;
     private double precioFinal;
+    private int cantMin;
+    private int cantMax;
 
     public Productos() {
     }
 
-    public Productos(int id, String codigo, String nombre, String proveedor, String ubicacion, int stock, double precio, int estado, String fecha, String usuario, String ultimoMovimiento, String ultimaObservacion, String iva, double valorIva, double precioFinal) {
+    public Productos(int id, String codigo, String nombre, String proveedor, String ubicacion, int stock, double precio, int estado, String fecha, String usuario, String ultimoMovimiento, String ultimaObservacion, String iva, double valorIva, double precioFinal, int cantMin, int cantMax) {
         this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
@@ -42,6 +44,8 @@ public class Productos {
         this.iva = iva;
         this.valorIva = valorIva;
         this.precioFinal = precioFinal;
+        this.cantMin = cantMin;
+        this.cantMax = cantMax;
     }
     
     public int getId() {
@@ -164,6 +168,20 @@ public class Productos {
         this.ubicacion = ubicacion;
     }
 
-    
+    public int getCantMin() {
+        return cantMin;
+    }
 
+    public void setCantMin(int cantMin) {
+        this.cantMin = cantMin;
+    }
+
+    public int getCantMax() {
+        return cantMax;
+    }
+
+    public void setCantMax(int cantMax) {
+        this.cantMax = cantMax;
+    }
+    
 }

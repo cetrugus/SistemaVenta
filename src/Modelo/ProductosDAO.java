@@ -17,7 +17,9 @@ public class ProductosDAO {
     ResultSet rs;
 
     public boolean RegistrarProducto(Productos pro) {
-        String sql = "INSERT INTO productos (codigo, nombre, proveedor, stock, precio, iva, valor_iva, precio_final) VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO productos (codigo, nombre, proveedor, stock, "
+                + "precio, iva, valor_iva, precio_final, cant_min, cant_max) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?)";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -29,6 +31,8 @@ public class ProductosDAO {
             ps.setString(6, pro.getIva());          // ✅ SI o NO
             ps.setDouble(7, pro.getValorIva());     // ✅ valor calculado del 19%
             ps.setDouble(8, pro.getPrecioFinal());  // ✅ precio + iva
+            ps.setInt(9, pro.getCantMin());
+            ps.setInt(10, pro.getCantMax());
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -62,6 +66,8 @@ public class ProductosDAO {
                 pro.setIva(rs.getString("iva") != null ? rs.getString("iva") : "NO");
                 pro.setValorIva(rs.getDouble("valor_iva"));
                 pro.setPrecioFinal(rs.getDouble("precio_final"));
+                pro.setCantMin(rs.getInt("cant_min")); // ✅ nuevo
+                pro.setCantMax(rs.getInt("cant_max"));
                 ListaPro.add(pro);
             }
         } catch (SQLException e) {
@@ -104,19 +110,23 @@ public class ProductosDAO {
     }
 
     public boolean ModificarProductos(Productos pro) {
-        String sgl = "UPDATE productos SET codigo=?, nombre=?, proveedor=?, stock=?, precio=?, iva=?, valor_iva=?, precio_final=? WHERE id=?";
+        String sql = "UPDATE productos SET codigo=?, nombre=?, proveedor=?, stock=?, "
+                + "precio=?, iva=?, valor_iva=?, precio_final=?, "
+                + "cant_min=?, cant_max=? WHERE id=?";
         try {
-            ps = con.prepareStatement(sgl);
+            con = cn.getConnection(); // ✅ abrir conexión
+            ps = con.prepareStatement(sql);
             ps.setString(1, pro.getCodigo());
             ps.setString(2, pro.getNombre());
             ps.setString(3, pro.getProveedor());
-            ps.setInt(4, pro.getStock());
+            ps.setInt(4, pro.getStock());        // ✅ estaba faltando
             ps.setDouble(5, pro.getPrecio());
-            ps.setInt(6, pro.getId());
-            ps.setString(6, pro.getIva());           // ✅ nuevo
-            ps.setDouble(7, pro.getValorIva());      // ✅ nuevo
-            ps.setDouble(8, pro.getPrecioFinal());   // ✅ nuevo
-            ps.setInt(9, pro.getId());
+            ps.setString(6, pro.getIva());
+            ps.setDouble(7, pro.getValorIva());
+            ps.setDouble(8, pro.getPrecioFinal());
+            ps.setInt(9, pro.getCantMin());      // ✅ corregido
+            ps.setInt(10, pro.getCantMax());     // ✅ corregido
+            ps.setInt(11, pro.getId());          // ✅ WHERE id al final
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -149,6 +159,8 @@ public class ProductosDAO {
                 producto.setIva(rs.getString("iva") != null ? rs.getString("iva") : "NO"); // ✅ SI o NO
                 producto.setValorIva(rs.getDouble("valor_iva"));      // ✅ valor del IVA
                 producto.setPrecioFinal(rs.getDouble("precio_final"));
+                producto.setCantMin(rs.getInt("cant_min")); // ✅ nuevo
+                producto.setCantMax(rs.getInt("cant_max")); // ✅ nuevo
             }
         } catch (SQLException e) {
             System.out.println(e.toString());

@@ -13,12 +13,15 @@ import Modelo.Detalle;
 import Modelo.Empresa;
 import Modelo.EmpresaDAO;
 import Modelo.InventarioDAO;
+import Modelo.Pago;
+import Modelo.PagoDAO;
 import Modelo.Productos;
 import Modelo.ProductosDAO;
 import Modelo.Proveedor;
 import Modelo.ProveedorDAO;
 import Modelo.Venta;
 import Modelo.VentaDAO;
+import Reportes.EnvioCorreo;
 import Reportes.Excel;
 import static Vista.Login.tipoUsuario;
 import com.itextpdf.text.BaseColor;
@@ -76,6 +79,9 @@ public class Sistema extends javax.swing.JFrame {
     DefaultTableModel modelo = new DefaultTableModel();
     AperturaCajaDAO aperturaCajaDAO = new AperturaCajaDAO();
     Modelo.login lg = new Modelo.login();
+    PagoDAO pagoDAO = new PagoDAO();
+    private double montoRecibidoPago = 0;
+    private String formaPagoSeleccionada = "";
 
     int item;
     double Totalpagar = 0.00;
@@ -95,6 +101,28 @@ public class Sistema extends javax.swing.JFrame {
         proDAO.ConsultarProveedor(cbxProveedorPro);
         LabelVendedor.setText(Login.nombreUsuario);
         menuCerrarSesion.setEnabled(false);
+
+        txtSmtpHost.setVisible(false);
+        txtSmtpPuerto.setVisible(false);
+        txtSmtpUsuario.setVisible(false);
+        //txtSmtpClave.setVisible(false);
+        //cbxProveedorSMTP.setVisible(false);
+
+        cbxProveedorSMTP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
+            "Gmail",
+            "Outlook / Hotmail",
+            "Yahoo",
+            "Office 365",
+            "Otro"
+        }));
+
+        SwingUtilities.invokeLater(() -> {
+            verificarAlertasStock();
+        });
+
+// Ocultar campos técnicos
+        txtSmtpHost.setVisible(false);
+        txtSmtpPuerto.setVisible(false);
 
         //cargador de imagen del logo
         SwingUtilities.invokeLater(() -> {
@@ -278,6 +306,24 @@ public class Sistema extends javax.swing.JFrame {
                 txtRazonSocialEmpresa.setText(emp.getRazonSocial());
                 txtTelefonoEmpresa.setText(emp.getTelefono());
                 rutaLogo = emp.getLogo();
+                String host = emp.getSmtpHost();
+                if (host != null) {
+                    if (host.contains("gmail")) {
+                        cbxProveedorSMTP.setSelectedItem("Gmail");
+                    } else if (host.contains("office365") || host.contains("outlook")) {
+                        cbxProveedorSMTP.setSelectedItem("Outlook / Hotmail");
+                    } else if (host.contains("yahoo")) {
+                        cbxProveedorSMTP.setSelectedItem("Yahoo");
+                    } else {
+                        cbxProveedorSMTP.setSelectedItem("Otro");
+                        txtSmtpHost.setVisible(true);
+                        txtSmtpPuerto.setVisible(true);
+                        txtSmtpHost.setText(host);
+                        txtSmtpPuerto.setText(String.valueOf(emp.getSmtpPort()));
+                    }
+                }
+                txtSmtpUsuario.setText(emp.getSmtpUsuario() != null ? emp.getSmtpUsuario() : "");
+                txtSmtpClave.setText(emp.getSmtpPass() != null ? emp.getSmtpPass() : "");
                 mostrarLogo(rutaLogo);
                 empresa.setId(emp.getId()); // ✅ guardar el id para el update
 
@@ -497,6 +543,10 @@ public class Sistema extends javax.swing.JFrame {
         lblIvaProducto = new javax.swing.JTextField();
         jLabel37 = new javax.swing.JLabel();
         lblPrecioConIva = new javax.swing.JTextField();
+        jLabel44 = new javax.swing.JLabel();
+        txtCantMinPro = new javax.swing.JTextField();
+        jLabel45 = new javax.swing.JLabel();
+        txtCantMaxPro = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         TableVentas = new javax.swing.JTable();
@@ -521,12 +571,21 @@ public class Sistema extends javax.swing.JFrame {
         btnGuardarEmpresa = new javax.swing.JButton();
         lblLogo = new javax.swing.JLabel();
         btnSeleccionarLogo = new javax.swing.JButton();
+        cbxProveedorSMTP = new javax.swing.JComboBox<>();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        ProbarSMTP = new javax.swing.JButton();
+        txtSmtpHost = new javax.swing.JTextField();
+        txtSmtpPuerto = new javax.swing.JTextField();
+        txtSmtpUsuario = new javax.swing.JTextField();
+        txtSmtpClave = new javax.swing.JPasswordField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuIniciarSesion = new javax.swing.JMenuItem();
         menuCerrarSesion = new javax.swing.JMenuItem();
         menuSalir = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        menuAcercade = new javax.swing.JMenuItem();
 
         jMenuItem2.setText("jMenuItem2");
 
@@ -1379,7 +1438,7 @@ public class Sistema extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Código", "descripción", "Proveedor", "Stock", "Precio", "IVA", "Iva", "Precio Total", "Estado"
+                "ID", "Código", "descripción", "Proveedor", "Stock", "Precio", "IVA", "Iva", "Precio Total", "Estado", "Cant Min", "Cant Max"
             }
         ));
         TableProducto.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1399,6 +1458,8 @@ public class Sistema extends javax.swing.JFrame {
             TableProducto.getColumnModel().getColumn(7).setPreferredWidth(10);
             TableProducto.getColumnModel().getColumn(8).setPreferredWidth(40);
             TableProducto.getColumnModel().getColumn(9).setPreferredWidth(1);
+            TableProducto.getColumnModel().getColumn(10).setPreferredWidth(10);
+            TableProducto.getColumnModel().getColumn(11).setPreferredWidth(10);
         }
 
         btnGuardarPro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/GuardarTodo.png"))); // NOI18N
@@ -1464,6 +1525,10 @@ public class Sistema extends javax.swing.JFrame {
         jLabel37.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel37.setText("Costo:");
 
+        jLabel44.setText("Cant Min");
+
+        jLabel45.setText("Canti Max");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -1471,6 +1536,40 @@ public class Sistema extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnExcelPro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnNuevoPro, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                                    .addComponent(btnGuardarPro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(btnEliminarPro, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnActualizarpro, javax.swing.GroupLayout.Alignment.LEADING)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel35)
+                                    .addComponent(cmbIva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel44))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel36)
+                                            .addComponent(lblIvaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(8, 8, 8)
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel37)
+                                            .addComponent(lblPrecioConIva, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(txtCantMinPro, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel45)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtCantMaxPro, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(txtcantPro)
                         .addComponent(txtPrecioPro)
@@ -1484,30 +1583,8 @@ public class Sistema extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(txtIdpro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(txtDesPro)
-                        .addComponent(cbxProveedorPro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnExcelPro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnNuevoPro, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel35)
-                                    .addComponent(cmbIva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel36)
-                                    .addComponent(lblIvaProducto)))
-                            .addComponent(btnGuardarPro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel37)
-                            .addComponent(btnEliminarPro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(lblPrecioConIva)
-                                .addGap(28, 28, 28))
-                            .addComponent(btnActualizarpro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE))
+                        .addComponent(cbxProveedorPro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1547,7 +1624,13 @@ public class Sistema extends javax.swing.JFrame {
                             .addComponent(lblIvaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cmbIva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblPrecioConIva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel44)
+                            .addComponent(txtCantMinPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCantMaxPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel45))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnGuardarPro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnActualizarpro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1681,6 +1764,33 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
+        cbxProveedorSMTP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxProveedorSMTPActionPerformed(evt);
+            }
+        });
+
+        jLabel42.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel42.setText("Proveedor Correo");
+
+        jLabel43.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel43.setText("Clave SMTP");
+
+        ProbarSMTP.setText("Validar correo");
+        ProbarSMTP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ProbarSMTPActionPerformed(evt);
+            }
+        });
+
+        txtSmtpHost.setText("txtSmtpHost");
+
+        txtSmtpPuerto.setText("txtSmtpPuerto");
+
+        txtSmtpUsuario.setText("txtSmtpUsuario");
+
+        txtSmtpClave.setText("jPasswordField1");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -1693,34 +1803,55 @@ public class Sistema extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNitEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDireccionEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel30)
-                            .addComponent(jLabel27)
-                            .addComponent(jLabel38)
-                            .addComponent(txtCorreoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtNombreEmpresa)
-                                .addComponent(jLabel31)
-                                .addComponent(txtRazonSocialEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel28)
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(txtTelefonoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel29))
-                        .addGap(89, 89, 89)
+                                .addComponent(jLabel42)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel7Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(txtSmtpClave, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel7Layout.createSequentialGroup()
+                                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtNitEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtDireccionEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel30)
+                                            .addComponent(jLabel27)
+                                            .addComponent(jLabel38)
+                                            .addComponent(txtCorreoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtNombreEmpresa)
+                                                .addComponent(jLabel31)
+                                                .addComponent(txtRazonSocialEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel28)
+                                            .addComponent(jLabel29)
+                                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                                .addGap(2, 2, 2)
+                                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel43)
+                                                    .addComponent(txtTelefonoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addGap(89, 89, 89)))
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnSeleccionarLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(94, 94, 94))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnGuardarEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnActualizarEmpresa)
-                .addGap(352, 352, 352))
+                        .addGap(94, 94, 94))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbxProveedorSMTP, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ProbarSMTP)
+                            .addComponent(txtSmtpHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGuardarEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnActualizarEmpresa)
+                        .addGap(352, 352, 352))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtSmtpPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSmtpUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1728,41 +1859,62 @@ public class Sistema extends javax.swing.JFrame {
                 .addGap(92, 92, 92)
                 .addComponent(jLabel32)
                 .addGap(62, 62, 62)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSeleccionarLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                            .addComponent(jLabel28)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtNombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jLabel31)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtRazonSocialEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jLabel29)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtTelefonoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                            .addComponent(jLabel27)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtNitEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jLabel30)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtDireccionEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jLabel38)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtCorreoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(51, 51, 51)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnActualizarEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGuardarEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(89, Short.MAX_VALUE))
+                        .addComponent(btnSeleccionarLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel28)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtNombreEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel31)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtRazonSocialEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel29)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTelefonoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel27)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtNitEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel30)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtDireccionEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel38)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtCorreoEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel42)
+                            .addComponent(jLabel43))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbxProveedorSMTP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSmtpClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnActualizarEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnGuardarEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(ProbarSMTP)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSmtpHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSmtpPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSmtpUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab6", jPanel7);
@@ -1798,6 +1950,15 @@ public class Sistema extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Ayuda");
+
+        menuAcercade.setText("Acerca de");
+        menuAcercade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuAcercadeActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuAcercade);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -1915,25 +2076,47 @@ public class Sistema extends javax.swing.JFrame {
 
     private void btnActualizarproActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarproActionPerformed
         // TODO add your handling code here:
-        if ("".equals(txtIdPro.getText())) {
+        if ("".equals(txtIdpro.getText()) || "ID".equals(txtIdpro.getText())) {
             JOptionPane.showMessageDialog(null, "Seleccione una fila");
         } else if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText())
                 || !"".equals(txtcantPro.getText()) || !"".equals(txtPrecioPro.getText())) {
 
-            double precio = Double.parseDouble(txtPrecioPro.getText()); // ✅ corregido
+            double precio = Double.parseDouble(txtPrecioPro.getText());
             String tieneIva = cmbIva.getSelectedItem().toString();
-            double valorIva = tieneIva.equals("SI") ? precio * 0.19 : 0.00; // ✅ nuevo
-            double precioFinal = precio + valorIva; // ✅ nuevo
+            double valorIva = tieneIva.equals("SI") ? precio * 0.19 : 0.00;
+            double precioFinal = precio + valorIva;
+
+            // ── Leer Cant Min y Cant Max ──────────────────
+            int cantMin = 0, cantMax = 0;
+            try {
+                cantMin = txtCantMinPro.getText().trim().isEmpty() ? 0
+                        : Integer.parseInt(txtCantMinPro.getText().trim());
+                cantMax = txtCantMaxPro.getText().trim().isEmpty() ? 0
+                        : Integer.parseInt(txtCantMaxPro.getText().trim());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null,
+                        "Cant Mín y Cant Máx deben ser números enteros");
+                return;
+            }
+
+            // Validar que max sea mayor que min
+            if (cantMax > 0 && cantMin > 0 && cantMax <= cantMin) {
+                JOptionPane.showMessageDialog(null,
+                        "Cant Máx debe ser mayor que Cant Mín");
+                return;
+            }
 
             pro.setCodigo(txtCodigoPro.getText());
             pro.setNombre(txtDesPro.getText());
             pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
             pro.setStock(Integer.parseInt(txtcantPro.getText()));
-            pro.setPrecio(precio);          // ✅ corregido
-            pro.setIva(tieneIva);           // ✅ nuevo
-            pro.setValorIva(valorIva);      // ✅ nuevo
-            pro.setPrecioFinal(precioFinal); // ✅ nuevo
-            pro.setId(Integer.parseInt(txtIdPro.getText()));
+            pro.setPrecio(precio);
+            pro.setIva(tieneIva);
+            pro.setValorIva(valorIva);
+            pro.setPrecioFinal(precioFinal);
+            pro.setCantMin(cantMin);  // ✅ nuevo
+            pro.setCantMax(cantMax);  // ✅ nuevo
+            pro.setId(Integer.parseInt(txtIdpro.getText()));
 
             proDAO.ModificarProductos(pro);
             JOptionPane.showMessageDialog(null, "Actualizado correctamente");
@@ -1958,27 +2141,51 @@ public class Sistema extends javax.swing.JFrame {
                 || !"".equals(cbxProveedorPro.getSelectedItem()) || !"".equals(txtcantPro.getText())
                 || !"".equals(txtPrecioPro.getText())) {
 
+            // Calcular IVA
             double precio = Double.parseDouble(txtPrecioPro.getText().trim());
-            String tieneIva = cmbIva.getSelectedItem().toString(); // tu combo SI/NO
-
-            // ✅ Calcular IVA automáticamente
+            String tieneIva = cmbIva.getSelectedItem().toString();
             double valorIva = tieneIva.equals("SI") ? precio * 0.19 : 0.00;
             double precioFinal = precio + valorIva;
 
+            // ── Leer Cant Min y Cant Max ──────────────────
+            int cantMin = 0, cantMax = 0;
+            try {
+                cantMin = txtCantMinPro.getText().trim().isEmpty() ? 0
+                        : Integer.parseInt(txtCantMinPro.getText().trim());
+                cantMax = txtCantMaxPro.getText().trim().isEmpty() ? 0
+                        : Integer.parseInt(txtCantMaxPro.getText().trim());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null,
+                        "Cant Mín y Cant Máx deben ser números enteros");
+                return; // detiene el guardado si hay error
+            }
+
+            // Validar que max sea mayor que min si ambos tienen valor
+            if (cantMax > 0 && cantMin > 0 && cantMax <= cantMin) {
+                JOptionPane.showMessageDialog(null,
+                        "Cant Máx debe ser mayor que Cant Mín");
+                return;
+            }
+
+            // Asignar todos los valores al objeto
             pro.setCodigo(txtCodigoPro.getText());
             pro.setNombre(txtDesPro.getText());
             pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
             pro.setStock(Integer.parseInt(txtcantPro.getText()));
-            pro.setPrecio(Double.parseDouble(txtPrecioPro.getText()));
-            pro.setIva(tieneIva);           // ✅ nuevo
-            pro.setValorIva(valorIva);      // ✅ nuevo
-            pro.setPrecioFinal(precioFinal); // ✅ nuevo
+            pro.setPrecio(precio);
+            pro.setIva(tieneIva);
+            pro.setValorIva(valorIva);
+            pro.setPrecioFinal(precioFinal);
+            pro.setCantMin(cantMin);  // ✅ nuevo
+            pro.setCantMax(cantMax);  // ✅ nuevo
 
             proDAO.RegistrarProducto(pro);
             JOptionPane.showMessageDialog(null, "Producto registrado");
+
         } else {
-            JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+            JOptionPane.showMessageDialog(null, "Los campos están vacíos");
         }
+
         LimpiarTablePr();
         LimpiarProductos();
         ListarProductos();
@@ -1987,12 +2194,34 @@ public class Sistema extends javax.swing.JFrame {
     private void TableProductoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableProductoMouseClicked
         // TODO add your handling code here:
         int fila = TableProducto.rowAtPoint(evt.getPoint());
-        txtIdPro.setText(TableProducto.getValueAt(fila, 0).toString());
-        txtCodigoPro.setText(TableProducto.getValueAt(fila, 1).toString());
-        txtDesPro.setText(TableProducto.getValueAt(fila, 2).toString());
-        cbxProveedorPro.setSelectedItem(TableProducto.getValueAt(fila, 3).toString());
-        txtcantPro.setText(TableProducto.getValueAt(fila, 4).toString());
-        txtPrecioPro.setText(TableProducto.getValueAt(fila, 5).toString());
+        if (fila < 0 || fila >= TableProducto.getRowCount()) {
+            return;
+        }
+
+        // ✅ DIAGNÓSTICO — muestra cuántas columnas tiene el modelo real
+        int cols = TableProducto.getModel().getColumnCount();
+        System.out.println("Columnas en el modelo: " + cols);
+
+        if (cols < 12) {
+            JOptionPane.showMessageDialog(null,
+                    "El modelo solo tiene " + cols + " columnas.\n"
+                    + "Verifica que ListarProductos() esté siendo llamado.");
+            return;
+        }
+
+        txtIdpro.setText(TableProducto.getModel().getValueAt(fila, 0).toString());
+        txtCodigoPro.setText(TableProducto.getModel().getValueAt(fila, 1).toString());
+        txtDesPro.setText(TableProducto.getModel().getValueAt(fila, 2).toString());
+        cbxProveedorPro.setSelectedItem(TableProducto.getModel().getValueAt(fila, 3).toString());
+        txtcantPro.setText(TableProducto.getModel().getValueAt(fila, 4).toString());
+        txtPrecioPro.setText(TableProducto.getModel().getValueAt(fila, 5).toString());
+        lblIvaProducto.setText(TableProducto.getModel().getValueAt(fila, 7).toString());
+        lblPrecioConIva.setText(TableProducto.getModel().getValueAt(fila, 8).toString());
+
+        Object cantMin = TableProducto.getModel().getValueAt(fila, 10);
+        Object cantMax = TableProducto.getModel().getValueAt(fila, 11);
+        txtCantMinPro.setText(cantMin != null ? cantMin.toString() : "0");
+        txtCantMaxPro.setText(cantMax != null ? cantMax.toString() : "0");
     }//GEN-LAST:event_TableProductoMouseClicked
 
     private void btnEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarProveedorActionPerformed
@@ -2195,41 +2424,77 @@ public class Sistema extends javax.swing.JFrame {
         if (respuesta == JOptionPane.YES_OPTION) {
 
             // 1. Selección forma de pago
-            String[] formasPago = {"Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito", "Transferencia Electrónica"};
+            String[] formasPago = {"Efectivo", "Tarjeta de Crédito",
+                "Tarjeta de Débito", "Transferencia Electrónica"};
             int formaPago = JOptionPane.showOptionDialog(
                     this,
                     "¿Cómo desea realizar el pago?",
                     "Forma de Pago",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    formasPago,
-                    formasPago[0]
+                    null, formasPago, formasPago[0]
             );
 
             if (formaPago == JOptionPane.CLOSED_OPTION) {
                 return;
             }
 
-            // 2. Si es efectivo, mostrar panel de cobro
+            formaPagoSeleccionada = formasPago[formaPago];
+
+            // 2. Si es efectivo pedir monto recibido
             if (formaPago == 0) {
                 boolean pagoOk = procesarPagoEfectivo();
                 if (!pagoOk) {
                     return;
                 }
+            } else {
+                // Para otros métodos el monto recibido = total
+                montoRecibidoPago = Totalpagar;
             }
 
-            // 3. Registrar venta (comentado mientras se prueban)
+            // 3. Registrar venta y detalle
             //RegistrarVenta();
             //RegistrarDetalle();
             //ActualizarStock();
-            // 4. Guardar PDFs automáticamente
-            pdf();                          // PDF carta — guarda y abre
-            //GuardarTirillaSilencioso();     // PDF tirilla — solo guarda
+            // 4. Registrar pago automáticamente
+            int idVenta = vDAO.IdVenta();
+            Pago pago = new Pago();
+            pago.setIdVenta(idVenta);
+            pago.setFormaPago(formaPagoSeleccionada);
+            pago.setMontoTotal(Totalpagar);
+            pago.setMontoRecibido(montoRecibidoPago);
+            pago.setCambio(montoRecibidoPago - Totalpagar);
+            pago.setIdUsuario(Login.idUsuario);
+            pago.setNombreCajero(Login.nombreUsuario);
+            pagoDAO.RegistrarPago(pago);
 
-            // 5. Mostrar tirilla en pantalla
-            ImprimirFacturaTirilla();
+            // 5. Generar PDFs
+            pdf();                    // PDF carta
+            ImprimirFacturaTirilla(); // PDF tirilla
+            //GenerarTirillaHTML();   // HTML tirilla
 
+            // 6. Enviar correo al cliente en hilo separado
+            // para no bloquear la interfaz
+            String correoCliente = txtCorreoVenta.getText().trim();
+            String nombreCliente = txtNombreClienteventa.getText().trim();
+
+            if (!correoCliente.isEmpty()) {
+                new Thread(() -> {
+                    boolean enviado = EnvioCorreo.enviarFactura(
+                            correoCliente,
+                            nombreCliente,
+                            "src/pdf/venta.pdf" // ruta del PDF generado
+                    );
+                    if (enviado) {
+                        javax.swing.SwingUtilities.invokeLater(()
+                                -> JOptionPane.showMessageDialog(null,
+                                        "Factura enviada al correo: " + correoCliente)
+                        );
+                    }
+                }).start();
+            }
+
+            // 7. Limpiar
             LimpiarTableVenta();
             LimpiarClienteVenta();
         }
@@ -2542,7 +2807,19 @@ public class Sistema extends javax.swing.JFrame {
         empresa.setRazonSocial(txtRazonSocialEmpresa.getText());
         empresa.setTelefono(txtTelefonoEmpresa.getText());
         empresa.setLogo(rutaLogo); // ✅ actualizar nombre del archivo
+        empresa.setSmtpHost(txtSmtpHost.getText());
+        empresa.setSmtpPort(Integer.parseInt(txtSmtpPuerto.getText()));
+        empresa.setSmtpUsuario(txtSmtpUsuario.getText());
+        empresa.setSmtpPass(txtSmtpClave.getText());
+        // Configurar SMTP antes de guardar
+        configurarSMTP();
 
+        empresa.setSmtpHost(txtSmtpHost.getText());
+        empresa.setSmtpPort(Integer.parseInt(
+                txtSmtpPuerto.getText().isEmpty() ? "587" : txtSmtpPuerto.getText()
+        ));
+        empresa.setSmtpUsuario(txtSmtpUsuario.getText());
+        empresa.setSmtpPass(new String(txtSmtpClave.getPassword()));
         empresaDAO.ActualizarEmpresa(empresa);
         JOptionPane.showMessageDialog(null, "Datos actualizados correctamente");
     }//GEN-LAST:event_btnActualizarEmpresaActionPerformed
@@ -2742,6 +3019,106 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtRazonSocialEmpresaActionPerformed
 
+    private void cbxProveedorSMTPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxProveedorSMTPActionPerformed
+        // TODO add your handling code here:
+        configurarSMTP();
+    }
+
+    private void configurarSMTP() {
+        String proveedor = cbxProveedorSMTP.getSelectedItem().toString();
+
+        switch (proveedor) {
+            case "Gmail":
+                txtSmtpHost.setText("smtp.gmail.com");
+                txtSmtpPuerto.setText("587");
+                break;
+            case "Outlook / Hotmail":
+                txtSmtpHost.setText("smtp.office365.com");
+                txtSmtpPuerto.setText("587");
+                break;
+            case "Yahoo":
+                txtSmtpHost.setText("smtp.mail.yahoo.com");
+                txtSmtpPuerto.setText("587");
+                break;
+            case "Office 365":
+                txtSmtpHost.setText("smtp.office365.com");
+                txtSmtpPuerto.setText("587");
+                break;
+            case "Otro":
+                txtSmtpHost.setVisible(true);
+                txtSmtpPuerto.setVisible(true);
+                break;
+        }
+
+        // Ocultar campos técnicos si no es "Otro"
+        if (!proveedor.equals("Otro")) {
+            txtSmtpHost.setVisible(false);
+            txtSmtpPuerto.setVisible(false);
+        }
+    }//GEN-LAST:event_cbxProveedorSMTPActionPerformed
+
+    private void ProbarSMTPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProbarSMTPActionPerformed
+        // TODO add your handling code here:
+        configurarSMTP();
+
+        String host = txtSmtpHost.getText();
+        String puerto = txtSmtpPuerto.getText();
+        String usuario = txtSmtpUsuario.getText();
+        String clave = new String(txtSmtpClave.getPassword());
+
+        if (usuario.isEmpty() || clave.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Complete el correo y la clave SMTP");
+            return;
+        }
+
+        // Probar en hilo separado para no bloquear la UI
+        new Thread(() -> {
+            try {
+                java.util.Properties props = new java.util.Properties();
+                props.put("mail.smtp.host", host);
+                props.put("mail.smtp.port", puerto);
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+                props.put("mail.smtp.ssl.trust", host);
+
+                final String u = usuario;
+                final String p = clave;
+
+                javax.mail.Session session = javax.mail.Session.getInstance(
+                        props,
+                        new javax.mail.Authenticator() {
+                    @Override
+                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                        return new javax.mail.PasswordAuthentication(u, p);
+                    }
+                }
+                );
+
+                javax.mail.Transport transport = session.getTransport("smtp");
+                transport.connect(host, Integer.parseInt(puerto), usuario, clave);
+                transport.close();
+
+                javax.swing.SwingUtilities.invokeLater(()
+                        -> JOptionPane.showMessageDialog(null,
+                                "!!! Conexión exitosa ¡¡¡\nSMTP configurado correctamente")
+                );
+
+            } catch (Exception e) {
+                javax.swing.SwingUtilities.invokeLater(()
+                        -> JOptionPane.showMessageDialog(null,
+                                "!!! Error de conexión: ¡¡¡\n " + e.getMessage())
+                );
+            }
+        }).start();
+    }//GEN-LAST:event_ProbarSMTPActionPerformed
+
+    private void menuAcercadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAcercadeActionPerformed
+        // TODO add your handling code here:
+        Acercade acercade = new Acercade();
+        acercade.setVisible(true);
+    }//GEN-LAST:event_menuAcercadeActionPerformed
+
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(
                 this, "¿Está seguro que desea salir?",
@@ -2837,7 +3214,7 @@ public class Sistema extends javax.swing.JFrame {
         List<Productos> ListaPro = proDAO.ListarProductos();
         modelo = (DefaultTableModel) TableProducto.getModel();
         modelo.setRowCount(0); // ✅ limpiar tabla antes de listar
-        Object[] ob = new Object[10];
+        Object[] ob = new Object[12];
         for (int i = 0; i < ListaPro.size(); i++) {
             ob[0] = ListaPro.get(i).getId();
             ob[1] = ListaPro.get(i).getCodigo();
@@ -2849,6 +3226,8 @@ public class Sistema extends javax.swing.JFrame {
             ob[7] = ListaPro.get(i).getValorIva();
             ob[8] = ListaPro.get(i).getPrecioFinal();
             ob[9] = ListaPro.get(i).getEstado();
+            ob[10] = ListaPro.get(i).getCantMin();
+            ob[11] = ListaPro.get(i).getCantMax();
             modelo.addRow(ob);
         }
 
@@ -2979,6 +3358,16 @@ public class Sistema extends javax.swing.JFrame {
         TableProducto.getColumnModel().getColumn(9).setMinWidth(0);
         TableProducto.getColumnModel().getColumn(9).setMaxWidth(0);
         TableProducto.getColumnModel().getColumn(9).setPreferredWidth(0);
+
+        // ocultar la columna de CantMin (columna 10)
+        TableProducto.getColumnModel().getColumn(10).setMinWidth(0);
+        TableProducto.getColumnModel().getColumn(10).setMaxWidth(0);
+        TableProducto.getColumnModel().getColumn(10).setPreferredWidth(0);
+
+        // ocultar la columna de CantMin (columna 11)
+        TableProducto.getColumnModel().getColumn(11).setMinWidth(0);
+        TableProducto.getColumnModel().getColumn(11).setMaxWidth(0);
+        TableProducto.getColumnModel().getColumn(11).setPreferredWidth(0);
     }
 
     private void calcularIvaProducto() {
@@ -3004,6 +3393,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JLabel LabelLogo;
     private javax.swing.JLabel LabelTotal;
     private javax.swing.JLabel LabelVendedor;
+    private javax.swing.JButton ProbarSMTP;
     private javax.swing.JTable TableCliente;
     private javax.swing.JTable TableProducto;
     private javax.swing.JTable TableProveedor;
@@ -3031,6 +3421,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JButton btnSeleccionarLogo;
     private javax.swing.JButton btnVerVenta;
     private javax.swing.JComboBox<String> cbxProveedorPro;
+    private javax.swing.JComboBox<String> cbxProveedorSMTP;
     private javax.swing.JComboBox<String> cmbIva;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -3077,6 +3468,10 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
+    private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -3107,9 +3502,12 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JLabel lblLogo;
     private javax.swing.JTextField lblPrecioConIva;
     private javax.swing.JLabel lblSubTotal;
+    private javax.swing.JMenuItem menuAcercade;
     private javax.swing.JMenuItem menuCerrarSesion;
     private javax.swing.JMenuItem menuIniciarSesion;
     private javax.swing.JMenuItem menuSalir;
+    private javax.swing.JTextField txtCantMaxPro;
+    private javax.swing.JTextField txtCantMinPro;
     private javax.swing.JTextField txtCantidadVenta;
     private javax.swing.JTextField txtCodigoPro;
     private javax.swing.JTextField txtCodigoVenta;
@@ -3142,6 +3540,10 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtRazonCliente;
     private javax.swing.JTextField txtRazonProveedor;
     private javax.swing.JTextField txtRazonSocialEmpresa;
+    private javax.swing.JPasswordField txtSmtpClave;
+    private javax.swing.JTextField txtSmtpHost;
+    private javax.swing.JTextField txtSmtpPuerto;
+    private javax.swing.JTextField txtSmtpUsuario;
     private javax.swing.JTextField txtStockDisponible;
     private javax.swing.JTextField txtTelefonoCV;
     private javax.swing.JTextField txtTelefonoCliente;
@@ -3186,7 +3588,8 @@ public class Sistema extends javax.swing.JFrame {
         cbxProveedorPro.setSelectedItem("");
         txtcantPro.setText("");
         txtPrecioPro.setText("");
-
+        txtCantMinPro.setText("");  // ✅ nuevo
+        txtCantMaxPro.setText("");  // ✅ nuevo
     }
 
     private void TotalPagar() {
@@ -3300,7 +3703,7 @@ public class Sistema extends javax.swing.JFrame {
             Date date = new Date();
             fecha.add(new Chunk("Factura: 1\n", negrita));
             fecha.add(new Chunk("Fecha: "
-                    + new SimpleDateFormat("dd-MM-yyyy").format(date) + "\n\n", normal));
+                    + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date) + "\n\n", normal));
 
             // Tabla encabezado
             PdfPTable encabezado = new PdfPTable(4);
@@ -3327,16 +3730,18 @@ public class Sistema extends javax.swing.JFrame {
             String nom = txtNombreEmpresa.getText();
             String tel = txtTelefonoEmpresa.getText();
             String dir = txtDireccionEmpresa.getText();
-            String ra = txtRazonSocialEmpresa.getText();
-            String co = txtCorreoEmpresa.getText();
+            //String ra = txtRazonSocialEmpresa.getText();
+            //String co = txtCorreoEmpresa.getText();
+            String ven = LabelVendedor.getText();
 
             encabezado.addCell("");
             encabezado.addCell("Nit: " + nit
                     + "\nNombre: " + nom
                     + "\nTelefono: " + tel
                     + "\nDireccion: " + dir
-                    + "\nRazon: " + ra
-                    + "\nCorreo: " + co);
+                    //+ "\nRazon: " + ra
+                    //+ "\nCorreo: " + co
+                    + "\nVendedor: " + ven);
             encabezado.addCell(fecha);
             doc.add(encabezado);
 
@@ -3569,200 +3974,427 @@ public class Sistema extends javax.swing.JFrame {
         }
     }
 
-    private void ImprimirFacturaTirilla() {
+    private void GenerarTirillaHTML() {
         try {
             File carpeta = new File("src/pdf/");
             carpeta.mkdirs();
 
-            File file = new File("src/pdf/tirilla.pdf");
-            FileOutputStream archivo = new FileOutputStream(file);
+            File file = new File("src/pdf/tirilla.html");
 
-            // Tamaño tirilla 80mm de ancho
-            com.itextpdf.text.Rectangle tamañoTirilla
-                    = new com.itextpdf.text.Rectangle(226, 800); // 80mm en puntos
-            Document doc = new Document(tamañoTirilla, 5, 5, 10, 10);
-            PdfWriter.getInstance(doc, archivo);
-            doc.open();
+            // Obtener datos
+            Date date = new Date();
+            String fecha = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date);
 
-            com.itextpdf.text.Font titulo = new com.itextpdf.text.Font(
-                    com.itextpdf.text.Font.FontFamily.COURIER, 9,
-                    com.itextpdf.text.Font.BOLD
-            );
-            com.itextpdf.text.Font normal = new com.itextpdf.text.Font(
-                    com.itextpdf.text.Font.FontFamily.COURIER, 8,
-                    com.itextpdf.text.Font.NORMAL
-            );
-            com.itextpdf.text.Font pequeña = new com.itextpdf.text.Font(
-                    com.itextpdf.text.Font.FontFamily.COURIER, 7,
-                    com.itextpdf.text.Font.NORMAL
-            );
+            // Construir HTML
+            StringBuilder html = new StringBuilder();
+            html.append("<!DOCTYPE html><html><head>");
+            html.append("<meta charset='UTF-8'>");
+            html.append("<title>Tirilla de Venta</title>");
+            html.append("<style>");
+            html.append("@page { size: 80mm auto; margin: 0; }");
+            html.append("* { box-sizing: border-box; margin: 0; padding: 0; }");
 
-            // LOGO
-            try {
-                String rutaImagenLogo = System.getProperty("user.dir") + "/src/Img/logo_pdf.png";
-                File archivoLogo = new File(rutaImagenLogo);
+// Fondo gris en pantalla para simular la tirilla como papel
+            html.append("html { background: #ccc; }");
+            html.append("body {");
+            html.append("    font-family: 'Courier New', monospace;");
+            html.append("    font-size: 12px;");
+            html.append("    width: 80mm;");
+            html.append("    min-height: 10mm;");
+            html.append("    margin: 20px auto;");      // centrada con margen en pantalla
+            html.append("    padding: 10px;");
+            html.append("    background: white;");
+            html.append("    box-shadow: 0 2px 8px rgba(0,0,0,0.3);");  // sombra tipo papel
+            html.append("}");
 
-                if (archivoLogo.exists()) {
-                    com.itextpdf.text.Image img = com.itextpdf.text.Image.getInstance(rutaImagenLogo);
+            html.append(".centro { text-align: center; }");
+            html.append(".izquierda { text-align: left; }");
+            html.append(".derecha { text-align: right; }");
+            html.append(".separador { border-top: 1px dashed #000; margin: 5px 0; }");
+            html.append(".titulo { font-weight: bold; font-size: 13px; }");
+            html.append(".negrita { font-weight: bold; }");
+            html.append("table { width: 100%; border-collapse: collapse; }");
+            html.append("td { padding: 2px; font-size: 11px; }");
+            html.append(".total-row td { font-weight: bold; font-size: 12px; }");
+            html.append(".corte {");
+            html.append("    border-top: 2px dashed #000;");
+            html.append("    margin-top: 15px;");
+            html.append("    text-align: center;");
+            html.append("    color: #999;");
+            html.append("    font-size: 10px;");
+            html.append("    padding-top: 4px;");
+            html.append("}");
 
-                    // Ajustar al ancho de la tirilla (IMPORTANTE)
-                    img.scaleToFit(100, 50); // ancho máximo recomendado
-                    img.setAlignment(Element.ALIGN_CENTER);
+// Al imprimir: sin fondo gris, sin sombra, sin margen extra
+            html.append("@media print {");
+            html.append("    html { background: white; }");
+            html.append("    body { margin: 0; padding: 5px; box-shadow: none; width: 80mm; }");
+            html.append("    .no-print { display: none; }");
+            html.append("}");
+            html.append("</style>");
 
-                    doc.add(img);
-                } else {
-                    System.out.println("No se encontró el logo en: " + rutaImagenLogo);
-                }
-            } catch (Exception e) {
-                System.out.println("Error cargando logo: " + e.getMessage());
+            // Logo
+            String rutaLogo = System.getProperty("user.dir") + "/src/Img/logo_pdf.png";
+            File archivoLogo = new File(rutaLogo);
+            if (archivoLogo.exists()) {
+                html.append("<div class='centro'>");
+                html.append("<img src='").append(rutaLogo).append("' ");
+                html.append("style='max-width:100px; max-height:60px;'/>");
+                html.append("</div>");
             }
 
             // Encabezado empresa
-            Paragraph encabezado = new Paragraph();
-            encabezado.setAlignment(Element.ALIGN_CENTER);
-            encabezado.add(new Chunk(txtNombreEmpresa.getText() + "\n", titulo));
-            encabezado.add(new Chunk(txtDireccionEmpresa.getText() + "\n", normal));
-            encabezado.add(new Chunk("Tel: " + txtTelefonoEmpresa.getText() + "\n", normal));
-            encabezado.add(new Chunk("NIT: " + txtNitEmpresa.getText() + "\n", normal));
-            doc.add(encabezado);
+            html.append("<div class='centro'>");
+            html.append("<p class='titulo'>").append(txtNombreEmpresa.getText()).append("</p>");
+            html.append("<p>").append(txtDireccionEmpresa.getText()).append("</p>");
+            html.append("<p>Tel: ").append(txtTelefonoEmpresa.getText()).append("</p>");
+            html.append("<p>NIT: ").append(txtNitEmpresa.getText()).append("</p>");
+            html.append("<p>Ven: ").append(LabelVendedor.getText()).append("</p>");
+            html.append("</div>");
 
             // Separador
-            doc.add(new Paragraph("--------------------------------", pequeña));
+            html.append("<div class='separador'></div>");
 
-            // Fecha y factura
-            Paragraph info = new Paragraph();
-            info.setAlignment(Element.ALIGN_LEFT);
-            Date date = new Date();
-            info.add(new Chunk("Fecha: " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date) + "\n", normal));
-            info.add(new Chunk("Cliente: " + txtNombreClienteventa.getText() + "\n", normal));
-            info.add(new Chunk("NIT/CC: " + txtNitventa.getText() + "\n", normal));
-            doc.add(info);
+            // Info venta
+            html.append("<div class='izquierda'>");
+            html.append("<p>Fecha: ").append(fecha).append("</p>");
+            html.append("<p>Cliente: ").append(txtNombreClienteventa.getText()).append("</p>");
+            html.append("<p>NIT/CC: ").append(txtNitventa.getText()).append("</p>");
+            html.append("</div>");
 
             // Separador
-            doc.add(new Paragraph("--------------------------------", pequeña));
+            html.append("<div class='separador'></div>");
 
-            // Encabezado productos
-            PdfPTable tablapro = new PdfPTable(4);
-            tablapro.setWidthPercentage(100);
-            tablapro.getDefaultCell().setBorder(0);
-            float[] anchos = new float[]{8f, 30f, 15f, 20f};
-            tablapro.setWidths(anchos);
+            // Tabla productos
+            html.append("<table>");
+            html.append("<tr>");
+            html.append("<td class='negrita'>Cnt</td>");
+            html.append("<td class='negrita'>Descripción</td>");
+            html.append("<td class='negrita' align='right'>P.U</td>");
+            html.append("<td class='negrita' align='right'>Total</td>");
+            html.append("</tr>");
 
-            PdfPCell h1 = new PdfPCell(new Phrase("Cnt", titulo));
-            PdfPCell h2 = new PdfPCell(new Phrase("Descripcion", titulo));
-            PdfPCell h3 = new PdfPCell(new Phrase("P.U", titulo));
-            PdfPCell h4 = new PdfPCell(new Phrase("Total", titulo));
-            h1.setBorder(0);
-            h2.setBorder(0);
-            h3.setBorder(0);
-            h4.setBorder(0);
-            tablapro.addCell(h1);
-            tablapro.addCell(h2);
-            tablapro.addCell(h3);
-            tablapro.addCell(h4);
-
-            // Filas productos
             for (int i = 0; i < TableVenta.getRowCount(); i++) {
                 String cant = TableVenta.getValueAt(i, 2).toString();
                 String desc = TableVenta.getValueAt(i, 1).toString();
                 String precio = TableVenta.getValueAt(i, 3).toString();
                 String total = TableVenta.getValueAt(i, 5).toString();
 
-                PdfPCell c1 = new PdfPCell(new Phrase(cant, normal));
-                PdfPCell c2 = new PdfPCell(new Phrase(desc, normal));
-                PdfPCell c3 = new PdfPCell(new Phrase(precio, normal));
-                PdfPCell c4 = new PdfPCell(new Phrase(total, normal));
-                c1.setBorder(0);
-                c2.setBorder(0);
-                c3.setBorder(0);
-                c4.setBorder(0);
-                tablapro.addCell(c1);
-                tablapro.addCell(c2);
-                tablapro.addCell(c3);
-                tablapro.addCell(c4);
+                html.append("<tr>");
+                html.append("<td>").append(cant).append("</td>");
+                html.append("<td>").append(desc).append("</td>");
+                html.append("<td align='right'>").append(precio).append("</td>");
+                html.append("<td align='right'>").append(total).append("</td>");
+                html.append("</tr>");
             }
-            doc.add(tablapro);
+            html.append("</table>");
 
             // Separador
-            doc.add(new Paragraph("--------------------------------", pequeña));
+            html.append("<div class='separador'></div>");
 
-// Totales alineados con las columnas de productos
-            PdfPTable tablaTotales = new PdfPTable(4);
-            tablaTotales.setWidthPercentage(100);
-            float[] anchosTotales = new float[]{8f, 20f, 20f, 20f};
-            tablaTotales.setWidths(anchosTotales);
+            // Totales
+            html.append("<table>");
+            html.append("<tr>");
+            html.append("<td></td>");
+            html.append("<td align='right'>SubTotal: $</td>");
+            html.append("<td align='right'>").append(lblSubTotal.getText()).append("</td>");
+            html.append("</tr>");
+            html.append("<tr>");
+            html.append("<td></td>");
+            html.append("<td align='right'>IVA: $</td>");
+            html.append("<td align='right'>").append(lblIva.getText()).append("</td>");
+            html.append("</tr>");
+            html.append("<tr class='total-row'>");
+            html.append("<td></td>");
+            html.append("<td align='right'>TOTAL: $</td>");
+            html.append("<td align='right'>").append(LabelTotal.getText()).append("</td>");
+            html.append("</tr>");
+            html.append("</table>");
 
-// Fila SubTotal
-            PdfPCell vacio1 = new PdfPCell(new Phrase("", normal));
-            PdfPCell vacio2 = new PdfPCell(new Phrase("", normal));
-            PdfPCell labelSub = new PdfPCell(new Phrase("SubTotal: $", normal));
-            PdfPCell valorSub = new PdfPCell(new Phrase(lblSubTotal.getText(), normal));
-            vacio1.setBorder(0);
-            vacio2.setBorder(0);
-            labelSub.setBorder(0);
-            valorSub.setBorder(0);
-            labelSub.setHorizontalAlignment(Element.ALIGN_LEFT);
-            valorSub.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            tablaTotales.addCell(vacio1);
-            tablaTotales.addCell(vacio2);
-            tablaTotales.addCell(labelSub);
-            tablaTotales.addCell(valorSub);
+            // Separador y pie
+            html.append("<div class='separador'></div>");
+            html.append("<div class='centro'>");
+            html.append("<p class='negrita'>Gracias por su compra</p>");
+            html.append("<p style='font-size:10px'>Desarrollado por Gustavo Celis ©</p>");
+            html.append("</div>");
 
-// Fila IVA
-            PdfPCell vacio3 = new PdfPCell(new Phrase("", normal));
-            PdfPCell vacio4 = new PdfPCell(new Phrase("", normal));
-            PdfPCell labelIva = new PdfPCell(new Phrase("IVA:      $", normal));
-            PdfPCell valorIva = new PdfPCell(new Phrase(lblIva.getText(), normal));
-            vacio3.setBorder(0);
-            vacio4.setBorder(0);
-            labelIva.setBorder(0);
-            valorIva.setBorder(0);
-            labelIva.setHorizontalAlignment(Element.ALIGN_LEFT);
-            valorIva.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            tablaTotales.addCell(vacio3);
-            tablaTotales.addCell(vacio4);
-            tablaTotales.addCell(labelIva);
-            tablaTotales.addCell(valorIva);
+            // Línea de corte
+            html.append("<div class='corte'>✂ - - - - - - - - - - - - ✂</div>");
 
-// Fila TOTAL
-            PdfPCell vacio5 = new PdfPCell(new Phrase("", normal));
-            PdfPCell vacio6 = new PdfPCell(new Phrase("", normal));
-            PdfPCell labelTot = new PdfPCell(new Phrase("TOTAL:   $", titulo));
-            PdfPCell valorTot = new PdfPCell(new Phrase(LabelTotal.getText(), titulo));
-            vacio5.setBorder(0);
-            vacio6.setBorder(0);
-            labelTot.setBorder(0);
-            valorTot.setBorder(0);
-            labelTot.setHorizontalAlignment(Element.ALIGN_LEFT);
-            valorTot.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            tablaTotales.addCell(vacio5);
-            tablaTotales.addCell(vacio6);
-            tablaTotales.addCell(labelTot);
-            tablaTotales.addCell(valorTot);
+            // Botón imprimir (no sale en impresión)
+// Botón imprimir (no sale en impresión)
+            html.append("<div class='no-print' style='text-align:center; margin-top:20px; padding-bottom:15px'>");
 
-            doc.add(tablaTotales);
+// Botón principal - abre diálogo del sistema que SÍ respeta @page
+            html.append("<button onclick='imprimirSistema()' ");
+            html.append("style='padding:10px 20px; cursor:pointer; margin:5px; ");
+            html.append("background:#0066cc; color:white; border:none; ");
+            html.append("border-radius:5px; font-size:14px'>");
+            html.append("🖨️ Imprimir Tirilla</button>");
 
-            // Separador
-            doc.add(new Paragraph("--------------------------------", pequeña));
+// Instrucción para el usuario
+            html.append("<br><small style='color:#666; font-size:10px; display:block; margin-top:8px;'>");
+            html.append("En el diálogo: Tamaño = 80mm / Márgenes = Ninguno</small>");
 
-            // Pie
-            Paragraph pie = new Paragraph();
-            pie.setAlignment(Element.ALIGN_CENTER);
-            pie.add(new Chunk("\nGracias por su compra\n", titulo));
-            pie.add(new Chunk("Desarrollado por Gustavo Celis ©\n", pequeña));
-            doc.add(pie);
+            html.append("</div>");
+
+            html.append("<script>");
+
+// Función que abre el diálogo del SISTEMA OPERATIVO (no el del navegador)
+// Este diálogo sí respeta @page size: 80mm
+            html.append("function imprimirSistema() {");
+            html.append("    // Inyectar estilos de impresión reforzados");
+            html.append("    var s = document.createElement('style');");
+            html.append("    s.id = 'estiloImpresion';");
+            html.append("    s.textContent = '@page { size: 80mm auto !important; margin: 0 !important; } body { width: 80mm !important; margin: 0 !important; padding: 5px !important; }';");
+            html.append("    document.head.appendChild(s);");
+
+// Pequeño delay para que el estilo se aplique antes de abrir el diálogo
+            html.append("    setTimeout(function() {");
+// execCommand('print') abre el diálogo del sistema en la mayoría de navegadores
+            html.append("        if (document.execCommand) {");
+            html.append("            document.execCommand('print', false, null);");
+            html.append("        } else {");
+            html.append("            window.print();");
+            html.append("        }");
+            html.append("        // Limpiar estilo después de imprimir");
+            html.append("        setTimeout(function() {");
+            html.append("            var el = document.getElementById('estiloImpresion');");
+            html.append("            if (el) el.parentNode.removeChild(el);");
+            html.append("        }, 2000);");
+            html.append("    }, 100);");
+            html.append("}");
+
+            html.append("</script>");
+            html.append("</body></html>");
+
+            // Guardar archivo HTML
+            java.io.FileWriter fw = new java.io.FileWriter(file);
+            fw.write(html.toString());
+            fw.close();
+
+            // Abrir en navegador
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(file.toURI());
+            }
+
+            System.out.println("Tirilla HTML generada: " + file.getAbsolutePath());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error al generar tirilla HTML: " + e.getMessage());
+        }
+    }
+
+    private void ImprimirFacturaTirilla() {
+        try {
+            File carpeta = new File("src/pdf/");
+            carpeta.mkdirs();
+            File file = new File("src/pdf/tirilla.pdf");
+
+            com.itextpdf.text.Font titulo = new com.itextpdf.text.Font(
+                    com.itextpdf.text.Font.FontFamily.COURIER, 9,
+                    com.itextpdf.text.Font.BOLD);
+            com.itextpdf.text.Font normal = new com.itextpdf.text.Font(
+                    com.itextpdf.text.Font.FontFamily.COURIER, 8,
+                    com.itextpdf.text.Font.NORMAL);
+            com.itextpdf.text.Font pequeña = new com.itextpdf.text.Font(
+                    com.itextpdf.text.Font.FontFamily.COURIER, 7,
+                    com.itextpdf.text.Font.NORMAL);
+
+            // ── PASO 1: MEDIR ALTURA EN BUFFER ──────────────────
+            java.io.ByteArrayOutputStream buffer
+                    = new java.io.ByteArrayOutputStream();
+            com.itextpdf.text.Rectangle paginaGrande
+                    = new com.itextpdf.text.Rectangle(226, 5000);
+            Document docMedir = new Document(paginaGrande, 5, 5, 10, 10);
+            com.itextpdf.text.pdf.PdfWriter writerMedir
+                    = com.itextpdf.text.pdf.PdfWriter.getInstance(docMedir, buffer);
+            docMedir.open();
+
+            // ← Mismo contenido original
+            construirContenidoTirilla(docMedir, titulo, normal, pequeña);
+
+            // Medir altura real usada
+            float alturaReal = docMedir.top()
+                    - writerMedir.getVerticalPosition(true) + 40f;
+            docMedir.close();
+
+            // ── PASO 2: GENERAR PDF CON ALTURA EXACTA ────────────
+            com.itextpdf.text.Rectangle paginaFinal
+                    = new com.itextpdf.text.Rectangle(226, alturaReal);
+            Document doc = new Document(paginaFinal, 5, 5, 10, 10);
+            FileOutputStream archivo = new FileOutputStream(file);
+            PdfWriter.getInstance(doc, archivo);
+            doc.open();
+
+            // ← Mismo contenido original
+            construirContenidoTirilla(doc, titulo, normal, pequeña);
 
             doc.close();
             archivo.close();
 
-            // Abrir tirilla automáticamente
             if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().open(file);
+                //Desktop.getDesktop().open(file); ** generar pdf en escritorio
+                Desktop.getDesktop().print(file); //** generar pdf en impresión
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al imprimir tirilla: " + e.getMessage());
+            JOptionPane.showMessageDialog(null,
+                    "Error al imprimir tirilla: " + e.getMessage());
         }
+    }
+
+// ── CONTENIDO ORIGINAL SIN CAMBIAR NADA ──────────────────────
+    private void construirContenidoTirilla(Document doc,
+            com.itextpdf.text.Font titulo,
+            com.itextpdf.text.Font normal,
+            com.itextpdf.text.Font pequeña) throws Exception {
+
+        // LOGO
+        try {
+            String rutaImagenLogo = System.getProperty("user.dir") + "/src/Img/logo_pdf.png";
+            File archivoLogo = new File(rutaImagenLogo);
+            if (archivoLogo.exists()) {
+                com.itextpdf.text.Image img = com.itextpdf.text.Image.getInstance(rutaImagenLogo);
+                img.scaleToFit(100, 50);
+                img.setAlignment(Element.ALIGN_CENTER);
+                doc.add(img);
+            }
+        } catch (Exception e) {
+            System.out.println("Error cargando logo: " + e.getMessage());
+        }
+
+        // Encabezado empresa
+        Paragraph encabezado = new Paragraph();
+        encabezado.setAlignment(Element.ALIGN_CENTER);
+        encabezado.add(new Chunk(txtNombreEmpresa.getText() + "\n", titulo));
+        encabezado.add(new Chunk(txtDireccionEmpresa.getText() + "\n", normal));
+        encabezado.add(new Chunk("Tel: " + txtTelefonoEmpresa.getText() + "\n", normal));
+        encabezado.add(new Chunk("NIT: " + txtNitEmpresa.getText() + "\n", normal));
+        encabezado.add(new Chunk("Cajero: " + LabelVendedor.getText() + "\n", normal));
+        doc.add(encabezado);
+
+        // Separador
+        doc.add(new Paragraph("--------------------------------", pequeña));
+
+        // Fecha y cliente
+        Paragraph info = new Paragraph();
+        info.setAlignment(Element.ALIGN_LEFT);
+        Date date = new Date();
+        info.add(new Chunk("Fecha: " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date) + "\n", normal));
+        info.add(new Chunk("Cliente: " + txtNombreClienteventa.getText() + "\n", normal));
+        info.add(new Chunk("NIT/CC: " + txtNitventa.getText() + "\n", normal));
+        doc.add(info);
+
+        // Separador
+        doc.add(new Paragraph("--------------------------------", pequeña));
+
+        // ── TABLA PRODUCTOS (ahora en el lugar correcto) ──
+        PdfPTable tablapro = new PdfPTable(4);
+        tablapro.setWidthPercentage(100);
+        tablapro.getDefaultCell().setBorder(0);
+        tablapro.setWidths(new float[]{10f, 30f, 15f, 20f});
+
+        PdfPCell h1 = new PdfPCell(new Phrase("Cant", titulo));
+        PdfPCell h2 = new PdfPCell(new Phrase("Descripcion", titulo));
+        PdfPCell h3 = new PdfPCell(new Phrase("P.Unit.", titulo));
+        PdfPCell h4 = new PdfPCell(new Phrase("Total", titulo));
+        h1.setBorder(0);
+        h2.setBorder(0);
+        h3.setBorder(0);
+        h4.setBorder(0);
+        tablapro.addCell(h1);
+        tablapro.addCell(h2);
+        tablapro.addCell(h3);
+        tablapro.addCell(h4);
+
+        for (int i = 0; i < TableVenta.getRowCount(); i++) {
+            String cant = TableVenta.getValueAt(i, 2).toString();
+            String desc = TableVenta.getValueAt(i, 1).toString();
+            String precio = TableVenta.getValueAt(i, 3).toString();
+            String total = TableVenta.getValueAt(i, 5).toString();
+            PdfPCell c1 = new PdfPCell(new Phrase(cant, normal));
+            PdfPCell c2 = new PdfPCell(new Phrase(desc, normal));
+            PdfPCell c3 = new PdfPCell(new Phrase(precio, normal));
+            PdfPCell c4 = new PdfPCell(new Phrase(total, normal));
+            c1.setBorder(0);
+            c2.setBorder(0);
+            c3.setBorder(0);
+            c4.setBorder(0);
+            tablapro.addCell(c1);
+            tablapro.addCell(c2);
+            tablapro.addCell(c3);
+            tablapro.addCell(c4);
+        }
+        doc.add(tablapro);
+
+        // Separador
+        doc.add(new Paragraph("--------------------------------", pequeña));
+
+        // Totales
+        PdfPTable tablaTotales = new PdfPTable(4);
+        tablaTotales.setWidthPercentage(100);
+        tablaTotales.setWidths(new float[]{8f, 20f, 20f, 20f});
+
+        PdfPCell vacio1 = new PdfPCell(new Phrase("", normal));
+        vacio1.setBorder(0);
+        PdfPCell vacio2 = new PdfPCell(new Phrase("", normal));
+        vacio2.setBorder(0);
+        PdfPCell labelSub = new PdfPCell(new Phrase("SubTotal: $", normal));
+        labelSub.setBorder(0);
+        PdfPCell valorSub = new PdfPCell(new Phrase(lblSubTotal.getText(), normal));
+        valorSub.setBorder(0);
+        labelSub.setHorizontalAlignment(Element.ALIGN_LEFT);
+        valorSub.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        tablaTotales.addCell(vacio1);
+        tablaTotales.addCell(vacio2);
+        tablaTotales.addCell(labelSub);
+        tablaTotales.addCell(valorSub);
+
+        PdfPCell vacio3 = new PdfPCell(new Phrase("", normal));
+        vacio3.setBorder(0);
+        PdfPCell vacio4 = new PdfPCell(new Phrase("", normal));
+        vacio4.setBorder(0);
+        PdfPCell labelIva = new PdfPCell(new Phrase("IVA:      $", normal));
+        labelIva.setBorder(0);
+        PdfPCell valorIva = new PdfPCell(new Phrase(lblIva.getText(), normal));
+        valorIva.setBorder(0);
+        labelIva.setHorizontalAlignment(Element.ALIGN_LEFT);
+        valorIva.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        tablaTotales.addCell(vacio3);
+        tablaTotales.addCell(vacio4);
+        tablaTotales.addCell(labelIva);
+        tablaTotales.addCell(valorIva);
+
+        PdfPCell vacio5 = new PdfPCell(new Phrase("", normal));
+        vacio5.setBorder(0);
+        PdfPCell vacio6 = new PdfPCell(new Phrase("", normal));
+        vacio6.setBorder(0);
+        PdfPCell labelTot = new PdfPCell(new Phrase("TOTAL:   $", titulo));
+        labelTot.setBorder(0);
+        PdfPCell valorTot = new PdfPCell(new Phrase(LabelTotal.getText(), titulo));
+        valorTot.setBorder(0);
+        labelTot.setHorizontalAlignment(Element.ALIGN_LEFT);
+        valorTot.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        tablaTotales.addCell(vacio5);
+        tablaTotales.addCell(vacio6);
+        tablaTotales.addCell(labelTot);
+        tablaTotales.addCell(valorTot);
+
+        doc.add(tablaTotales);
+
+        // Separador
+        doc.add(new Paragraph("--------------------------------", pequeña));
+
+        // Pie
+        Paragraph pie = new Paragraph();
+        pie.setAlignment(Element.ALIGN_CENTER);
+        pie.add(new Chunk("\nGracias por su compra\n", titulo));
+        pie.add(new Chunk("Desarrollado por Gustavo Celis ©\n", pequeña));
+        doc.add(pie);
+
+        doc.add(new Paragraph("\n\n", pequeña));
     }
 
     private boolean procesarPagoEfectivo() {
@@ -3839,7 +4471,13 @@ public class Sistema extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ingrese un valor numérico válido.");
             return false;
         }
-
+        try {
+            montoRecibidoPago = Double.parseDouble(
+                    txtPago.getText().replace(",", ".").trim()
+            );
+        } catch (NumberFormatException e) {
+            montoRecibidoPago = Totalpagar;
+        }
         return true;
     }
 
@@ -3867,4 +4505,71 @@ public class Sistema extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error al guardar tirilla: " + e.getMessage());
         }
     }*/
+    
+    // Verificar alertas de stock al iniciar sesión
+    private void verificarAlertasStock() {
+
+        // Solo Administrador y Bodega
+        if (Login.tipoUsuario != 1 && Login.tipoUsuario != 3) {
+            return;
+        }
+
+        List<Productos> lista = proDAO.ListarProductos();
+
+        StringBuilder alertaMin = new StringBuilder();
+        StringBuilder alertaMax = new StringBuilder();
+
+        for (Productos p : lista) {
+
+            if (p.getEstado() == 0) {
+                continue;
+            }
+
+            // STOCK MINIMO
+            if (p.getCantMin() > 0 && p.getStock() <= p.getCantMin()) {
+
+                alertaMin.append("*** ")
+                        .append(p.getNombre())
+                        .append(" — Stock: ")
+                        .append(p.getStock())
+                        .append(" (Mín: ")
+                        .append(p.getCantMin())
+                        .append(") ***\n");
+            }
+
+            // STOCK MAXIMO
+            if (p.getCantMax() > 0 && p.getStock() >= p.getCantMax()) {
+
+                alertaMax.append("*** ")
+                        .append(p.getNombre())
+                        .append(" — Stock: ")
+                        .append(p.getStock())
+                        .append(" (Máx: ")
+                        .append(p.getCantMax())
+                        .append(") ***\n");
+            }
+        }
+
+        // ALERTA STOCK MINIMO
+        if (alertaMin.length() > 0) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "ALERTA DE STOCK MINIMO:\n" + alertaMin,
+                    "Alerta de Inventario",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+        // ALERTA STOCK MAXIMO
+        if (alertaMax.length() > 0) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "ADVERTENCIA DE STOCK MAXIMO:\n" + alertaMax,
+                    "Inventario Completo",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
 }

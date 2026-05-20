@@ -173,6 +173,8 @@ public class InventarioDAO {
                 proinv.setUltimoMovimiento(rs.getString("ultimo_movimiento"));
                 proinv.setUltimaObservacion(rs.getString("ultima_observacion"));
                 proinv.setUsuario(rs.getString("ultimo_usuario"));
+                proinv.setCantMin(rs.getInt("cant_min"));
+                proinv.setCantMax(rs.getInt("cant_max"));
                 ListaPro.add(proinv);
             }
         } catch (SQLException e) {
