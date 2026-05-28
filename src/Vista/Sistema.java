@@ -172,7 +172,9 @@ public class Sistema extends javax.swing.JFrame {
             case 1: // Administrador - ve todo
                 jButton9.setVisible(true);
                 menuSalir.setVisible(true);
-                break;
+                jMenu3.setVisible(true);
+                break;/*
+                //botones ocultos
             case 2: // Cajero - solo ventas y clientes
                 jButton6.setVisible(false); // ocultar Config
                 jButton9.setVisible(false);
@@ -184,6 +186,7 @@ public class Sistema extends javax.swing.JFrame {
                 jButton2.setEnabled(false); // ✅ bloqueado
                 jButton4.setEnabled(false); // ✅ bloqueado
                 jButton5.setEnabled(false); // ✅ bloqueado
+                jMenu3.setVisible(false);
                 break;
             case 3: // Bodega - solo inventario y productos
                 jButton9.setVisible(false);
@@ -192,6 +195,31 @@ public class Sistema extends javax.swing.JFrame {
                 jButton5.setVisible(false); // ocultar Ventas
                 jButton6.setVisible(false); // ocultar Config
                 menuSalir.setVisible(true);
+                jMenu3.setVisible(false);
+                break;*/
+                
+                //botones visibles y bloqueados
+            case 2: // Cajero - solo ventas y clientes
+                jButton6.setEnabled(false); // ocultar Config
+                jButton9.setEnabled(false);
+                jButton3.setEnabled(false); // ocultar Proveedores
+                jButton7.setEnabled(false); // ocultar Inventario
+                jButton1.setEnabled(false); // ← Ventas deshabilitado hasta abrir caja
+                menuSalir.setVisible(true);
+                jButton1.setEnabled(false); // ✅ bloqueado hasta abrir caja
+                jButton2.setEnabled(false); // ✅ bloqueado
+                jButton4.setEnabled(false); // ✅ bloqueado
+                jButton5.setEnabled(false); // ✅ bloqueado
+                jMenu3.setVisible(false);
+                break;
+            case 3: // Bodega - solo inventario y productos
+                jButton9.setEnabled(false);
+                jButton1.setEnabled(false); // ocultar Nueva Venta
+                jButton2.setEnabled(false); // ocultar Clientes
+                jButton5.setEnabled(false); // ocultar Ventas
+                jButton6.setEnabled(false); // ocultar Config
+                menuSalir.setVisible(true);
+                jMenu3.setVisible(false);
                 break;
         }
         // Si NO es cajero, ocultar el menú de caja
@@ -459,14 +487,12 @@ public class Sistema extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
         LabelLogo = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
         LabelVendedor = new javax.swing.JLabel();
         lblHora = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
         txtDev = new javax.swing.JLabel();
-        jButton9 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
@@ -605,6 +631,8 @@ public class Sistema extends javax.swing.JFrame {
         txtSmtpPuerto = new javax.swing.JTextField();
         txtSmtpUsuario = new javax.swing.JTextField();
         txtSmtpClave = new javax.swing.JPasswordField();
+        jButton9 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuIniciarSesion = new javax.swing.JMenuItem();
@@ -669,15 +697,6 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/config.png"))); // NOI18N
-        jButton6.setText("Config");
-        jButton6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
         LabelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabelLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/logo!.jpg"))); // NOI18N
 
@@ -704,14 +723,6 @@ public class Sistema extends javax.swing.JFrame {
         txtDev.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtDev.setText("Versión 1.0 Gustavo Celis 2026 ©");
         txtDev.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/persona-de-libre-dedicacion 24.png"))); // NOI18N
-        jButton9.setText("Usuarios");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -742,12 +753,7 @@ public class Sistema extends javax.swing.JFrame {
                                 .addComponent(LabelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -774,16 +780,12 @@ public class Sistema extends javax.swing.JFrame {
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                 .addComponent(txtDev)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 800));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 750));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/label6.jpg"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 0, -1, 140));
@@ -1949,6 +1951,25 @@ public class Sistema extends javax.swing.JFrame {
         jTabbedPane1.addTab("tab6", jPanel7);
 
         getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, 960, 600));
+
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/persona-de-libre-dedicacion 24.png"))); // NOI18N
+        jButton9.setText("Usuarios");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 80, 200, 50));
+
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/config.png"))); // NOI18N
+        jButton6.setText("Config");
+        jButton6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, 200, 49));
 
         jMenu1.setText("Menú");
 
