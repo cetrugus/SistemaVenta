@@ -42,9 +42,6 @@ Este proyecto fue desarrollado utilizando Java Swing y MySQL.
 ## Login
 ![Login](screenshots/login.png)
 
-## Dashboard
-![Dashboard](screenshots/dashboard.png)
-
 ## Inventario
 ![Inventario](screenshots/inventario.png)
 
