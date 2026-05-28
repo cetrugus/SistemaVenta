@@ -26,8 +26,12 @@ public class ReporteUsFech extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(null);
         //imagen de logo carrito
-        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/carrito-de-compras_logo.png"));
         setIconImage(icono.getImage());
+
+        // AGRUPAR RADIO BUTTONS
+        bgReporte.add(rbInventario);
+        bgReporte.add(rbHistorial);
 
         rbInventario.setSelected(true);
         cargarUsuario("productos");
@@ -204,21 +208,38 @@ public class ReporteUsFech extends javax.swing.JDialog {
 
     // Carga los usuarios en el ComboBox
     private void cargarUsuario(String tabla) {
+
         cbxUsuario.removeAllItems();
+
         cbxUsuario.addItem("-Seleccionar Usuario-");
+        cbxUsuario.addItem("Todos");
+
         try {
+
             Conexion con = new Conexion();
             Connection conn = con.getConnection();
+
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT DISTINCT usuario FROM " + tabla + " ORDER BY usuario"
             );
+
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
-                cbxUsuario.addItem(rs.getString(1));
+
+                String usuario = rs.getString("usuario");
+
+                if (usuario != null && !usuario.trim().isEmpty()) {
+                    cbxUsuario.addItem(usuario);
+                }
             }
+
             rs.close();
+            ps.close();
             conn.close();
+
         } catch (Exception e) {
+
             System.out.println("Error cargando usuarios: " + e.getMessage());
         }
     }

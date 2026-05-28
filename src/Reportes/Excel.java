@@ -43,19 +43,35 @@ public class Excel {
         Sheet sheet = book.createSheet("Productos");
 
         try {
-            InputStream is = new FileInputStream("src/img/logo!.png");
-            byte[] bytes = IOUtils.toByteArray(is);
-            int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-            is.close();
+            Conexion conLogo = new Conexion();
+            Connection connLogo = conLogo.getConnection();
+            PreparedStatement psLogo = connLogo.prepareStatement("SELECT logo FROM empresa LIMIT 1");
+            ResultSet rsLogo = psLogo.executeQuery();
+            String nombreArchivo = null;
+            if (rsLogo.next()) {
+                nombreArchivo = rsLogo.getString(1);
+            }
+            rsLogo.close();
+            psLogo.close();
+            connLogo.close();
 
-            CreationHelper help = book.getCreationHelper();
-            Drawing draw = sheet.createDrawingPatriarch();
+            if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+                java.net.URL ruta = Excel.class.getResource("/Img/" + nombreArchivo);
+                if (ruta != null) {
+                    InputStream is = ruta.openStream();
+                    byte[] bytes = IOUtils.toByteArray(is);
+                    int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+                    is.close();
 
-            ClientAnchor anchor = help.createClientAnchor();
-            anchor.setCol1(0);
-            anchor.setRow1(1);
-            Picture pict = draw.createPicture(anchor, imgIndex);
-            pict.resize(1, 3);
+                    CreationHelper help = book.getCreationHelper();
+                    Drawing draw = sheet.createDrawingPatriarch();
+                    ClientAnchor anchor = help.createClientAnchor();
+                    anchor.setCol1(0);
+                    anchor.setRow1(1);
+                    Picture pict = draw.createPicture(anchor, imgIndex);
+                    pict.resize(1, 3);
+                }
+            }
 
             CellStyle tituloEstilo = book.createCellStyle();
             tituloEstilo.setAlignment(HorizontalAlignment.CENTER);
@@ -158,19 +174,35 @@ public class Excel {
         Sheet sheet = book.createSheet("Cliente");
 
         try {
-            InputStream is = new FileInputStream("src/img/logo!.png");
-            byte[] bytes = IOUtils.toByteArray(is);
-            int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-            is.close();
+            Conexion conLogo = new Conexion();
+            Connection connLogo = conLogo.getConnection();
+            PreparedStatement psLogo = connLogo.prepareStatement("SELECT logo FROM empresa LIMIT 1");
+            ResultSet rsLogo = psLogo.executeQuery();
+            String nombreArchivo = null;
+            if (rsLogo.next()) {
+                nombreArchivo = rsLogo.getString(1);
+            }
+            rsLogo.close();
+            psLogo.close();
+            connLogo.close();
 
-            CreationHelper help = book.getCreationHelper();
-            Drawing draw = sheet.createDrawingPatriarch();
+            if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+                java.net.URL ruta = Excel.class.getResource("/Img/" + nombreArchivo);
+                if (ruta != null) {
+                    InputStream is = ruta.openStream();
+                    byte[] bytes = IOUtils.toByteArray(is);
+                    int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+                    is.close();
 
-            ClientAnchor anchor = help.createClientAnchor();
-            anchor.setCol1(0);
-            anchor.setRow1(1);
-            Picture pict = draw.createPicture(anchor, imgIndex);
-            pict.resize(1, 3);
+                    CreationHelper help = book.getCreationHelper();
+                    Drawing draw = sheet.createDrawingPatriarch();
+                    ClientAnchor anchor = help.createClientAnchor();
+                    anchor.setCol1(0);
+                    anchor.setRow1(1);
+                    Picture pict = draw.createPicture(anchor, imgIndex);
+                    pict.resize(1, 3);
+                }
+            }
 
             CellStyle tituloEstilo = book.createCellStyle();
             tituloEstilo.setAlignment(HorizontalAlignment.CENTER);
@@ -273,19 +305,35 @@ public class Excel {
         Sheet sheet = book.createSheet("Proveedor");
 
         try {
-            InputStream is = new FileInputStream("src/img/logo!.png");
-            byte[] bytes = IOUtils.toByteArray(is);
-            int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-            is.close();
+            Conexion conLogo = new Conexion();
+            Connection connLogo = conLogo.getConnection();
+            PreparedStatement psLogo = connLogo.prepareStatement("SELECT logo FROM empresa LIMIT 1");
+            ResultSet rsLogo = psLogo.executeQuery();
+            String nombreArchivo = null;
+            if (rsLogo.next()) {
+                nombreArchivo = rsLogo.getString(1);
+            }
+            rsLogo.close();
+            psLogo.close();
+            connLogo.close();
 
-            CreationHelper help = book.getCreationHelper();
-            Drawing draw = sheet.createDrawingPatriarch();
+            if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+                java.net.URL ruta = Excel.class.getResource("/Img/" + nombreArchivo);
+                if (ruta != null) {
+                    InputStream is = ruta.openStream();
+                    byte[] bytes = IOUtils.toByteArray(is);
+                    int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+                    is.close();
 
-            ClientAnchor anchor = help.createClientAnchor();
-            anchor.setCol1(0);
-            anchor.setRow1(1);
-            Picture pict = draw.createPicture(anchor, imgIndex);
-            pict.resize(1, 3);
+                    CreationHelper help = book.getCreationHelper();
+                    Drawing draw = sheet.createDrawingPatriarch();
+                    ClientAnchor anchor = help.createClientAnchor();
+                    anchor.setCol1(0);
+                    anchor.setRow1(1);
+                    Picture pict = draw.createPicture(anchor, imgIndex);
+                    pict.resize(1, 3);
+                }
+            }
 
             CellStyle tituloEstilo = book.createCellStyle();
             tituloEstilo.setAlignment(HorizontalAlignment.CENTER);
@@ -388,22 +436,35 @@ public class Excel {
         Sheet sheet = book.createSheet("Inventario");
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String desdeStr = sdf.format(desde);
-            String hastaStr = sdf.format(hasta);
+            Conexion conLogo = new Conexion();
+            Connection connLogo = conLogo.getConnection();
+            PreparedStatement psLogo = connLogo.prepareStatement("SELECT logo FROM empresa LIMIT 1");
+            ResultSet rsLogo = psLogo.executeQuery();
+            String nombreArchivo = null;
+            if (rsLogo.next()) {
+                nombreArchivo = rsLogo.getString(1);
+            }
+            rsLogo.close();
+            psLogo.close();
+            connLogo.close();
 
-            InputStream is = new FileInputStream("src/img/logo!.png");
-            byte[] bytes = IOUtils.toByteArray(is);
-            int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-            is.close();
+            if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+                java.net.URL ruta = Excel.class.getResource("/Img/" + nombreArchivo);
+                if (ruta != null) {
+                    InputStream is = ruta.openStream();
+                    byte[] bytes = IOUtils.toByteArray(is);
+                    int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+                    is.close();
 
-            CreationHelper help = book.getCreationHelper();
-            Drawing draw = sheet.createDrawingPatriarch();
-            ClientAnchor anchor = help.createClientAnchor();
-            anchor.setCol1(0);
-            anchor.setRow1(1);
-            Picture pict = draw.createPicture(anchor, imgIndex);
-            pict.resize(1, 3);
+                    CreationHelper help = book.getCreationHelper();
+                    Drawing draw = sheet.createDrawingPatriarch();
+                    ClientAnchor anchor = help.createClientAnchor();
+                    anchor.setCol1(0);
+                    anchor.setRow1(1);
+                    Picture pict = draw.createPicture(anchor, imgIndex);
+                    pict.resize(1, 3);
+                }
+            }
 
             CellStyle tituloEstilo = book.createCellStyle();
             tituloEstilo.setAlignment(HorizontalAlignment.CENTER);
@@ -421,6 +482,10 @@ public class Excel {
             sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 3));
 
             // ← Muestra el rango de fechas en la fila de info
+            SimpleDateFormat sdfVista = new SimpleDateFormat("dd/MM/yyyy");
+            String desdeStr = sdfVista.format(desde);
+            String hastaStr = sdfVista.format(hasta);
+
             Row filaInfo = sheet.createRow(3);
             Cell celdaUsuario = filaInfo.createCell(1);
             celdaUsuario.setCellValue("Usuario: " + usuario);
@@ -464,14 +529,32 @@ public class Excel {
             Connection conn = con.getConnection();
 
             // ← BETWEEN reemplaza el = de fecha exacta
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT codigo, nombre, proveedor, stock, precio, valor_iva, precio_final, fecha, usuario, estado, iva "
-                    + "FROM productos "
-                    + "WHERE TRIM(usuario) = TRIM(?) AND DATE(fecha) BETWEEN ? AND ?"
-            );
-            ps.setString(1, usuario);
-            ps.setString(2, desdeBD);
-            ps.setString(3, hastaBD);
+            PreparedStatement ps;
+
+            if (usuario.equals("Todos")) {
+
+                ps = conn.prepareStatement(
+                        "SELECT codigo, nombre, proveedor, stock, precio, valor_iva, precio_final, fecha, usuario, estado, iva "
+                        + "FROM productos "
+                        + "WHERE DATE(fecha) BETWEEN ? AND ?"
+                );
+
+                ps.setString(1, desdeBD);
+                ps.setString(2, hastaBD);
+
+            } else {
+
+                ps = conn.prepareStatement(
+                        "SELECT codigo, nombre, proveedor, stock, precio, valor_iva, precio_final, fecha, usuario, estado, iva "
+                        + "FROM productos "
+                        + "WHERE TRIM(usuario) = TRIM(?) "
+                        + "AND DATE(fecha) BETWEEN ? AND ?"
+                );
+
+                ps.setString(1, usuario);
+                ps.setString(2, desdeBD);
+                ps.setString(3, hastaBD);
+            }
             ResultSet rs = ps.executeQuery();
 
             int numCol = rs.getMetaData().getColumnCount();
@@ -513,22 +596,35 @@ public class Excel {
         Sheet sheet = book.createSheet("Historial");
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String desdeStr = sdf.format(desde);
-            String hastaStr = sdf.format(hasta);
+            Conexion conLogo = new Conexion();
+            Connection connLogo = conLogo.getConnection();
+            PreparedStatement psLogo = connLogo.prepareStatement("SELECT logo FROM empresa LIMIT 1");
+            ResultSet rsLogo = psLogo.executeQuery();
+            String nombreArchivo = null;
+            if (rsLogo.next()) {
+                nombreArchivo = rsLogo.getString(1);
+            }
+            rsLogo.close();
+            psLogo.close();
+            connLogo.close();
 
-            InputStream is = new FileInputStream("src/img/logo!.png");
-            byte[] bytes = IOUtils.toByteArray(is);
-            int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-            is.close();
+            if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
+                java.net.URL ruta = Excel.class.getResource("/Img/" + nombreArchivo);
+                if (ruta != null) {
+                    InputStream is = ruta.openStream();
+                    byte[] bytes = IOUtils.toByteArray(is);
+                    int imgIndex = book.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
+                    is.close();
 
-            CreationHelper help = book.getCreationHelper();
-            Drawing draw = sheet.createDrawingPatriarch();
-            ClientAnchor anchor = help.createClientAnchor();
-            anchor.setCol1(0);
-            anchor.setRow1(1);
-            Picture pict = draw.createPicture(anchor, imgIndex);
-            pict.resize(1, 3);
+                    CreationHelper help = book.getCreationHelper();
+                    Drawing draw = sheet.createDrawingPatriarch();
+                    ClientAnchor anchor = help.createClientAnchor();
+                    anchor.setCol1(0);
+                    anchor.setRow1(1);
+                    Picture pict = draw.createPicture(anchor, imgIndex);
+                    pict.resize(1, 3);
+                }
+            }
 
             CellStyle tituloEstilo = book.createCellStyle();
             tituloEstilo.setAlignment(HorizontalAlignment.CENTER);
@@ -546,6 +642,10 @@ public class Excel {
             sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 3));
 
             // ← Muestra el rango de fechas en la fila de info
+            SimpleDateFormat sdfVista = new SimpleDateFormat("dd/MM/yyyy");
+            String desdeStr = sdfVista.format(desde);
+            String hastaStr = sdfVista.format(hasta);
+
             Row filaInfo = sheet.createRow(3);
             Cell celdaUsuario = filaInfo.createCell(1);
             celdaUsuario.setCellValue("Usuario: " + usuario);
@@ -589,14 +689,32 @@ public class Excel {
             Connection conn = con.getConnection();
 
             // ← BETWEEN reemplaza el = de fecha exacta
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT cod_pro, nombre, proveedor, tipo, cantidad, motivo, fecha, usuario "
-                    + "FROM movimientos "
-                    + "WHERE TRIM(usuario) = TRIM(?) AND DATE(fecha) BETWEEN ? AND ?"
-            );
-            ps.setString(1, usuario);
-            ps.setString(2, desdeBD);
-            ps.setString(3, hastaBD);
+            PreparedStatement ps;
+
+            if (usuario.equals("Todos")) {
+
+                ps = conn.prepareStatement(
+                        "SELECT cod_pro, nombre, proveedor, tipo, cantidad, motivo, fecha, usuario "
+                        + "FROM movimientos "
+                        + "WHERE DATE(fecha) BETWEEN ? AND ?"
+                );
+
+                ps.setString(1, desdeBD);
+                ps.setString(2, hastaBD);
+
+            } else {
+
+                ps = conn.prepareStatement(
+                        "SELECT cod_pro, nombre, proveedor, tipo, cantidad, motivo, fecha, usuario "
+                        + "FROM movimientos "
+                        + "WHERE TRIM(usuario) = TRIM(?) "
+                        + "AND DATE(fecha) BETWEEN ? AND ?"
+                );
+
+                ps.setString(1, usuario);
+                ps.setString(2, desdeBD);
+                ps.setString(3, hastaBD);
+            }
             ResultSet rs = ps.executeQuery();
 
             int numCol = rs.getMetaData().getColumnCount();
@@ -632,5 +750,91 @@ public class Excel {
             Logger.getLogger(Excel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public static void reporteCaja(javax.swing.table.DefaultTableModel modelo) {
+
+    Workbook book = new XSSFWorkbook();
+    Sheet sheet = book.createSheet("Reporte Caja");
+
+    try {
+        // Título
+        CellStyle tituloEstilo = book.createCellStyle();
+        tituloEstilo.setAlignment(HorizontalAlignment.CENTER);
+        tituloEstilo.setVerticalAlignment(VerticalAlignment.CENTER);
+        Font fuenteTitulo = book.createFont();
+        fuenteTitulo.setFontName("Arial");
+        fuenteTitulo.setBold(true);
+        fuenteTitulo.setFontHeightInPoints((short) 14);
+        tituloEstilo.setFont(fuenteTitulo);
+
+        Row filaTitulo = sheet.createRow(1);
+        Cell celdaTitulo = filaTitulo.createCell(1);
+        celdaTitulo.setCellStyle(tituloEstilo);
+        celdaTitulo.setCellValue("Reporte de Cajas");
+        sheet.addMergedRegion(new CellRangeAddress(1, 2, 1, 5));
+
+        // Encabezados
+        String[] cabecera = {
+            "Cajero", "F. Apertura", "F. Cierre",
+            "Apertura", "Cierre", "Efectivo",
+            "T. Crédito", "T. Débito", "Transfer.",
+            "Diferencia", "Estado"
+        };
+
+        CellStyle headerStyle = book.createCellStyle();
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        Font font = book.createFont();
+        font.setFontName("Arial");
+        font.setBold(true);
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setFontHeightInPoints((short) 11);
+        headerStyle.setFont(font);
+
+        Row filaEncabezados = sheet.createRow(4);
+        for (int i = 0; i < cabecera.length; i++) {
+            Cell celda = filaEncabezados.createCell(i);
+            celda.setCellStyle(headerStyle);
+            celda.setCellValue(cabecera[i]);
+        }
+
+        // Datos desde el modelo de la tabla
+        CellStyle datosEstilo = book.createCellStyle();
+        datosEstilo.setBorderBottom(BorderStyle.THIN);
+        datosEstilo.setBorderLeft(BorderStyle.THIN);
+        datosEstilo.setBorderRight(BorderStyle.THIN);
+
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            Row fila = sheet.createRow(5 + i);
+            for (int j = 1; j < modelo.getColumnCount(); j++) { // j=1 salta la columna ID oculta
+                Cell celda = fila.createCell(j - 1);
+                celda.setCellStyle(datosEstilo);
+                Object val = modelo.getValueAt(i, j);
+                celda.setCellValue(val != null ? val.toString() : "");
+            }
+        }
+
+        for (int i = 0; i < cabecera.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+        sheet.setZoom(150);
+
+        String home = System.getProperty("user.home");
+        File file = new File(home + "/Downloads/reporte_caja.xlsx");
+        FileOutputStream fileOut = new FileOutputStream(file);
+        book.write(fileOut);
+        fileOut.close();
+        book.close();
+        Desktop.getDesktop().open(file);
+        JOptionPane.showMessageDialog(null, "Reporte Generado");
+
+    } catch (FileNotFoundException ex) {
+        Logger.getLogger(Excel.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (IOException ex) {
+        Logger.getLogger(Excel.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
 }

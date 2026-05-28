@@ -9,6 +9,7 @@ import Modelo.AperturaCaja;
 import Modelo.AperturaCajaDAO;
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
+import Modelo.Constantes;
 import Modelo.Detalle;
 import Modelo.Empresa;
 import Modelo.EmpresaDAO;
@@ -116,6 +117,8 @@ public class Sistema extends javax.swing.JFrame {
             "Otro"
         }));
 
+        txtDev.setText(Constantes.VERSION);
+
         SwingUtilities.invokeLater(() -> {
             verificarAlertasStock();
         });
@@ -142,7 +145,7 @@ public class Sistema extends javax.swing.JFrame {
         timer.start();
 
         //Icono de carrito de compras del banner
-        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/carrito-de-compras_logo.png"));
         setIconImage(icono.getImage());
 
         TableVenta.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -177,6 +180,10 @@ public class Sistema extends javax.swing.JFrame {
                 jButton7.setVisible(false); // ocultar Inventario
                 jButton1.setEnabled(false); // ← Ventas deshabilitado hasta abrir caja
                 menuSalir.setVisible(true);
+                jButton1.setEnabled(false); // ✅ bloqueado hasta abrir caja
+                jButton2.setEnabled(false); // ✅ bloqueado
+                jButton4.setEnabled(false); // ✅ bloqueado
+                jButton5.setEnabled(false); // ✅ bloqueado
                 break;
             case 3: // Bodega - solo inventario y productos
                 jButton9.setVisible(false);
@@ -219,28 +226,48 @@ public class Sistema extends javax.swing.JFrame {
 
     private void mostrarLogo(String nombreArchivo) {
         if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
-            String ruta = "src/Img/" + nombreArchivo;
-            ImageIcon imagen = new ImageIcon(ruta);
 
-            // Obtener tamaño real del label
-            int ancho = LabelLogo.getWidth() > 0 ? LabelLogo.getWidth() : LabelLogo.getPreferredSize().width;
-            int alto = LabelLogo.getHeight() > 0 ? LabelLogo.getHeight() : LabelLogo.getPreferredSize().height;
+            java.net.URL ruta = getClass().getResource("/Img/" + nombreArchivo);
 
-            // Si sigue siendo 0 usar tamaño fijo
-            if (ancho <= 0) {
-                ancho = 158;
+            if (ruta != null) {
+
+                ImageIcon imagen = new ImageIcon(ruta);
+
+                int ancho = LabelLogo.getWidth() > 0
+                        ? LabelLogo.getWidth()
+                        : LabelLogo.getPreferredSize().width;
+
+                int alto = LabelLogo.getHeight() > 0
+                        ? LabelLogo.getHeight()
+                        : LabelLogo.getPreferredSize().height;
+
+                if (ancho <= 0) {
+                    ancho = 158;
+                }
+
+                if (alto <= 0) {
+                    alto = 158;
+                }
+
+                Image imgEscalada = imagen.getImage().getScaledInstance(
+                        ancho,
+                        alto,
+                        Image.SCALE_SMOOTH
+                );
+
+                LabelLogo.setText("");
+                LabelLogo.setIcon(new ImageIcon(imgEscalada));
+
+            } else {
+
+                System.out.println("No se encontró la imagen: " + nombreArchivo);
+
+                LabelLogo.setIcon(null);
+                LabelLogo.setText("Logo no encontrado");
             }
-            if (alto <= 0) {
-                alto = 158;
-            }
 
-            Image imgEscalada = imagen.getImage().getScaledInstance(
-                    ancho, alto, Image.SCALE_SMOOTH
-            );
-            LabelLogo.setText("");
-            LabelLogo.setIcon(new ImageIcon(imgEscalada));
         } else {
-            // Si no hay imagen mostrar texto placeholder
+
             LabelLogo.setIcon(null);
             LabelLogo.setText("Aquí va su logo");
             LabelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -426,7 +453,6 @@ public class Sistema extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuItem2 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -439,7 +465,7 @@ public class Sistema extends javax.swing.JFrame {
         LabelVendedor = new javax.swing.JLabel();
         lblHora = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
-        jLabel39 = new javax.swing.JLabel();
+        txtDev = new javax.swing.JLabel();
         jButton9 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -584,13 +610,15 @@ public class Sistema extends javax.swing.JFrame {
         menuIniciarSesion = new javax.swing.JMenuItem();
         menuCerrarSesion = new javax.swing.JMenuItem();
         menuSalir = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuAcercade = new javax.swing.JMenuItem();
 
-        jMenuItem2.setText("jMenuItem2");
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("SOFTWARE DE VENTAS");
+        setTitle("SOFTWARE ADMINISTRATIVO DE VENTAS");
         setIconImages(null);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -673,9 +701,9 @@ public class Sistema extends javax.swing.JFrame {
         lblFecha.setForeground(new java.awt.Color(51, 51, 255));
         lblFecha.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        jLabel39.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel39.setText("Versión 1.0 Gustavo Celis 2026 ©");
-        jLabel39.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        txtDev.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtDev.setText("Versión 1.0 Gustavo Celis 2026 ©");
+        txtDev.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/persona-de-libre-dedicacion 24.png"))); // NOI18N
         jButton9.setText("Usuarios");
@@ -691,6 +719,9 @@ public class Sistema extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(txtDev, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -701,7 +732,6 @@ public class Sistema extends javax.swing.JFrame {
                                     .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(LabelVendedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                         .addComponent(lblHora, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -712,14 +742,13 @@ public class Sistema extends javax.swing.JFrame {
                                 .addComponent(LabelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -744,13 +773,13 @@ public class Sistema extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel39)
+                .addGap(18, 18, 18)
+                .addComponent(txtDev)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -864,15 +893,15 @@ public class Sistema extends javax.swing.JFrame {
         LabelTotal.setText("Total");
 
         txtTelefonoCV.setEditable(false);
-        txtTelefonoCV.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtTelefonoCV.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         txtTelefonoCV.setEnabled(false);
 
         txtDireccionCV.setEditable(false);
-        txtDireccionCV.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtDireccionCV.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         txtDireccionCV.setEnabled(false);
 
         txtRazonCV.setEditable(false);
-        txtRazonCV.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtRazonCV.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         txtRazonCV.setEnabled(false);
 
         txtIdPro.setText("ID");
@@ -1095,7 +1124,7 @@ public class Sistema extends javax.swing.JFrame {
         btnGuardarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/GuardarTodo.png"))); // NOI18N
         btnGuardarCliente.setText("Guardar");
         btnGuardarCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        btnGuardarCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGuardarCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnGuardarCliente.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnGuardarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1106,7 +1135,7 @@ public class Sistema extends javax.swing.JFrame {
         btnActualizarClientye.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Actualizar (2).png"))); // NOI18N
         btnActualizarClientye.setText("Actualizar");
         btnActualizarClientye.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        btnActualizarClientye.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnActualizarClientye.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnActualizarClientye.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnActualizarClientyeActionPerformed(evt);
@@ -1116,7 +1145,7 @@ public class Sistema extends javax.swing.JFrame {
         btnEliminarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/encendido-apagado.png"))); // NOI18N
         btnEliminarCliente.setText("Estado");
         btnEliminarCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        btnEliminarCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEliminarCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnEliminarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarClienteActionPerformed(evt);
@@ -1126,7 +1155,7 @@ public class Sistema extends javax.swing.JFrame {
         btnNuevoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/nuevo.png"))); // NOI18N
         btnNuevoCliente.setText("Nuevo");
         btnNuevoCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        btnNuevoCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNuevoCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnNuevoCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNuevoClienteActionPerformed(evt);
@@ -1949,6 +1978,34 @@ public class Sistema extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu3.setText("Administrar");
+
+        jMenuItem1.setText("Usuarios");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem1);
+
+        jMenuItem2.setText("Cajas");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem2);
+
+        jMenuItem3.setText("Configuración");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu3);
+
         jMenu2.setText("Ayuda");
 
         menuAcercade.setText("Acerca de");
@@ -2471,7 +2528,7 @@ public class Sistema extends javax.swing.JFrame {
             // 5. Generar PDFs
             pdf();                    // PDF carta
             ImprimirFacturaTirilla(); // PDF tirilla
-            //GenerarTirillaHTML();   // HTML tirilla
+            GenerarTirillaHTML();   // HTML tirilla
 
             // 6. Enviar correo al cliente en hilo separado
             // para no bloquear la interfaz
@@ -2884,14 +2941,16 @@ public class Sistema extends javax.swing.JFrame {
 
                 // ← REGISTRAR EN BD
                 AperturaCaja ap = new AperturaCaja();
-                ap.setIdUsuario(lg.getId()); // id del usuario logueado
+                ap.setIdUsuario(Login.idUsuario);; // id del usuario logueado
                 ap.setNombreUsuario(Login.nombreUsuario);
                 ap.setMontoApertura(montoCaja);
                 aperturaCajaDAO.RegistrarApertura(ap);
 
                 montoCajaInicial = montoCaja;
-                jButton5.setEnabled(true);
                 jButton1.setEnabled(true);
+                jButton2.setEnabled(true);
+                jButton4.setEnabled(true);
+                jButton5.setEnabled(true);
                 menuIniciarSesion.setEnabled(false);
                 menuCerrarSesion.setEnabled(true);
 
@@ -2931,7 +2990,6 @@ public class Sistema extends javax.swing.JFrame {
                 double montoCierre = Double.parseDouble(
                         txtMontoCierre.getText().replace(",", ".").trim()
                 );
-
                 if (montoCierre < 0) {
                     JOptionPane.showMessageDialog(this, "El monto no puede ser negativo");
                     return;
@@ -2941,23 +2999,42 @@ public class Sistema extends javax.swing.JFrame {
                 double diferencia = montoCierre - montoCajaInicial;
                 String estadoDiferencia = diferencia >= 0
                         ? String.format("Diferencia: $ %,.2f", diferencia)
-                        : String.format("Faltante: $ %,.2f", Math.abs(diferencia));
+                        : String.format("Faltante:   $ %,.2f", Math.abs(diferencia));
 
-                // Confirmar cierre con resumen
+                // ✅ Obtener totales por forma de pago
+                AperturaCaja totales = aperturaCajaDAO.ObtenerTotalesCierre(Login.idUsuario);
+                double totalVentas = totales.getTotalEfectivo()
+                        + totales.getTotalTarjetaCredito()
+                        + totales.getTotalTarjetaDebito()
+                        + totales.getTotalTransferencia();
+
+                // Confirmar cierre con resumen detallado
                 int confirm = JOptionPane.showConfirmDialog(
                         this,
                         String.format(
                                 "Resumen de Caja:\n"
-                                + "─────────────────────\n"
-                                + "Cajero: %s\n"
-                                + "Monto apertura: $ %,.2f\n"
-                                + "Monto cierre:   $ %,.2f\n"
-                                + "─────────────────────\n"
+                                + "─────────────────────────────\n"
+                                + "Cajero:        %s\n"
+                                + "─────────────────────────────\n"
+                                + "Apertura:    $ %,.2f\n"
+                                + "Cierre:      $ %,.2f\n"
+                                + "─────────────────────────────\n"
+                                + "Efectivo:   $ %,.2f\n"
+                                + "T.Crédito:  $ %,.2f\n"
+                                + "T.Débito:   $ %,.2f\n"
+                                + "Transfer.:  $ %,.2f\n"
+                                + "─────────────────────────────\n"
+                                + "Total ventas:$ %,.2f\n"
                                 + "%s\n\n"
                                 + "¿Confirma el cierre de caja?",
                                 Login.nombreUsuario,
                                 montoCajaInicial,
                                 montoCierre,
+                                totales.getTotalEfectivo(),
+                                totales.getTotalTarjetaCredito(),
+                                totales.getTotalTarjetaDebito(),
+                                totales.getTotalTransferencia(),
+                                totalVentas,
                                 estadoDiferencia
                         ),
                         "Confirmar Cierre",
@@ -2965,26 +3042,48 @@ public class Sistema extends javax.swing.JFrame {
                 );
 
                 if (confirm == JOptionPane.YES_OPTION) {
-                    // Registrar cierre en BD
                     boolean cierreOk = aperturaCajaDAO.RegistrarCierre(
                             Login.idUsuario, montoCierre
                     );
-
                     if (cierreOk) {
+                        // ✅ Generar tirilla de cierre
+                        GenerarTirillaCierreCaja(montoCajaInicial, montoCierre,
+                                diferencia, totales);
+                        // ✅ Mensaje final con resumen completo
                         JOptionPane.showMessageDialog(this,
-                                "Caja cerrada correctamente\n" + estadoDiferencia);
-
+                                String.format(
+                                        "Caja cerrada correctamente\n"
+                                        + "─────────────────────────────\n"
+                                        + "Efectivo:   $ %,.2f\n"
+                                        + "T.Crédito:  $ %,.2f\n"
+                                        + "T.Débito:   $ %,.2f\n"
+                                        + "Transfer.:  $ %,.2f\n"
+                                        + "─────────────────────────────\n"
+                                        + "Total ventas:$ %,.2f\n"
+                                        + "%s",
+                                        totales.getTotalEfectivo(),
+                                        totales.getTotalTarjetaCredito(),
+                                        totales.getTotalTarjetaDebito(),
+                                        totales.getTotalTransferencia(),
+                                        totalVentas,
+                                        estadoDiferencia
+                                ),
+                                "Cierre de Caja",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
                         // Resetear estado
                         montoCajaInicial = 0;
+                        jButton1.setEnabled(false);
+                        jButton2.setEnabled(false);
+                        jButton4.setEnabled(false);
                         jButton5.setEnabled(false);
                         menuIniciarSesion.setEnabled(true);
                         menuCerrarSesion.setEnabled(false);
-
                     } else {
-                        JOptionPane.showMessageDialog(this, "Error al registrar cierre de caja");
+                        JOptionPane.showMessageDialog(this,
+                                "Error al registrar cierre de caja");
                     }
                 }
-
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Ingrese un valor numérico válido");
             }
@@ -3118,6 +3217,23 @@ public class Sistema extends javax.swing.JFrame {
         Acercade acercade = new Acercade();
         acercade.setVisible(true);
     }//GEN-LAST:event_menuAcercadeActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        Usuarios usuario = new Usuarios();
+        usuario.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        ReporteCajas reporte = new ReporteCajas();
+        reporte.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        jTabbedPane1.setSelectedIndex(5);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(
@@ -3283,44 +3399,17 @@ public class Sistema extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Sistema.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+            System.out.println("LnF: " + UIManager.getLookAndFeel().getName());
+        } catch (Exception e) {
+            System.out.println("Error LnF: " + e);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Sistema().setVisible(true);
+                new Login().setVisible(true);
             }
         });
-
     }
 
     private void aplicarColorEstadoPro() {
@@ -3464,7 +3553,6 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
-    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
@@ -3479,8 +3567,11 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -3517,6 +3608,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtCorreoVenta;
     private javax.swing.JTextField txtDesPro;
     private javax.swing.JTextField txtDescripcionVenta;
+    private javax.swing.JLabel txtDev;
     private javax.swing.JTextField txtDireccionCV;
     private javax.swing.JTextField txtDireccionCliente;
     private javax.swing.JTextField txtDireccionEmpresa;
@@ -3735,10 +3827,10 @@ public class Sistema extends javax.swing.JFrame {
             String ven = LabelVendedor.getText();
 
             encabezado.addCell("");
-            encabezado.addCell("Nit: " + nit
-                    + "\nNombre: " + nom
-                    + "\nTelefono: " + tel
+            encabezado.addCell("\nNombre: " + nom
+                    + "\nNit: " + nit
                     + "\nDireccion: " + dir
+                    + "\nTelefono: " + tel
                     //+ "\nRazon: " + ra
                     //+ "\nCorreo: " + co
                     + "\nVendedor: " + ven);
@@ -4046,9 +4138,9 @@ public class Sistema extends javax.swing.JFrame {
             // Encabezado empresa
             html.append("<div class='centro'>");
             html.append("<p class='titulo'>").append(txtNombreEmpresa.getText()).append("</p>");
+            html.append("<p>NIT: ").append(txtNitEmpresa.getText()).append("</p>");
             html.append("<p>").append(txtDireccionEmpresa.getText()).append("</p>");
             html.append("<p>Tel: ").append(txtTelefonoEmpresa.getText()).append("</p>");
-            html.append("<p>NIT: ").append(txtNitEmpresa.getText()).append("</p>");
             html.append("<p>Ven: ").append(LabelVendedor.getText()).append("</p>");
             html.append("</div>");
 
@@ -4058,6 +4150,8 @@ public class Sistema extends javax.swing.JFrame {
             // Info venta
             html.append("<div class='izquierda'>");
             html.append("<p>Fecha: ").append(fecha).append("</p>");
+            //nomero de factura
+            html.append("<p>Factura: ").append("1").append("</p>");
             html.append("<p>Cliente: ").append(txtNombreClienteventa.getText()).append("</p>");
             html.append("<p>NIT/CC: ").append(txtNitventa.getText()).append("</p>");
             html.append("</div>");
@@ -4235,8 +4329,8 @@ public class Sistema extends javax.swing.JFrame {
             archivo.close();
 
             if (Desktop.isDesktopSupported()) {
-                //Desktop.getDesktop().open(file); ** generar pdf en escritorio
-                Desktop.getDesktop().print(file); //** generar pdf en impresión
+                Desktop.getDesktop().open(file); //** generar pdf en escritorio
+                //Desktop.getDesktop().print(file); //** generar pdf en impresión
             }
 
         } catch (Exception e) {
@@ -4269,9 +4363,9 @@ public class Sistema extends javax.swing.JFrame {
         Paragraph encabezado = new Paragraph();
         encabezado.setAlignment(Element.ALIGN_CENTER);
         encabezado.add(new Chunk(txtNombreEmpresa.getText() + "\n", titulo));
+        encabezado.add(new Chunk("NIT: " + txtNitEmpresa.getText() + "\n", normal));
         encabezado.add(new Chunk(txtDireccionEmpresa.getText() + "\n", normal));
         encabezado.add(new Chunk("Tel: " + txtTelefonoEmpresa.getText() + "\n", normal));
-        encabezado.add(new Chunk("NIT: " + txtNitEmpresa.getText() + "\n", normal));
         encabezado.add(new Chunk("Cajero: " + LabelVendedor.getText() + "\n", normal));
         doc.add(encabezado);
 
@@ -4283,6 +4377,7 @@ public class Sistema extends javax.swing.JFrame {
         info.setAlignment(Element.ALIGN_LEFT);
         Date date = new Date();
         info.add(new Chunk("Fecha: " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date) + "\n", normal));
+        info.add(new Chunk("Factura: 1\n", normal));
         info.add(new Chunk("Cliente: " + txtNombreClienteventa.getText() + "\n", normal));
         info.add(new Chunk("NIT/CC: " + txtNitventa.getText() + "\n", normal));
         doc.add(info);
@@ -4481,7 +4576,7 @@ public class Sistema extends javax.swing.JFrame {
         return true;
     }
 
-    /*private void GuardarTirillaSilencioso() {
+    private void GuardarTirillaSilencioso() {
         try {
             File carpeta = new File("src/pdf/");
             carpeta.mkdirs();
@@ -4504,8 +4599,8 @@ public class Sistema extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al guardar tirilla: " + e.getMessage());
         }
-    }*/
-    
+    }
+
     // Verificar alertas de stock al iniciar sesión
     private void verificarAlertasStock() {
 
@@ -4570,6 +4665,196 @@ public class Sistema extends javax.swing.JFrame {
                     "Inventario Completo",
                     JOptionPane.INFORMATION_MESSAGE
             );
+        }
+    }
+
+    private void GenerarTirillaCierreCaja(double montoApertura, double montoCierre,
+            double diferencia, AperturaCaja totales) {
+        try {
+            File carpeta = new File("src/pdf/");
+            carpeta.mkdirs();
+            File file = new File("src/pdf/cierre_caja.html");
+
+            Date date = new Date();
+            String fecha = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date);
+            double totalVentas = totales.getTotalEfectivo()
+                    + totales.getTotalTarjetaCredito()
+                    + totales.getTotalTarjetaDebito()
+                    + totales.getTotalTransferencia();
+
+            StringBuilder html = new StringBuilder();
+            html.append("<!DOCTYPE html><html><head>");
+            html.append("<meta charset='UTF-8'>");
+            html.append("<title>Cierre de Caja</title>");
+            html.append("<style>");
+            html.append("@page { size: 80mm auto; margin: 0; }");
+            html.append("* { box-sizing: border-box; margin: 0; padding: 0; }");
+            html.append("html { background: #ccc; }");
+            html.append("body {");
+            html.append("    font-family: 'Courier New', monospace;");
+            html.append("    font-size: 12px;");
+            html.append("    width: 80mm;");
+            html.append("    margin: 20px auto;");
+            html.append("    padding: 10px;");
+            html.append("    background: white;");
+            html.append("    box-shadow: 0 2px 8px rgba(0,0,0,0.3);");
+            html.append("}");
+            html.append(".centro { text-align: center; }");
+            html.append(".derecha { text-align: right; }");
+            html.append(".separador { border-top: 1px dashed #000; margin: 5px 0; }");
+            html.append(".titulo { font-weight: bold; font-size: 13px; }");
+            html.append(".negrita { font-weight: bold; }");
+            html.append("table { width: 100%; border-collapse: collapse; }");
+            html.append("td { padding: 2px; font-size: 11px; }");
+            html.append(".total-row td { font-weight: bold; font-size: 12px; }");
+            html.append(".corte {");
+            html.append("    border-top: 2px dashed #000;");
+            html.append("    margin-top: 15px;");
+            html.append("    text-align: center;");
+            html.append("    color: #999;");
+            html.append("    font-size: 10px;");
+            html.append("    padding-top: 4px;");
+            html.append("}");
+            html.append("@media print {");
+            html.append("    html { background: white; }");
+            html.append("    body { margin: 0; padding: 5px;");
+            html.append("           box-shadow: none; width: 80mm; }");
+            html.append("    .no-print { display: none; }");
+            html.append("}");
+            html.append("</style></head><body>");
+
+            // Logo
+            String rutaLogoCompleta = System.getProperty("user.dir")
+                    + "/src/Img/logo_pdf.png";
+            File archivoLogo = new File(rutaLogoCompleta);
+            if (archivoLogo.exists()) {
+                html.append("<div class='centro'>");
+                html.append("<img src='").append(rutaLogoCompleta)
+                        .append("' style='max-width:100px; max-height:60px;'/>");
+                html.append("</div>");
+            }
+
+            // Encabezado empresa
+            html.append("<div class='centro'>");
+            html.append("<p class='titulo'>").append(txtNombreEmpresa.getText())
+                    .append("</p>");
+            html.append("<p>").append(txtDireccionEmpresa.getText()).append("</p>");
+            html.append("<p>Tel: ").append(txtTelefonoEmpresa.getText()).append("</p>");
+            html.append("<p>NIT: ").append(txtNitEmpresa.getText()).append("</p>");
+            html.append("</div>");
+
+            html.append("<div class='separador'></div>");
+
+            // Título cierre
+            html.append("<div class='centro'>");
+            html.append("<p class='titulo'>*** CIERRE DE CAJA ***</p>");
+            html.append("</div>");
+
+            html.append("<div class='separador'></div>");
+
+            // Info cajero y fecha
+            html.append("<table>");
+            html.append("<tr><td class='negrita'>Cajero:</td>")
+                    .append("<td class='derecha'>")
+                    .append(Login.nombreUsuario).append("</td></tr>");
+            html.append("<tr><td class='negrita'>Fecha:</td>")
+                    .append("<td class='derecha'>")
+                    .append(fecha).append("</td></tr>");
+            html.append("</table>");
+
+            html.append("<div class='separador'></div>");
+
+            // Montos apertura y cierre
+            html.append("<table>");
+            html.append("<tr><td class='negrita'>Apertura:</td>")
+                    .append("<td class='derecha'>$ ")
+                    .append(String.format("%,.2f", montoApertura))
+                    .append("</td></tr>");
+            html.append("<tr><td class='negrita'>Cierre:</td>")
+                    .append("<td class='derecha'>$ ")
+                    .append(String.format("%,.2f", montoCierre))
+                    .append("</td></tr>");
+            html.append("</table>");
+
+            html.append("<div class='separador'></div>");
+
+            // Ventas por forma de pago
+            html.append("<p class='negrita' style='margin:3px 0'>VENTAS POR FORMA DE PAGO:</p>");
+            html.append("<table>");
+            html.append("<tr><td>💵 Efectivo:</td>")
+                    .append("<td class='derecha'>$ ")
+                    .append(String.format("%,.2f", totales.getTotalEfectivo()))
+                    .append("</td></tr>");
+            html.append("<tr><td>💳 T. Crédito:</td>")
+                    .append("<td class='derecha'>$ ")
+                    .append(String.format("%,.2f", totales.getTotalTarjetaCredito()))
+                    .append("</td></tr>");
+            html.append("<tr><td>💳 T. Débito:</td>")
+                    .append("<td class='derecha'>$ ")
+                    .append(String.format("%,.2f", totales.getTotalTarjetaDebito()))
+                    .append("</td></tr>");
+            html.append("<tr><td>🔄 Transferencia:</td>")
+                    .append("<td class='derecha'>$ ")
+                    .append(String.format("%,.2f", totales.getTotalTransferencia()))
+                    .append("</td></tr>");
+            html.append("</table>");
+
+            html.append("<div class='separador'></div>");
+
+            // Totales finales
+            html.append("<table>");
+            html.append("<tr class='total-row'>")
+                    .append("<td class='negrita'>Total Ventas:</td>")
+                    .append("<td class='derecha negrita'>$ ")
+                    .append(String.format("%,.2f", totalVentas))
+                    .append("</td></tr>");
+
+            // Diferencia con color
+            String colorDif = diferencia >= 0 ? "color:green" : "color:red";
+            String labelDif = diferencia >= 0 ? "Diferencia:" : "Faltante:";
+            html.append("<tr><td class='negrita' style='").append(colorDif)
+                    .append("'>").append(labelDif).append("</td>")
+                    .append("<td class='derecha negrita' style='").append(colorDif)
+                    .append("'>$ ")
+                    .append(String.format("%,.2f", Math.abs(diferencia)))
+                    .append("</td></tr>");
+            html.append("</table>");
+
+            html.append("<div class='separador'></div>");
+
+            // Pie
+            html.append("<div class='centro'>");
+            html.append("<p class='negrita'>Firma del Cajero</p>");
+            html.append("<p style='margin-top:30px'>____________________</p>");
+            html.append("<p style='font-size:10px'>")
+                    .append(Login.nombreUsuario).append("</p>");
+            html.append("</div>");
+
+            html.append("<div class='corte'>✂ - - - - - - - - - - - - ✂</div>");
+
+            // Botón imprimir
+            html.append("<div class='no-print' style='text-align:center;margin-top:20px'>");
+            html.append("<button onclick='window.print()' ");
+            html.append("style='padding:10px 20px; cursor:pointer; ");
+            html.append("background:#0066cc; color:white; border:none; ");
+            html.append("border-radius:5px; font-size:14px'>");
+            html.append("🖨️ Imprimir Cierre</button>");
+            html.append("</div>");
+
+            html.append("</body></html>");
+
+            // Guardar y abrir
+            java.io.FileWriter fw = new java.io.FileWriter(file);
+            fw.write(html.toString());
+            fw.close();
+
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(file.toURI());
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error al generar tirilla de cierre: " + e.getMessage());
         }
     }
 }

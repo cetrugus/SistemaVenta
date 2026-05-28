@@ -5,6 +5,9 @@
  */
 package Vista;
 
+import Modelo.Constantes;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author Tavo
@@ -17,6 +20,10 @@ public class Acercade extends javax.swing.JFrame {
     public Acercade() {
         initComponents();
         this.setLocationRelativeTo(null);
+        txtDev.setText(Constantes.VERSION);
+        txtSof.setText(Constantes.Software);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/carrito-de-compras_logo.png"));
+        setIconImage(icono.getImage());
     }
 
     /**
@@ -34,10 +41,11 @@ public class Acercade extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        txtDev = new javax.swing.JLabel();
+        txtSof = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("SOFTWARE ADMINISTRATIVO DE VENTAS");
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Sistema de Administración en Ventas, Inventario y Facturación.");
@@ -56,15 +64,15 @@ public class Acercade extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("proveedores y personal de manera eficiente.");
 
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Desarrollado por Gustavo Celis 2026 ©");
-        jLabel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        txtDev.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtDev.setText("Desarrollado por Gustavo Celis 2026 ©");
+        txtDev.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        txtDev.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Versión del software 1.0");
-        jLabel7.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        txtSof.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtSof.setText("Software Administrativo POS");
+        txtSof.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        txtSof.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -78,8 +86,8 @@ public class Acercade extends javax.swing.JFrame {
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtDev, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtSof, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -96,9 +104,9 @@ public class Acercade extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel7)
+                .addComponent(txtSof)
                 .addGap(4, 4, 4)
-                .addComponent(jLabel6)
+                .addComponent(txtDev)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -106,7 +114,9 @@ public class Acercade extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,8 +167,8 @@ public class Acercade extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel txtDev;
+    private javax.swing.JLabel txtSof;
     // End of variables declaration//GEN-END:variables
 }

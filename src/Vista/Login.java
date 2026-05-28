@@ -1,5 +1,6 @@
 package Vista;
 
+import Modelo.Constantes;
 import Modelo.Empresa;
 import Modelo.EmpresaDAO;
 import Modelo.LoginDAO;
@@ -9,6 +10,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 public class Login extends javax.swing.JFrame {
 
@@ -23,8 +25,10 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         this.setLocationRelativeTo(null);
-        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/carrito-de-compras_logo.png"));
         setIconImage(icono.getImage());
+
+        txtDev.setText(Constantes.VERSION);
 
         SwingUtilities.invokeLater(() -> {
             rutaLogo = "logo_pdf.png"; // ← siempre este nombre
@@ -96,11 +100,11 @@ public class Login extends javax.swing.JFrame {
         txtDireccionEmpresa = new javax.swing.JLabel();
         txtCorreoEmpresa = new javax.swing.JLabel();
         txtTelefonoEmpresa = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        txtDev = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("SOFTWARE DE VENTAS");
+        setTitle("SOFTWARE ADMINISTRATIVO DE VENTAS");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/iniciar.png"))); // NOI18N
@@ -232,9 +236,9 @@ public class Login extends javax.swing.JFrame {
         txtTelefonoEmpresa.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtTelefonoEmpresa.setText("telefono");
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Versión 1.0 Gustavo Celis 2026 ©");
-        jLabel7.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        txtDev.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtDev.setText("Versión 1.0 Gustavo Celis 2026 ©");
+        txtDev.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -252,7 +256,7 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(txtDireccionEmpresa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtCorreoEmpresa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtTelefonoEmpresa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)))
+                        .addComponent(txtDev, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
@@ -276,7 +280,7 @@ public class Login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtTelefonoEmpresa)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel7)
+                .addComponent(txtDev)
                 .addContainerGap())
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
@@ -359,37 +363,62 @@ public class Login extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-            }
-        });
+        try {
+        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            new Login().setVisible(true);
+        }
+    });
     }
 
     private void mostrarLogo(String nombreArchivo) {
         if (nombreArchivo != null && !nombreArchivo.isEmpty()) {
-            String ruta = "src/Img/" + nombreArchivo;
-            ImageIcon imagen = new ImageIcon(ruta);
 
-            // Obtener tamaño real del label
-            int ancho = LabelLogo.getWidth() > 0 ? LabelLogo.getWidth() : LabelLogo.getPreferredSize().width;
-            int alto = LabelLogo.getHeight() > 0 ? LabelLogo.getHeight() : LabelLogo.getPreferredSize().height;
+            java.net.URL ruta = getClass().getResource("/Img/" + nombreArchivo);
 
-            // Si sigue siendo 0 usar tamaño fijo
-            if (ancho <= 0) {
-                ancho = 158;
+            if (ruta != null) {
+
+                ImageIcon imagen = new ImageIcon(ruta);
+
+                int ancho = LabelLogo.getWidth() > 0
+                        ? LabelLogo.getWidth()
+                        : LabelLogo.getPreferredSize().width;
+
+                int alto = LabelLogo.getHeight() > 0
+                        ? LabelLogo.getHeight()
+                        : LabelLogo.getPreferredSize().height;
+
+                if (ancho <= 0) {
+                    ancho = 158;
+                }
+
+                if (alto <= 0) {
+                    alto = 158;
+                }
+
+                Image imgEscalada = imagen.getImage().getScaledInstance(
+                        ancho,
+                        alto,
+                        Image.SCALE_SMOOTH
+                );
+
+                LabelLogo.setText("");
+                LabelLogo.setIcon(new ImageIcon(imgEscalada));
+
+            } else {
+
+                System.out.println("No se encontró la imagen: " + nombreArchivo);
+
+                LabelLogo.setIcon(null);
+                LabelLogo.setText("Logo no encontrado");
             }
-            if (alto <= 0) {
-                alto = 158;
-            }
 
-            Image imgEscalada = imagen.getImage().getScaledInstance(
-                    ancho, alto, Image.SCALE_SMOOTH
-            );
-            LabelLogo.setText("");
-            LabelLogo.setIcon(new ImageIcon(imgEscalada));
         } else {
-            // Si no hay imagen mostrar texto placeholder
+
             LabelLogo.setIcon(null);
             LabelLogo.setText("Aquí va su logo");
             LabelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -408,13 +437,13 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JLabel txtCorreoEmpresa;
+    private javax.swing.JLabel txtDev;
     private javax.swing.JLabel txtDireccionEmpresa;
     private javax.swing.JLabel txtNitEmpresa;
     private javax.swing.JPasswordField txtPass;

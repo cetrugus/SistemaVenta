@@ -13,11 +13,15 @@ public class AperturaCaja {
     private String fechaApertura;
     private String fechaCierre;
     private int estado;
+    private double totalEfectivo;
+    private double totalTarjetaCredito;
+    private double totalTarjetaDebito;
+    private double totalTransferencia;
 
     public AperturaCaja() {
     }
 
-    public AperturaCaja(int id, int idUsuario, String nombreUsuario, double montoApertura, double diferencia, double montoCierre, String fechaApertura, String fechaCierre, int estado) {
+    public AperturaCaja(int id, int idUsuario, String nombreUsuario, double montoApertura, double diferencia, double montoCierre, String fechaApertura, String fechaCierre, int estado, double totalEfectivo, double totalTarjetaCredito, double totalTarjetaDebito, double totalTransferencia) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
@@ -27,6 +31,10 @@ public class AperturaCaja {
         this.fechaApertura = fechaApertura;
         this.fechaCierre = fechaCierre;
         this.estado = estado;
+        this.totalEfectivo = totalEfectivo;
+        this.totalTarjetaCredito = totalTarjetaCredito;
+        this.totalTarjetaDebito = totalTarjetaDebito;
+        this.totalTransferencia = totalTransferencia;
     }
 
     public int getId() {
@@ -99,6 +107,38 @@ public class AperturaCaja {
 
     public void setDiferencia(double diferencia) {
         this.diferencia = diferencia;
+    }
+
+    public double getTotalEfectivo() {
+        return totalEfectivo;
+    }
+
+    public void setTotalEfectivo(double totalEfectivo) {
+        this.totalEfectivo = totalEfectivo;
+    }
+
+    public double getTotalTarjetaCredito() {
+        return totalTarjetaCredito;
+    }
+
+    public void setTotalTarjetaCredito(double totalTarjetaCredito) {
+        this.totalTarjetaCredito = totalTarjetaCredito;
+    }
+
+    public double getTotalTarjetaDebito() {
+        return totalTarjetaDebito;
+    }
+
+    public void setTotalTarjetaDebito(double totalTarjetaDebito) {
+        this.totalTarjetaDebito = totalTarjetaDebito;
+    }
+
+    public double getTotalTransferencia() {
+        return totalTransferencia;
+    }
+
+    public void setTotalTransferencia(double totalTransferencia) {
+        this.totalTransferencia = totalTransferencia;
     }
     
     

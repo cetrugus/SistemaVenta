@@ -39,7 +39,7 @@ public class Inventario extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         txtUsuario.setText(Login.nombreUsuario);
 
-        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/Carrito-de-compras_logo.png"));
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Img/carrito-de-compras_logo.png"));
         setIconImage(icono.getImage());
 
         // Agrega solo estas líneas:
@@ -189,7 +189,7 @@ public class Inventario extends javax.swing.JFrame {
         txtCantMax = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("SOFTWARE DE VENTAS");
+        setTitle("SOFTWARE ADMINISTRATIVO DE VENTAS");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
