@@ -111,36 +111,36 @@ public class VentaDAO {
         return ListaVenta;
     }
 
- public Venta buscarVenta(int idVenta) {
+    public Venta buscarVenta(int idVenta) {
 
-    Venta v = new Venta();
-    String sql = "SELECT * FROM ventas WHERE id = ?";
+        Venta v = new Venta();
+        String sql = "SELECT * FROM ventas WHERE id = ?";
 
-    try {
-        con = cn.getConnection();
-        ps = con.prepareStatement(sql);
-        ps.setInt(1, idVenta);
-        rs = ps.executeQuery();
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idVenta);
+            rs = ps.executeQuery();
 
-        if (rs.next()) {
+            if (rs.next()) {
 
-            v.setId(rs.getInt("id"));
-            v.setCliente(rs.getString("cliente"));
-            v.setVendedor(rs.getString("vendedor"));
-            v.setTotal(rs.getDouble("total"));
+                v.setId(rs.getInt("id"));
+                v.setCliente(rs.getString("cliente"));
+                v.setVendedor(rs.getString("vendedor"));
+                v.setTotal(rs.getDouble("total"));
 
-            // 🔥 ESTOS SOLO FUNCIONAN SI EXISTEN EN BD
-            v.setFecha(rs.getString("fecha"));
-            v.setNit(rs.getString("nit"));
-            v.setTelefono(rs.getString("telefono"));
-            v.setDireccion(rs.getString("direccion"));
-            v.setRazon(rs.getString("razon"));
+                // 🔥 ESTOS SOLO FUNCIONAN SI EXISTEN EN BD
+                v.setFecha(rs.getString("fecha"));
+                v.setNit(rs.getString("nit"));
+                v.setTelefono(rs.getString("telefono"));
+                v.setDireccion(rs.getString("direccion"));
+                v.setRazon(rs.getString("razon"));
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
         }
 
-    } catch (Exception e) {
-        System.out.println(e.toString());
+        return v;
     }
-
-    return v;
-}
 }

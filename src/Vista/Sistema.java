@@ -91,6 +91,7 @@ public class Sistema extends javax.swing.JFrame {
     Empresa empresa = new Empresa();
     EmpresaDAO empresaDAO = new EmpresaDAO();
     private double montoCajaInicial = 0;
+    private int idVentaActual = 0;
 
     public Sistema() {
         initComponents();
@@ -119,7 +120,11 @@ public class Sistema extends javax.swing.JFrame {
 
         txtDev.setText(Constantes.VERSION);
 
+        /*SwingUtilities.invokeLater(() -> {
+            Bienvenida();
+        });*/
         SwingUtilities.invokeLater(() -> {
+            Bienvenida();
             verificarAlertasStock();
         });
 
@@ -197,8 +202,8 @@ public class Sistema extends javax.swing.JFrame {
                 menuSalir.setVisible(true);
                 jMenu3.setVisible(false);
                 break;*/
-                
-                //botones visibles y bloqueados
+
+            //botones visibles y bloqueados
             case 2: // Cajero - solo ventas y clientes
                 jButton6.setEnabled(false); // ocultar Config
                 jButton9.setEnabled(false);
@@ -633,6 +638,18 @@ public class Sistema extends javax.swing.JFrame {
         txtSmtpClave = new javax.swing.JPasswordField();
         jButton9 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
+        LabelLogo1 = new javax.swing.JLabel();
+        jButton15 = new javax.swing.JButton();
+        LabelVendedor1 = new javax.swing.JLabel();
+        lblHora1 = new javax.swing.JLabel();
+        lblFecha1 = new javax.swing.JLabel();
+        txtDev1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuIniciarSesion = new javax.swing.JMenuItem();
@@ -642,6 +659,7 @@ public class Sistema extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuAcercade = new javax.swing.JMenuItem();
 
@@ -1451,7 +1469,17 @@ public class Sistema extends javax.swing.JFrame {
         jLabel25.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel25.setText("Precio:");
 
-        txtcantPro.setEnabled(false);
+        txtDesPro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDesProActionPerformed(evt);
+            }
+        });
+
+        txtcantPro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtcantProActionPerformed(evt);
+            }
+        });
 
         txtPrecioPro.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -1599,22 +1627,24 @@ public class Sistema extends javax.swing.JFrame {
                                         .addComponent(jLabel45)
                                         .addGap(18, 18, 18)
                                         .addComponent(txtCantMaxPro, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtcantPro)
-                        .addComponent(txtPrecioPro)
-                        .addComponent(jLabel22)
-                        .addComponent(jLabel23)
-                        .addComponent(jLabel24)
-                        .addComponent(jLabel25)
-                        .addComponent(jLabel26)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                            .addComponent(txtCodigoPro, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtIdpro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(txtDesPro)
-                        .addComponent(cbxProveedorPro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtcantPro)
+                            .addComponent(txtPrecioPro)
+                            .addComponent(jLabel22)
+                            .addComponent(jLabel23)
+                            .addComponent(jLabel24)
+                            .addComponent(jLabel25)
+                            .addComponent(jLabel26)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                .addComponent(txtCodigoPro, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtIdpro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtDesPro)
+                            .addComponent(cbxProveedorPro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -1752,6 +1782,24 @@ public class Sistema extends javax.swing.JFrame {
 
         jLabel31.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel31.setText("Razón Social");
+
+        txtNitEmpresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNitEmpresaActionPerformed(evt);
+            }
+        });
+
+        txtNombreEmpresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombreEmpresaActionPerformed(evt);
+            }
+        });
+
+        txtDireccionEmpresa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDireccionEmpresaActionPerformed(evt);
+            }
+        });
 
         txtRazonSocialEmpresa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1971,6 +2019,143 @@ public class Sistema extends javax.swing.JFrame {
         });
         getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, 200, 49));
 
+        jPanel8.setBackground(new java.awt.Color(180, 190, 199));
+
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Nventa.png"))); // NOI18N
+        jButton10.setText("Nueva Venta");
+        jButton10.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
+        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Clientes.png"))); // NOI18N
+        jButton11.setText("Clientes");
+        jButton11.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
+        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/proveedor.png"))); // NOI18N
+        jButton12.setText("Proveedor");
+        jButton12.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/producto.png"))); // NOI18N
+        jButton13.setText("Productos");
+        jButton13.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
+        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/compras.png"))); // NOI18N
+        jButton14.setText("Ventas");
+        jButton14.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
+
+        LabelLogo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        LabelLogo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/logo!.jpg"))); // NOI18N
+
+        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/inventario1.24.png"))); // NOI18N
+        jButton15.setText("Inventario");
+        jButton15.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
+        LabelVendedor1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        LabelVendedor1.setText("Vendedor");
+
+        lblHora1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblHora1.setForeground(new java.awt.Color(51, 51, 255));
+        lblHora1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        lblFecha1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblFecha1.setForeground(new java.awt.Color(51, 51, 255));
+        lblFecha1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        txtDev1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtDev1.setText("Versión 1.0 Gustavo Celis 2026 ©");
+        txtDev1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(txtDev1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(LabelVendedor1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel8Layout.createSequentialGroup()
+                                        .addComponent(lblHora1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(40, 40, 40)
+                                        .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addComponent(LabelLogo1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(LabelLogo1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(LabelVendedor1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblHora1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addComponent(txtDev1)
+                .addContainerGap())
+        );
+
+        getContentPane().add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 220, 750));
+
         jMenu1.setText("Menú");
 
         menuIniciarSesion.setText("Iniciar Sesión");
@@ -2025,6 +2210,14 @@ public class Sistema extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem3);
 
+        jMenuItem4.setText("Base de datos");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem4);
+
         jMenuBar1.add(jMenu3);
 
         jMenu2.setText("Ayuda");
@@ -2046,6 +2239,7 @@ public class Sistema extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        resaltarBoton(jButton2);
         LimpiarTable();
         LimpiarCliente();
         ListarCliente();
@@ -2054,11 +2248,13 @@ public class Sistema extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        resaltarBoton(jButton1);
         jTabbedPane1.setSelectedIndex(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        resaltarBoton(jButton3);
         LimpiarTablePr();
         LimpiarProveedor();
         ListarProveedor();
@@ -2067,6 +2263,7 @@ public class Sistema extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        resaltarBoton(jButton4);
         LimpiarTablePr();
         LimpiarProductos();
         ListarProductos();
@@ -2075,6 +2272,7 @@ public class Sistema extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        resaltarBoton(jButton5);
         jTabbedPane1.setSelectedIndex(4);
         LimpiarTable();
         ListarVentas();
@@ -2082,14 +2280,46 @@ public class Sistema extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        resaltarBoton(jButton6);
         jTabbedPane1.setSelectedIndex(5);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
+        resaltarBoton(jButton7);
         Inventario inventario = new Inventario();
         inventario.setVisible(true);
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    // resaltar boton para mostrar el seleccionado
+    private void resaltarBoton(javax.swing.JButton botonActivo) {
+        javax.swing.JButton[] botones = {jButton1, jButton2, jButton3, jButton4, jButton5, jButton6, jButton7};
+        for (javax.swing.JButton btn : botones) {
+            btn.setBackground(null); // color por defecto
+            btn.setForeground(null);
+            btn.setFont(null);
+            btn.setBorder(null);
+        }
+        //botonActivo.setBackground(new java.awt.Color(240, 240, 240)); // color boton
+        botonActivo.setForeground(java.awt.Color.BLUE); // color letra
+        botonActivo.setFont(botonActivo.getFont().deriveFont(java.awt.Font.BOLD)); // fuente letra
+        botonActivo.setBorder(new javax.swing.border.AbstractBorder() {
+            @Override
+            public void paintBorder(java.awt.Component c, java.awt.Graphics g, int x, int y, int width, int height) {
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(java.awt.Color.BLUE);
+                g2.setStroke(new java.awt.BasicStroke(1));
+                g2.drawRoundRect(x + 1, y + 1, width - 3, height - 3, 20, 20);
+                g2.dispose();
+            }
+
+            @Override
+            public java.awt.Insets getBorderInsets(java.awt.Component c) {
+                return new java.awt.Insets(4, 4, 4, 4);
+            }
+        });
+    }
 
     private void btnVerVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerVentaActionPerformed
         // TODO add your handling code here:
@@ -2215,17 +2445,31 @@ public class Sistema extends javax.swing.JFrame {
     private void btnGuardarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProActionPerformed
         // TODO add your handling code here:
 
-        if (!"".equals(txtCodigoPro.getText()) || !"".equals(txtDesPro.getText())
-                || !"".equals(cbxProveedorPro.getSelectedItem()) || !"".equals(txtcantPro.getText())
-                || !"".equals(txtPrecioPro.getText())) {
+        if (!txtCodigoPro.getText().trim().isEmpty()
+                && !txtDesPro.getText().trim().isEmpty()
+                && cbxProveedorPro.getSelectedItem() != null
+                && !txtcantPro.getText().trim().isEmpty()
+                && !txtPrecioPro.getText().trim().isEmpty()) {
+
+            // Validar que cantidad y precio sean numéricos
+            int stock;
+            double precio;
+            try {
+                stock = Integer.parseInt(txtcantPro.getText().trim());
+                precio = Double.parseDouble(txtPrecioPro.getText().trim());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null,
+                        "La cantidad y el precio deben ser valores numéricos.",
+                        "Error de formato", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             // Calcular IVA
-            double precio = Double.parseDouble(txtPrecioPro.getText().trim());
             String tieneIva = cmbIva.getSelectedItem().toString();
             double valorIva = tieneIva.equals("SI") ? precio * 0.19 : 0.00;
             double precioFinal = precio + valorIva;
 
-            // ── Leer Cant Min y Cant Max ──────────────────
+            // Leer Cant Min y Cant Max
             int cantMin = 0, cantMax = 0;
             try {
                 cantMin = txtCantMinPro.getText().trim().isEmpty() ? 0
@@ -2234,34 +2478,38 @@ public class Sistema extends javax.swing.JFrame {
                         : Integer.parseInt(txtCantMaxPro.getText().trim());
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null,
-                        "Cant Mín y Cant Máx deben ser números enteros");
-                return; // detiene el guardado si hay error
-            }
-
-            // Validar que max sea mayor que min si ambos tienen valor
-            if (cantMax > 0 && cantMin > 0 && cantMax <= cantMin) {
-                JOptionPane.showMessageDialog(null,
-                        "Cant Máx debe ser mayor que Cant Mín");
+                        "Cant Mín y Cant Máx deben ser números enteros.",
+                        "Error de formato", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Asignar todos los valores al objeto
-            pro.setCodigo(txtCodigoPro.getText());
-            pro.setNombre(txtDesPro.getText());
+            // Validar que max sea mayor que min
+            if (cantMax > 0 && cantMin > 0 && cantMax <= cantMin) {
+                JOptionPane.showMessageDialog(null,
+                        "Cant Máx debe ser mayor que Cant Mín.",
+                        "Error de validación", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Asignar valores al objeto
+            pro.setCodigo(txtCodigoPro.getText().trim());
+            pro.setNombre(txtDesPro.getText().trim());
             pro.setProveedor(cbxProveedorPro.getSelectedItem().toString());
-            pro.setStock(Integer.parseInt(txtcantPro.getText()));
+            pro.setStock(stock);
             pro.setPrecio(precio);
             pro.setIva(tieneIva);
             pro.setValorIva(valorIva);
             pro.setPrecioFinal(precioFinal);
-            pro.setCantMin(cantMin);  // ✅ nuevo
-            pro.setCantMax(cantMax);  // ✅ nuevo
+            pro.setCantMin(cantMin);
+            pro.setCantMax(cantMax);
 
             proDAO.RegistrarProducto(pro);
-            JOptionPane.showMessageDialog(null, "Producto registrado");
+            JOptionPane.showMessageDialog(null, "Producto registrado correctamente.",
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
         } else {
-            JOptionPane.showMessageDialog(null, "Los campos están vacíos");
+            JOptionPane.showMessageDialog(null, "Por favor complete todos los campos obligatorios.",
+                    "Campos vacíos", JOptionPane.WARNING_MESSAGE);
         }
 
         LimpiarTablePr();
@@ -2313,7 +2561,7 @@ public class Sistema extends javax.swing.JFrame {
         }
 
         int id = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 0).toString());
-        int estadoActual = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 6).toString());
+        int estadoActual = Integer.parseInt(TableProveedor.getModel().getValueAt(fila, 7).toString());
 
         // Mensaje dinámico según estado actual
         String mensaje = estadoActual == 1 ? "¿Desea desactivar este proveedor?" : "¿Desea activar este Proveedor?";
@@ -2412,7 +2660,7 @@ public class Sistema extends javax.swing.JFrame {
         }
 
         int id = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 0).toString());
-        int estadoActual = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 6).toString());
+        int estadoActual = Integer.parseInt(TableCliente.getModel().getValueAt(fila, 7).toString());
 
         // Mensaje dinámico según estado actual
         String mensaje = estadoActual == 1 ? "¿Desea desactivar este cliente?" : "¿Desea activar este cliente?";
@@ -2531,13 +2779,13 @@ public class Sistema extends javax.swing.JFrame {
             }
 
             // 3. Registrar venta y detalle
-            //RegistrarVenta();
-            //RegistrarDetalle();
-            //ActualizarStock();
+            RegistrarVenta();
+            RegistrarDetalle();
+            ActualizarStock();
             // 4. Registrar pago automáticamente
-            int idVenta = vDAO.IdVenta();
+            idVentaActual = vDAO.IdVenta();
             Pago pago = new Pago();
-            pago.setIdVenta(idVenta);
+            pago.setIdVenta(idVentaActual);
             pago.setFormaPago(formaPagoSeleccionada);
             pago.setMontoTotal(Totalpagar);
             pago.setMontoRecibido(montoRecibidoPago);
@@ -2561,7 +2809,7 @@ public class Sistema extends javax.swing.JFrame {
                     boolean enviado = EnvioCorreo.enviarFactura(
                             correoCliente,
                             nombreCliente,
-                            "src/pdf/venta.pdf" // ruta del PDF generado
+                            "src/pdf/venta" + idVentaActual + ".pdf" // ruta del PDF generado
                     );
                     if (enviado) {
                         javax.swing.SwingUtilities.invokeLater(()
@@ -2795,6 +3043,7 @@ public class Sistema extends javax.swing.JFrame {
         calcularIvaProducto();
     }//GEN-LAST:event_cmbIvaActionPerformed
 
+    //menu de config
     private void btnSeleccionarLogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarLogoActionPerformed
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
@@ -3256,6 +3505,56 @@ public class Sistema extends javax.swing.JFrame {
         jTabbedPane1.setSelectedIndex(5);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        BaseDeDatos basedatos = new BaseDeDatos();
+        basedatos.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void txtNitEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNitEmpresaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNitEmpresaActionPerformed
+
+    private void txtDireccionEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDireccionEmpresaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDireccionEmpresaActionPerformed
+
+    private void txtNombreEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreEmpresaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreEmpresaActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void txtcantProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtcantProActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtcantProActionPerformed
+
+    private void txtDesProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDesProActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDesProActionPerformed
+
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(
                 this, "¿Está seguro que desea salir?",
@@ -3501,8 +3800,10 @@ public class Sistema extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LabelLogo;
+    private javax.swing.JLabel LabelLogo1;
     private javax.swing.JLabel LabelTotal;
     private javax.swing.JLabel LabelVendedor;
+    private javax.swing.JLabel LabelVendedor1;
     private javax.swing.JButton ProbarSMTP;
     private javax.swing.JTable TableCliente;
     private javax.swing.JTable TableProducto;
@@ -3534,6 +3835,12 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbxProveedorSMTP;
     private javax.swing.JComboBox<String> cmbIva;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -3593,6 +3900,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -3600,6 +3908,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -3608,7 +3917,9 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblCant;
     private javax.swing.JLabel lblFecha;
+    private javax.swing.JLabel lblFecha1;
     private javax.swing.JLabel lblHora;
+    private javax.swing.JLabel lblHora1;
     private javax.swing.JLabel lblIva;
     private javax.swing.JTextField lblIvaProducto;
     private javax.swing.JLabel lblLogo;
@@ -3630,6 +3941,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtDesPro;
     private javax.swing.JTextField txtDescripcionVenta;
     private javax.swing.JLabel txtDev;
+    private javax.swing.JLabel txtDev1;
     private javax.swing.JTextField txtDireccionCV;
     private javax.swing.JTextField txtDireccionCliente;
     private javax.swing.JTextField txtDireccionEmpresa;
@@ -3781,7 +4093,7 @@ public class Sistema extends javax.swing.JFrame {
             File carpeta = new File("src/pdf/");
             carpeta.mkdirs();
 
-            File file = new File("src/pdf/venta.pdf");
+            File file = new File("src/pdf/venta" + idVentaActual + ".pdf");
             FileOutputStream archivo = new FileOutputStream(file);
             Document doc = new Document();
             PdfWriter writer = PdfWriter.getInstance(doc, archivo);
@@ -3814,7 +4126,7 @@ public class Sistema extends javax.swing.JFrame {
             // Fecha y número de factura
             Paragraph fecha = new Paragraph();
             Date date = new Date();
-            fecha.add(new Chunk("Factura: 1\n", negrita));
+            fecha.add(new Chunk("Factura: " + idVentaActual + "\n", negrita));
             fecha.add(new Chunk("Fecha: "
                     + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date) + "\n\n", normal));
 
@@ -4092,7 +4404,7 @@ public class Sistema extends javax.swing.JFrame {
             File carpeta = new File("src/pdf/");
             carpeta.mkdirs();
 
-            File file = new File("src/pdf/tirilla.html");
+            File file = new File("src/pdf/tirilla" + idVentaActual + ".html");
 
             // Obtener datos
             Date date = new Date();
@@ -4172,7 +4484,7 @@ public class Sistema extends javax.swing.JFrame {
             html.append("<div class='izquierda'>");
             html.append("<p>Fecha: ").append(fecha).append("</p>");
             //nomero de factura
-            html.append("<p>Factura: ").append("1").append("</p>");
+            html.append("<p>Factura: ").append("idVentaActual").append("</p>");
             html.append("<p>Cliente: ").append(txtNombreClienteventa.getText()).append("</p>");
             html.append("<p>NIT/CC: ").append(txtNitventa.getText()).append("</p>");
             html.append("</div>");
@@ -4305,7 +4617,7 @@ public class Sistema extends javax.swing.JFrame {
         try {
             File carpeta = new File("src/pdf/");
             carpeta.mkdirs();
-            File file = new File("src/pdf/tirilla.pdf");
+            File file = new File("src/pdf/tirilla" + idVentaActual + ".pdf");
 
             com.itextpdf.text.Font titulo = new com.itextpdf.text.Font(
                     com.itextpdf.text.Font.FontFamily.COURIER, 9,
@@ -4398,7 +4710,7 @@ public class Sistema extends javax.swing.JFrame {
         info.setAlignment(Element.ALIGN_LEFT);
         Date date = new Date();
         info.add(new Chunk("Fecha: " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date) + "\n", normal));
-        info.add(new Chunk("Factura: 1\n", normal));
+        info.add(new Chunk("Factura: " + idVentaActual + "\n", normal));
         info.add(new Chunk("Cliente: " + txtNombreClienteventa.getText() + "\n", normal));
         info.add(new Chunk("NIT/CC: " + txtNitventa.getText() + "\n", normal));
         doc.add(info);
@@ -4602,7 +4914,7 @@ public class Sistema extends javax.swing.JFrame {
             File carpeta = new File("src/pdf/");
             carpeta.mkdirs();
 
-            File file = new File("src/pdf/tirilla.pdf");
+            File file = new File("src/pdf/tirilla" + idVentaActual + ".pdf");
             FileOutputStream archivo = new FileOutputStream(file);
 
             com.itextpdf.text.Rectangle tamañoTirilla
@@ -4620,6 +4932,26 @@ public class Sistema extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error al guardar tirilla: " + e.getMessage());
         }
+    }
+
+    //mensaje de bienvenida
+    private void Bienvenida() {
+        if (Login.tipoUsuario != 1 && Login.tipoUsuario != 2 && Login.tipoUsuario != 3) {
+            return;
+        }
+        String vendedor = LabelVendedor.getText();
+
+        String mensaje = "Bienvenido a el sistema de ventas\n" + vendedor;
+
+        if (Login.tipoUsuario == 2) {
+            mensaje += "\n\nRecuerde iniciar sesión para poder \nempezar a facturar las ventas."; // ← tu texto adicional
+        }
+        JOptionPane.showMessageDialog(
+                null,
+                mensaje,
+                "Bienvenida",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     // Verificar alertas de stock al iniciar sesión

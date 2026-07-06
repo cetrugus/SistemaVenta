@@ -44,8 +44,10 @@ public class DetalleVenta extends javax.swing.JFrame {
 
     // ← AGREGAR este método completo
     private void cargarDatos() {
+        System.out.println(">>> idVenta recibido: " + idVenta);
         DetalleDAO dao = new DetalleDAO();
         List<Detalle> lista = dao.listarPorVenta(idVenta);
+        System.out.println(">>> Registros encontrados: " + lista.size());
 
         if (!lista.isEmpty()) {
             Detalle primero = lista.get(0); // los datos de venta/cliente son iguales en todas las filas
